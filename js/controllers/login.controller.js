@@ -1,5 +1,5 @@
 import { APP } from '../config.js';
-import { login, obterSessao } from '../auth.js';
+import { cadastrarConta, login, obterSessao } from '../auth.js';
 import { qs, redirect, validarFormulario } from '../util.js';
 import { toast } from '../ui.js';
 
@@ -24,5 +24,32 @@ document.addEventListener('DOMContentLoaded', async () => {
       botao.textContent = 'Entrar';
     }
   });
-});
 
+  qs('#cadastroForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (!validarFormulario(form)) return;
+
+    const senha = qs('#cadastroSenha').value;
+    const confirmarSenha = qs('#confirmarSenha').value;
+    if (senha !== confirmarSenha) {
+      toast('As senhas não conferem.', 'danger');
+      return;
+    }
+
+    try {
+      await cadastrarConta({
+        nome: qs('#cadastroNome').value.trim(),
+        email: qs('#cadastroEmail').value.trim(),
+        password: senha,
+        tipo: qs('#cadastroTipo').value,
+      });
+      bootstrap.Modal.getInstance(qs('#cadastroModal')).hide();
+      form.reset();
+      form.classList.remove('was-validated');
+      toast('Cadastro enviado. Aguarde aprovação do Administrador.', 'success');
+    } catch (error) {
+      toast(error.message || 'Não foi possível cadastrar.', 'danger');
+    }
+  });
+});

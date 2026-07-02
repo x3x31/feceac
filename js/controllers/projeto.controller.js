@@ -3,6 +3,18 @@ import { confirmar, mensagemVazia, setLoading, toast } from '../ui.js';
 import { listarAreas } from '../services/area.service.js';
 import { excluirProjeto, listarProjetos, obterProjeto, salvarProjeto } from '../services/projeto.service.js';
 
+const TURMAS = [
+  'EMPINT1A', 'EMPM1A', 'EMPM1B', 'EMPM1C', 'EMPM1D', 'EMPM1E', 'EMPM1F', 'EMPM1G',
+  'EMPM2A', 'EMPM2B', 'EMPM2C', 'EMPM2D', 'EMPM2E', 'EMPM2F', 'EMPM2G',
+  'EMPM3A', 'EMPM3B', 'EMPM3C', 'EMPM3D', 'EMPM3E', 'EMPM3F',
+  'EMPV1A', 'EMPV1B', 'EMPV2A', 'EMPV2B', 'EMPV3A', 'EMPV3B',
+  'INFIINT1A', 'INFV2A', 'INFV3A',
+];
+
+const opcoesTurma = (valor = '') => TURMAS
+  .map((turma) => `<option value="${turma}" ${turma === valor ? 'selected' : ''}>${turma}</option>`)
+  .join('');
+
 const carregarSelectAreas = async (select, valor = '') => {
   const areas = await listarAreas();
   select.innerHTML = '<option value="">Selecione</option>' + areas
@@ -11,14 +23,15 @@ const carregarSelectAreas = async (select, valor = '') => {
   select.value = valor || '';
 };
 
-const linhaAluno = (nome = '') => `
+const linhaAluno = (nome = '', turma = 'EMPM1A') => `
   <div class="input-group aluno-item mb-2">
     <input class="form-control aluno-nome" value="${escapeHtml(nome)}" required placeholder="Nome do aluno">
+    <select class="form-select aluno-turma" required aria-label="Turma do aluno">${opcoesTurma(turma)}</select>
     <button class="btn btn-outline-danger btn-remover-aluno" type="button">Remover</button>
   </div>`;
 
-const adicionarAluno = (nome = '') => {
-  qs('#alunosContainer').insertAdjacentHTML('beforeend', linhaAluno(nome));
+const adicionarAluno = (nome = '', turma = 'EMPM1A') => {
+  qs('#alunosContainer').insertAdjacentHTML('beforeend', linhaAluno(nome, turma));
 };
 
 const iniciarFormularioProjeto = async () => {
@@ -38,7 +51,7 @@ const iniciarFormularioProjeto = async () => {
     qs('#orientador').value = projeto.orientador;
     qs('#coorientador').value = projeto.coorientador || '';
     qs('#alunosContainer').innerHTML = '';
-    projeto.alunos.forEach((item) => adicionarAluno(item.aluno.nome));
+    projeto.alunos.forEach((item) => adicionarAluno(item.aluno.nome, item.aluno.turma));
   }
 
   qs('#btnAdicionarAluno').addEventListener('click', () => adicionarAluno());
@@ -59,7 +72,10 @@ const iniciarFormularioProjeto = async () => {
       area_id: Number(qs('#area_id').value),
       orientador: qs('#orientador').value.trim(),
       coorientador: qs('#coorientador').value.trim() || null,
-      alunos: qsa('.aluno-nome').map((input) => ({ nome: input.value.trim() })),
+      alunos: qsa('.aluno-item').map((item) => ({
+        nome: qs('.aluno-nome', item).value.trim(),
+        turma: qs('.aluno-turma', item).value,
+      })),
     };
 
     try {
@@ -75,12 +91,13 @@ const iniciarFormularioProjeto = async () => {
 const renderizarProjetos = (projetos) => {
   const corpo = qs('#projetosTabela');
   if (!projetos.length) {
-    corpo.innerHTML = `<tr><td colspan="7">${mensagemVazia()}</td></tr>`;
+    corpo.innerHTML = `<tr><td colspan="8">${mensagemVazia()}</td></tr>`;
     return;
   }
 
   corpo.innerHTML = projetos.map((projeto) => `
     <tr>
+      <td><button class="btn btn-sm btn-outline-secondary btn-expandir" data-id="${projeto.id}" type="button">+</button></td>
       <td>${projeto.id}</td>
       <td>${projeto.ano}</td>
       <td>${escapeHtml(projeto.titulo)}</td>
@@ -90,6 +107,19 @@ const renderizarProjetos = (projetos) => {
       <td class="table-actions">
         <a class="btn btn-sm btn-outline-primary" href="editar-projeto.html?id=${projeto.id}">Editar</a>
         <button class="btn btn-sm btn-outline-danger btn-excluir" data-id="${projeto.id}">Excluir</button>
+      </td>
+    </tr>
+    <tr class="d-none alunos-detalhe" data-projeto-id="${projeto.id}">
+      <td></td>
+      <td colspan="7">
+        <div class="table-responsive">
+          <table class="table table-sm mb-0">
+            <thead><tr><th>Aluno</th><th>Turma</th></tr></thead>
+            <tbody>${(projeto.alunos || []).map((item) => `
+              <tr><td>${escapeHtml(item.aluno.nome)}</td><td>${escapeHtml(item.aluno.turma || '-')}</td></tr>
+            `).join('') || '<tr><td colspan="2">Nenhum aluno cadastrado.</td></tr>'}</tbody>
+          </table>
+        </div>
       </td>
     </tr>`).join('');
 };
@@ -114,6 +144,14 @@ const iniciarListagemProjetos = async () => {
   });
 
   qs('#projetosTabela').addEventListener('click', async (event) => {
+    if (event.target.matches('.btn-expandir')) {
+      const id = event.target.dataset.id;
+      const detalhe = qs(`.alunos-detalhe[data-projeto-id="${id}"]`);
+      detalhe.classList.toggle('d-none');
+      event.target.textContent = detalhe.classList.contains('d-none') ? '+' : '-';
+      return;
+    }
+
     if (!event.target.matches('.btn-excluir')) return;
     if (!confirmar('Deseja excluir este projeto?')) return;
     try {
@@ -138,4 +176,3 @@ document.addEventListener('DOMContentLoaded', async () => {
     toast(error.message || 'Erro ao carregar projetos.', 'danger');
   }
 });
-

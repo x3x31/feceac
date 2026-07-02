@@ -1,6 +1,6 @@
 import { escapeHtml, qs, validarFormulario } from '../util.js';
 import { confirmar, toast } from '../ui.js';
-import { excluirUsuario, listarUsuarios, salvarUsuario } from '../services/usuario.service.js';
+import { buscarUsuarioAtual, excluirUsuario, listarUsuarios, salvarUsuario } from '../services/usuario.service.js';
 
 const renderizar = (usuarios) => {
   qs('#usuariosTabela').innerHTML = usuarios.map((usuario) => `
@@ -22,6 +22,13 @@ const renderizar = (usuarios) => {
 const carregar = async () => renderizar(await listarUsuarios());
 
 document.addEventListener('DOMContentLoaded', async () => {
+  const usuarioAtual = await buscarUsuarioAtual();
+  if (usuarioAtual.tipo !== 'Administrador') {
+    toast('Apenas Administradores podem gerenciar usuários.', 'danger');
+    setTimeout(() => { location.href = 'painel.html'; }, 900);
+    return;
+  }
+
   await carregar();
 
   qs('#usuarioForm').addEventListener('submit', async (event) => {
@@ -64,4 +71,3 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 });
-
