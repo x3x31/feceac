@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login | FECEAC</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body class="login-page">
+  <main class="min-vh-100 d-flex align-items-center justify-content-center p-3">
+    <section class="card login-card shadow">
+      <div class="card-body p-4 p-md-5">
+        <h1 class="h3 fw-bold mb-1">FECEAC</h1>
+        <p class="text-secondary mb-4">Acesse o gerenciamento da Feira de Ciências.</p>
+        <form id="loginForm" class="needs-validation" novalidate>
+          <div class="mb-3">
+            <label for="email" class="form-label required">Email</label>
+            <input type="email" class="form-control" id="email" required autocomplete="email">
+            <div class="invalid-feedback">Informe um email válido.</div>
+          </div>
+          <div class="mb-4">
+            <label for="senha" class="form-label required">Senha</label>
+            <input type="password" class="form-control" id="senha" required autocomplete="current-password">
+            <div class="invalid-feedback">Informe sua senha.</div>
+          </div>
+          <button id="btnEntrar" class="btn btn-primary w-100" type="submit">Entrar</button>
+        </form>
+      </div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="js/controllers/login.controller.js"></script>
+</body>
+</html>
+

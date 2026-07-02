@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Avaliações | FECEAC</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tabelas.css">
+</head>
+<body>
+  <nav class="navbar bg-white border-bottom"><div class="container-fluid"><a class="navbar-brand text-success" href="painel.html">FECEAC</a><button id="btnLogout" class="btn btn-outline-danger btn-sm">Sair</button></div></nav>
+  <main class="app-shell d-flex">
+    <aside class="sidebar p-3"><nav class="nav flex-column"><a class="nav-link" href="painel.html">Painel</a><a class="nav-link" href="projetos.html">Projetos</a><a class="nav-link" href="usuarios.html">Usuários</a><a class="nav-link active" href="avaliacoes.html">Avaliações</a><a class="nav-link" href="areas.html">Áreas</a><a class="nav-link" href="criterios.html">Critérios</a></nav></aside>
+    <section class="content-area flex-grow-1">
+      <h1 class="page-title mb-3">Avaliações</h1>
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          <form id="avaliacaoForm" class="needs-validation" novalidate>
+            <div class="row g-3">
+              <div class="col-md-8"><label class="form-label required" for="projeto_id">Projeto</label><select id="projeto_id" class="form-select" required></select></div>
+              <div class="col-md-4"><label class="form-label required" for="data">Data</label><input id="data" type="date" class="form-control" required></div>
+              <div id="criterios" class="row g-3"></div>
+            </div>
+            <button class="btn btn-primary mt-3" type="submit">Salvar Avaliação</button>
+          </form>
+        </div>
+      </div>
+      <div class="table-responsive bg-white border rounded"><table class="table table-hover mb-0"><thead><tr><th>ID</th><th>Projeto</th><th>Avaliador</th><th>Data</th><th>Notas</th></tr></thead><tbody id="avaliacoesTabela"></tbody></table></div>
+    </section>
+  </main>
+  <script>document.addEventListener('DOMContentLoaded',()=>{const d=document.querySelector('#data'); if(d) d.valueAsDate=new Date();});</script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/controllers/avaliacao.controller.js"></script>
+</body>
+</html>
+
