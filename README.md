@@ -35,10 +35,7 @@ feceac/
 
 1. Crie um projeto no Supabase.
 2. Acesse SQL Editor e execute `supabase/schema.sql`.
-3. Em Authentication, crie os usuários de acesso.
-4. Copie o UUID de cada usuário criado no Auth.
-5. Insira ou cadastre o respectivo perfil na tabela `usuarios`.
-6. Edite `js/config.js`:
+3. Edite `js/config.js`:
 
 ```js
 export const SUPABASE_URL = 'https://seu-projeto.supabase.co';
@@ -47,6 +44,12 @@ export const SUPABASE_ANON_KEY = 'sua-anon-key-publica';
 
 Use somente a anon key no frontend. Nunca coloque a Service Role Key em arquivos públicos.
 
+## Cadastro e Aprovação de Usuários
+
+O usuário cria sua conta na tela de login usando nome, email, senha e perfil solicitado. A senha é gerenciada pelo Supabase Authentication com hash seguro; o sistema não grava MD5 nem senha em tabela pública.
+
+Após o cadastro, o perfil entra como `ativo = false`. Apenas usuários do tipo `Administrador` podem acessar a tela de Usuários para revisar o perfil solicitado e ativar o acesso.
+
 ## Como Criar o Banco
 
 Execute todo o conteúdo de `supabase/schema.sql`. O script cria:
@@ -54,6 +57,7 @@ Execute todo o conteúdo de `supabase/schema.sql`. O script cria:
 - Tabelas relacionais
 - Dados iniciais de áreas do conhecimento
 - Critérios iniciais
+- Trigger para criar perfil público quando uma conta é criada no Supabase Authentication
 - Funções auxiliares de perfil
 - Políticas RLS por tipo de usuário
 - Bucket privado `feceac` no Supabase Storage
@@ -92,11 +96,11 @@ As permissões são aplicadas no banco por Row Level Security.
 
 ## Observações
 
-- Usuários de autenticação devem ser criados no Supabase Authentication.
-- A tela de usuários gerencia o perfil público vinculado ao UUID do Auth.
+- Usuários podem se cadastrar pelo login e aguardam aprovação de Administrador.
+- Alunos de projetos armazenam nome e turma.
+- A listagem de projetos permite expandir os alunos e suas respectivas turmas.
 - O frontend está pronto para expansão por módulos, mantendo controllers, services, utilitários e UI separados.
 
 ## Licença
 
 Este projeto pode ser utilizado para fins educacionais e adaptado conforme as necessidades da FECEAC.
-
