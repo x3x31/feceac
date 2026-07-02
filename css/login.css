@@ -1,0 +1,12 @@
+.login-page {
+  background:
+    linear-gradient(rgba(20, 83, 45, .78), rgba(15, 118, 110, .78)),
+    url('https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=1600&q=80') center/cover;
+}
+
+.login-card {
+  width: min(100%, 430px);
+  border: 0;
+  border-radius: 8px;
+}
+
