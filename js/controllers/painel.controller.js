@@ -7,6 +7,10 @@ import { qs } from '../util.js';
 document.addEventListener('DOMContentLoaded', async () => {
   const usuario = await carregarPerfilAutenticado();
   if (!usuario) return;
+  if (usuario.tipo === 'Avaliador') {
+    location.href = 'avaliacoes.html';
+    return;
+  }
 
   qs('#nomeUsuario').textContent = usuario.nome;
   qs('#tipoUsuario').textContent = usuario.tipo;
@@ -21,4 +25,3 @@ document.addEventListener('DOMContentLoaded', async () => {
   qs('#totalUsuarios').textContent = usuarios.value?.length ?? '-';
   qs('#totalAvaliacoes').textContent = avaliacoes.value?.length ?? '-';
 });
-

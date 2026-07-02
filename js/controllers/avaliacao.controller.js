@@ -1,14 +1,14 @@
 import { buscarUsuarioAtual } from '../services/usuario.service.js';
 import { listarProjetos } from '../services/projeto.service.js';
-import { listarAvaliacoes, listarCriterios, salvarAvaliacao } from '../services/avaliacao.service.js';
+import { listarAvaliacoesDoUsuario, listarCriterios, salvarAvaliacao } from '../services/avaliacao.service.js';
 import { escapeHtml, qs, qsa, validarFormulario } from '../util.js';
 import { toast } from '../ui.js';
 
-const carregarBase = async () => {
+const carregarBase = async (usuario) => {
   const [projetos, criterios, avaliacoes] = await Promise.all([
     listarProjetos(),
     listarCriterios(),
-    listarAvaliacoes(),
+    listarAvaliacoesDoUsuario(usuario.id),
   ]);
 
   qs('#projeto_id').innerHTML = '<option value="">Selecione</option>' + projetos
@@ -26,20 +26,26 @@ const carregarBase = async () => {
     <tr>
       <td>${avaliacao.id}</td>
       <td>${escapeHtml(avaliacao.projeto?.titulo || '-')}</td>
-      <td>${escapeHtml(avaliacao.avaliador?.nome || '-')}</td>
       <td>${avaliacao.data}</td>
+      <td>${Number(avaliacao.nota_final ?? 0).toFixed(2)}</td>
       <td>${avaliacao.notas?.length || 0}</td>
     </tr>`).join('');
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-  await carregarBase();
+  const usuario = await buscarUsuarioAtual();
+  if (usuario.tipo !== 'Avaliador') {
+    toast('Apenas Avaliadores podem realizar avaliações.', 'danger');
+    setTimeout(() => { location.href = 'painel.html'; }, 800);
+    return;
+  }
+
+  await carregarBase(usuario);
 
   qs('#avaliacaoForm').addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!validarFormulario(event.currentTarget)) return;
 
-    const usuario = await buscarUsuarioAtual();
     const notas = qsa('.nota').map((input) => ({
       criterio_id: Number(input.dataset.criterioId),
       nota: Number(input.value),
@@ -53,7 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         notas,
       });
       toast('Avaliação salva.');
-      await carregarBase();
+      await carregarBase(usuario);
     } catch (error) {
       toast(error.message || 'Erro ao salvar avaliação.', 'danger');
     }

@@ -51,7 +51,7 @@ const iniciarFormularioProjeto = async () => {
     qs('#orientador').value = projeto.orientador;
     qs('#coorientador').value = projeto.coorientador || '';
     qs('#alunosContainer').innerHTML = '';
-    projeto.alunos.forEach((item) => adicionarAluno(item.aluno.nome, item.aluno.turma));
+    projeto.alunos.forEach((item) => adicionarAluno(item.aluno.nome, item.turma || item.aluno.turma));
   }
 
   qs('#btnAdicionarAluno').addEventListener('click', () => adicionarAluno());
@@ -116,7 +116,7 @@ const renderizarProjetos = (projetos) => {
           <table class="table table-sm mb-0">
             <thead><tr><th>Aluno</th><th>Turma</th></tr></thead>
             <tbody>${(projeto.alunos || []).map((item) => `
-              <tr><td>${escapeHtml(item.aluno.nome)}</td><td>${escapeHtml(item.aluno.turma || '-')}</td></tr>
+              <tr><td>${escapeHtml(item.aluno.nome)}</td><td>${escapeHtml(item.turma || item.aluno.turma || '-')}</td></tr>
             `).join('') || '<tr><td colspan="2">Nenhum aluno cadastrado.</td></tr>'}</tbody>
           </table>
         </div>
