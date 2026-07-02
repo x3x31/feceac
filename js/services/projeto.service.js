@@ -3,7 +3,7 @@ import { supabase } from '../supabase.js';
 const selectProjeto = `
   *,
   area:areas_conhecimento(id,nome),
-  alunos:projeto_alunos(aluno:alunos(id,nome))
+  alunos:projeto_alunos(turma, aluno:alunos(id,nome,turma))
 `;
 
 export const listarProjetos = async (filtros = {}) => {
@@ -39,16 +39,17 @@ export const salvarProjeto = async ({ alunos = [], ...projeto }) => {
   await supabase.from('projeto_alunos').delete().eq('projeto_id', projetoSalvo.id);
 
   for (const aluno of alunos.filter((item) => item.nome?.trim())) {
+    const turma = aluno.turma?.trim() || 'EMPM1A';
     const { data: alunoSalvo, error: alunoError } = await supabase
       .from('alunos')
-      .insert({ nome: aluno.nome.trim() })
+      .insert({ nome: aluno.nome.trim(), turma })
       .select()
       .single();
     if (alunoError) throw alunoError;
 
     const { error: relError } = await supabase
       .from('projeto_alunos')
-      .insert({ projeto_id: projetoSalvo.id, aluno_id: alunoSalvo.id });
+      .insert({ projeto_id: projetoSalvo.id, aluno_id: alunoSalvo.id, turma });
     if (relError) throw relError;
   }
 
@@ -67,4 +68,3 @@ export const contarProjetos = async () => {
   if (error) throw error;
   return count ?? 0;
 };
-
