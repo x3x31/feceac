@@ -17,10 +17,20 @@ const carregarBase = async (usuario) => {
 
   qs('#criterios').innerHTML = criterios.map((criterio) => `
     <div class="col-md-6">
-      <label class="form-label">${escapeHtml(criterio.descricao)} (${criterio.peso})</label>
-      <input type="number" min="5" max="10" step="1.0" required class="form-control nota"
-        data-criterio-id="${criterio.id}">
-    </div>`).join('');
+      <label class="form-label">
+        ${escapeHtml(criterio.descricao)} (${criterio.peso})
+      </label>
+      <select required class="form-select nota" data-criterio-id="${criterio.id}">
+        <option value="" selected disabled>Selecione uma nota</option>
+        <option value="5">5 - Fraco ou Ausente</option>
+        <option value="6">6 - Regular</option>
+        <option value="7">7 - Bom</option>
+        <option value="8">8 - Ótimo</option>
+        <option value="9">9 - Excelente</option>
+        <option value="10">10 - Supera as expectativas</option>
+      </select>
+    </div>
+  `).join('');
 
   qs('#avaliacoesTabela').innerHTML = avaliacoes.map((avaliacao) => `
     <tr>
