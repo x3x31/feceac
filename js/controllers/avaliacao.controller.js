@@ -18,7 +18,7 @@ const carregarBase = async (usuario) => {
   qs('#criterios').innerHTML = criterios.map((criterio) => `
     <div class="col-md-6">
       <label class="form-label">${escapeHtml(criterio.descricao)} (${criterio.peso})</label>
-      <input type="number" min="5" max="10" step="1" required class="form-control nota"
+      <input type="number" min="5" max="10" step="1.0" required class="form-control nota"
         data-criterio-id="${criterio.id}">
     </div>`).join('');
 
