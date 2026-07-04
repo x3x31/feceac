@@ -8,17 +8,15 @@ const menusPorPerfil = {
     ['projetos.html', 'Projetos'],
     ['usuarios.html', 'Usuários'],
     ['areas.html', 'Áreas'],
-    ['criterios.html', 'Critérios'],
-    ['cadastrar-projeto.html', 'cadastrar-projeto'],
+    ['criterios.html', 'Critérios'],    
     ['ranking.html', 'Ranking'],
   ],
   Professor: [
     ['painel.html', 'Painel'],
-    ['projetos.html', 'Projetos'],
-    ['cadastrar-projeto.html', 'cadastrar-projeto'],
+    ['projetos.html', 'Projetos'],    
   ],
   Aluno: [
-    ['cadastrar-projeto.html', 'cadastrar-projeto'],
+    ['cadastrar-projeto.html', 'Cadastrar Projeto'],
   ],
   Avaliador: [
     ['avaliacoes.html', 'Avaliações'],
@@ -35,7 +33,11 @@ const acessoPorPagina = {
   'editar-projeto.html': ['Administrador', 'Professor'],
 };
 
-const paginaInicial = (perfil) => (perfil === 'Avaliador' ? 'avaliacoes.html' : 'painel.html');
+const paginaInicial = (perfil) => {
+  if (perfil === 'Aluno') return 'cadastrar-projeto.html';
+  if (perfil === 'Avaliador') return 'avaliacoes.html';
+  return 'painel.html';
+};
 
 const aplicarMenu = (usuario, pagina) => {
   const itens = menusPorPerfil[usuario.tipo] || [];
