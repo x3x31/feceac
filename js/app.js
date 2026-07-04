@@ -31,8 +31,7 @@ const acessoPorPagina = {
   'usuarios.html': ['Administrador'],
   'areas.html': ['Administrador'],
   'criterios.html': ['Administrador'],
-  'cadastrar-projeto.html': ['Administrador'],
-  'cadastrar-projeto.html': ['Professor'],
+  'cadastrar-projeto.html': ['Administrador', 'Professor', 'Aluno'],
   'editar-projeto.html': ['Administrador', 'Professor'],
 };
 
