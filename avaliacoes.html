@@ -9,6 +9,27 @@
   <link rel="stylesheet" href="css/tabelas.css">
 </head>
 <body>
+  <div class="modal fade" id="modalObservacoes" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="tituloObservacoes"></h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal">
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div id="conteudoObservacoes"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+  
   <nav class="navbar bg-white border-bottom"><div class="container-fluid"><a class="navbar-brand text-success" href="painel.html">FECEAC</a><button id="btnLogout" class="btn btn-outline-danger btn-sm">Sair</button></div></nav>
   <main class="app-shell d-flex">
     <aside class="sidebar p-3"><nav class="nav flex-column"><a class="nav-link" href="painel.html">Painel</a><a class="nav-link" href="projetos.html">Projetos</a><a class="nav-link" href="usuarios.html">Usuários</a><a class="nav-link active" href="avaliacoes.html">Avaliações</a><a class="nav-link" href="areas.html">Áreas</a><a class="nav-link" href="criterios.html">Critérios</a></nav></aside>
