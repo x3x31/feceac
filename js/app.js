@@ -67,6 +67,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
+    if (pagina === 'painel.html' && usuario.tipo === 'Aluno') {
+      location.href = 'cadastrar-projeto.html';
+      return;
+    }
+
     const perfisPermitidos = acessoPorPagina[pagina];
     if (perfisPermitidos && !perfisPermitidos.includes(usuario.tipo)) {
       location.href = paginaInicial(usuario.tipo);
