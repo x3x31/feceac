@@ -26,7 +26,7 @@ const carregarBase = async (usuario) => {
           type="button"
           class="btn btn-sm btn-outline-info"
           onclick="mostrarObservacoes(${criterio.id}, '${escapeHtml(criterio.descricao)}')">
-          <i class="bi bi-info-circle"></i> Observações
+          <i class="bi bi-info-circle"></i> ❔
         </button>
       ` : ''}
     </label>
