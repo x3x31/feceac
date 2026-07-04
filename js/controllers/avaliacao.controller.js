@@ -16,10 +16,22 @@ const carregarBase = async (usuario) => {
     .join('');
 
   qs('#criterios').innerHTML = criterios.map((criterio) => `
-    <div class="col-md-6">
-      <label class="form-label">
-        ${escapeHtml(criterio.descricao)} (${criterio.peso})
+    <div class="col-md-6 mb-3">
+      <label class="form-label d-flex justify-content-between align-items-center">
+        <span>${escapeHtml(criterio.descricao)} (${criterio.peso})</span>
+  
+        ${criterio.observacoes ? `
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-info"
+            onclick="mostrarObservacoes('${escapeHtml(
+              criterio.descricao
+            )}', ${JSON.stringify(criterio.observacoes)})">
+            <i class="bi bi-info-circle"></i> Observações
+          </button>
+        ` : ''}
       </label>
+  
       <select required class="form-select nota" data-criterio-id="${criterio.id}">
         <option value="" selected disabled>Selecione uma nota</option>
         <option value="5">5 - Fraco ou Ausente</option>
