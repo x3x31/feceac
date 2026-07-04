@@ -53,40 +53,30 @@
   <script>
     document.addEventListener('DOMContentLoaded',()=>{const d=document.querySelector('#data'); if(d) d.valueAsDate=new Date();});
     
-    document.querySelectorAll('.btn-observacoes').forEach(botao => {
-      botao.addEventListener('click', function () {
-    
-        const titulo = this.dataset.titulo;
-        const texto = decodeURIComponent(this.dataset.observacoes);
-    
-        mostrarObservacoes(titulo, texto);
+    function mostrarObservacoes(id, titulo) {
+
+      document.getElementById("tituloObservacoes").textContent = titulo;
   
-      });
-    });
-
-    function mostrarObservacoes(titulo, texto) {
-
-      document.getElementById('tituloObservacoes').textContent = titulo;
-    
-      const conteudo = document.getElementById('conteudoObservacoes');
-      conteudo.innerHTML = '';
-    
-      const ul = document.createElement('ul');
-      ul.className = 'mb-0';
-    
+      const texto = document.getElementById(`obs-${id}`).value;
+  
+      const ul = document.createElement("ul");
+      ul.className = "mb-0";
+  
       texto
-        .split(/\r?\n/)
-        .filter(item => item.trim() !== '')
-        .forEach(item => {
-          const li = document.createElement('li');
-          li.textContent = item;
-          ul.appendChild(li);
-        });
-    
+          .split(/\r?\n/)
+          .filter(item => item.trim() !== "")
+          .forEach(item => {
+              const li = document.createElement("li");
+              li.textContent = item;
+              ul.appendChild(li);
+          });
+  
+      const conteudo = document.getElementById("conteudoObservacoes");
+      conteudo.innerHTML = "";
       conteudo.appendChild(ul);
-    
-      new bootstrap.Modal(document.getElementById('modalObservacoes')).show();
-    }
+  
+      new bootstrap.Modal(document.getElementById("modalObservacoes")).show();
+  };
   
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
