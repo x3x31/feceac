@@ -15,10 +15,10 @@ const menusPorPerfil = {
   Professor: [
     ['painel.html', 'Painel'],
     ['projetos.html', 'Projetos'],
+    ['cadastrar-projeto.html', 'cadastrar-projeto'],
   ],
   Aluno: [
-    ['painel.html', 'Painel'],
-    ['projetos.html', 'Projetos'],
+    ['cadastrar-projeto.html', 'cadastrar-projeto'],
   ],
   Avaliador: [
     ['avaliacoes.html', 'Avaliações'],
