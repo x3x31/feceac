@@ -9,6 +9,7 @@ const menusPorPerfil = {
     ['usuarios.html', 'Usuários'],
     ['areas.html', 'Áreas'],
     ['criterios.html', 'Critérios'],
+    ['cadastrar-projeto.html', 'cadastrar-projeto'],
     ['ranking.html', 'Ranking'],
   ],
   Professor: [
