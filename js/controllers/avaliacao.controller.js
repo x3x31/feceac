@@ -88,22 +88,3 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 });
 
-function mostrarObservacoes(titulo, texto) {
-
-  document.getElementById('tituloObservacoes').textContent = titulo;
-
-  const lista = texto
-    .split(/\r?\n/)
-    .filter(item => item.trim() !== '')
-    .map(item => `<li>${escapeHtml(item)}</li>`)
-    .join('');
-
-  document.getElementById('conteudoObservacoes').innerHTML = `
-    <ul class="mb-0">
-      ${lista}
-    </ul>
-  `;
-
-  new bootstrap.Modal(document.getElementById('modalObservacoes')).show();
-}
-
