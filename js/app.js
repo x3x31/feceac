@@ -47,11 +47,19 @@ const aplicarMenu = (usuario, pagina) => {
     )).join('');
   });
 
-  qsa('a[href]').forEach((link) => {
+   qsa('a[href]').forEach((link) => {
     const href = link.getAttribute('href');
+  
     if (!href || href.startsWith('http') || href === '#') return;
-    const permitido = itens.some(([itemHref]) => itemHref === href);
-    if (!permitido && acessoPorPagina[href]) link.closest('.col-md-3, .nav-item, li, a')?.classList.add('d-none');
+  
+    // Se a página não possui restrição, mantém visível.
+    if (!acessoPorPagina[href]) return;
+  
+    const perfisPermitidos = acessoPorPagina[href];
+  
+    if (!perfisPermitidos.includes(usuario.tipo)) {
+      link.classList.add('d-none');
+    }
   });
 };
 
