@@ -1,86 +1,364 @@
 <!doctype html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Avaliações | FECEAC</title>
+
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/tabelas.css">
 </head>
+
 <body>
-  <div class="modal fade" id="modalObservacoes" tabindex="-1">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable">
-    <div class="modal-content">
 
-      <div class="modal-header">
-        <h5 class="modal-title" id="tituloObservacoes"></h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal">
-        </button>
-      </div>
+  <nav class="navbar bg-white border-bottom">
+    <div class="container-fluid">
+      <a class="navbar-brand text-success" href="painel.html">
+        FECEAC
+      </a>
 
-      <div class="modal-body">
-        <div id="conteudoObservacoes"></div>
-      </div>
-
+      <button id="btnLogout" class="btn btn-outline-danger btn-sm">
+        Sair
+      </button>
     </div>
-  </div>
-</div>
-  
-  <nav class="navbar bg-white border-bottom"><div class="container-fluid"><a class="navbar-brand text-success" href="painel.html"><img src="assets/logos/feceac.jpeg" alt="Logo FECEAC" class="img-fluid" style="max-width: 120px;"></a><button id="btnLogout" class="btn btn-outline-danger btn-sm">Sair</button></div></nav>
-  <main class="app-shell d-flex">
-    <aside class="sidebar p-3"><nav class="nav flex-column"><a class="nav-link" href="painel.html">Painel</a><a class="nav-link" href="projetos.html">Projetos</a><a class="nav-link" href="usuarios.html">Usuários</a><a class="nav-link active" href="avaliacoes.html">Avaliações</a><a class="nav-link" href="areas.html">Áreas</a><a class="nav-link" href="criterios.html">Critérios</a></nav></aside>
-    <section class="content-area flex-grow-1">
-      <h1 class="page-title mb-3">Avaliações</h1>
-      <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-          <form id="avaliacaoForm" class="needs-validation" novalidate>
-            <div class="row g-3">
-              <div class="col-md-8"><label class="form-label required" for="projeto_id">Projeto</label><select id="projeto_id" class="form-select" required></select></div>
-              <div class="col-md-4"><label class="form-label required" for="data">Data</label><input id="data" type="date" class="form-control" required></div>
-              <div id="criterios" class="row g-3"></div>
-            </div>
-            <button class="btn btn-primary mt-3" type="submit">Salvar Avaliação</button>
-          </form>
-        </div>
-      </div>
-      <div class="table-responsive bg-white border rounded"><table class="table table-hover mb-0"><thead><tr><th>ID</th><th>Projeto</th><th>Data</th><th>Nota final</th><th>Critérios</th></tr></thead><tbody id="avaliacoesTabela"></tbody></table></div>
-    </section>
-  </main>
-  <script>
-    document.addEventListener('DOMContentLoaded',()=>{const d=document.querySelector('#data'); if(d) d.valueAsDate=new Date();});
-    
-    function mostrarObservacoes(id, titulo) {
+  </nav>
 
-      document.getElementById("tituloObservacoes").textContent = titulo;
-  
-      const texto = document.getElementById(`obs-${id}`).value;
-  
-      const ul = document.createElement("ul");
-      ul.className = "mb-0";
-  
-      texto
-          .split(/\r?\n/)
-          .filter(item => item.trim() !== "")
-          .forEach(item => {
-              const li = document.createElement("li");
-              li.textContent = item;
-              ul.appendChild(li);
-          });
-  
-      const conteudo = document.getElementById("conteudoObservacoes");
-      conteudo.innerHTML = "";
-      conteudo.appendChild(ul);
-  
-      new bootstrap.Modal(document.getElementById("modalObservacoes")).show();
-  };
-  
+
+  <main class="app-shell d-flex">
+
+    <aside class="sidebar p-3">
+
+      <nav class="nav flex-column">
+
+        <a class="nav-link" href="painel.html">
+          Painel
+        </a>
+
+        <a class="nav-link" href="projetos.html">
+          Projetos
+        </a>
+
+        <a class="nav-link" href="usuarios.html">
+          Usuários
+        </a>
+
+        <a class="nav-link active" href="avaliacoes.html">
+          Avaliações
+        </a>
+
+        <a class="nav-link" href="areas.html">
+          Áreas
+        </a>
+
+        <a class="nav-link" href="criterios.html">
+          Critérios
+        </a>
+
+      </nav>
+
+    </aside>
+
+
+    <section class="content-area flex-grow-1">
+
+      <h1 class="page-title mb-3">
+        Avaliações
+      </h1>
+
+
+      <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body">
+
+
+          <form id="avaliacaoForm" class="needs-validation" novalidate>
+
+
+            <div class="row g-3">
+
+
+              <div class="col-md-8">
+
+                <label 
+                  class="form-label required"
+                  for="projeto_id">
+
+                  Projeto
+
+                </label>
+
+
+                <select 
+                  id="projeto_id"
+                  class="form-select"
+                  required>
+
+                  <option value="">
+                    Selecione um projeto
+                  </option>
+
+                </select>
+
+
+              </div>
+
+
+
+              <div class="col-md-4">
+
+                <label 
+                  class="form-label required"
+                  for="data">
+
+                  Data
+
+                </label>
+
+
+                <input
+                  id="data"
+                  type="date"
+                  class="form-control"
+                  required>
+
+
+              </div>
+
+
+            </div>
+
+
+
+            <!-- Informações do projeto -->
+
+            <div 
+              id="infoProjeto"
+              class="alert alert-secondary mt-4 d-none">
+
+
+              <h6 class="mb-3">
+                Informações do Projeto
+              </h6>
+
+
+              <div class="row">
+
+
+                <div class="col-md-6 mb-2">
+
+                  <strong>
+                    Tipo:
+                  </strong>
+
+                  <span id="infoTipo">
+                    -
+                  </span>
+
+                </div>
+
+
+
+                <div class="col-md-6 mb-2">
+
+                  <strong>
+                    Área:
+                  </strong>
+
+                  <span id="infoArea">
+                    -
+                  </span>
+
+                </div>
+
+
+
+                <div class="col-md-6 mb-2">
+
+                  <strong>
+                    Orientador:
+                  </strong>
+
+                  <span id="infoOrientador">
+                    -
+                  </span>
+
+                </div>
+
+
+
+                <div class="col-md-6 mb-2">
+
+                  <strong>
+                    Coorientador:
+                  </strong>
+
+                  <span id="infoCoorientador">
+                    -
+                  </span>
+
+                </div>
+
+
+              </div>
+
+
+            </div>
+
+
+
+
+            <!-- Critérios -->
+
+            <div class="mt-4">
+
+
+              <h5>
+                Critérios de Avaliação
+              </h5>
+
+
+              <div
+                id="criteriosMensagem"
+                class="alert alert-info">
+
+                Selecione um projeto para carregar os critérios.
+
+              </div>
+
+
+
+              <div 
+                id="criterios"
+                class="row g-3">
+
+              </div>
+
+
+            </div>
+
+
+
+            <button
+              class="btn btn-primary mt-4"
+              type="submit">
+
+              Salvar Avaliação
+
+            </button>
+
+
+          </form>
+
+
+        </div>
+
+      </div>
+
+
+
+
+      <!-- Histórico -->
+
+      <div class="table-responsive bg-white border rounded">
+
+
+        <table class="table table-hover mb-0">
+
+
+          <thead>
+
+            <tr>
+
+              <th>
+                ID
+              </th>
+
+
+              <th>
+                Projeto
+              </th>
+
+
+              <th>
+                Tipo
+              </th>
+
+
+              <th>
+                Data
+              </th>
+
+
+              <th>
+                Nota final
+              </th>
+
+
+              <th>
+                Critérios
+              </th>
+
+
+            </tr>
+
+          </thead>
+
+
+
+          <tbody id="avaliacoesTabela">
+
+          </tbody>
+
+
+        </table>
+
+
+      </div>
+
+
+
+    </section>
+
+
+  </main>
+
+
+
+
+  <script>
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      () => {
+
+        const data =
+          document.querySelector('#data');
+
+
+        if (data) {
+
+          data.valueAsDate = new Date();
+
+        }
+
+      }
+
+    );
+
   </script>
+
+
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
   <script type="module" src="js/app.js"></script>
+
   <script type="module" src="js/controllers/avaliacao.controller.js"></script>
+
+
 </body>
+
 </html>
