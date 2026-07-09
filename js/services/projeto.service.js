@@ -11,7 +11,7 @@ const selectProjeto = `
 `;
 
 export const listarProjetos = async (filtros = {}) => {
-  let query = supabase.from('projetos').select(selectProjeto).order('created_at', { ascending: false });
+  let query = supabase.from('projetos').select(selectProjeto).order('titulo');
 
   if (filtros.nome) query = query.ilike('titulo', `%${filtros.nome}%`);
   if (filtros.area_id) query = query.eq('area_id', filtros.area_id);
