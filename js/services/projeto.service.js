@@ -3,7 +3,11 @@ import { supabase } from '../supabase.js';
 const selectProjeto = `
   *,
   area:areas_conhecimento(id,nome),
-  alunos:projeto_alunos(turma, aluno:alunos(id,nome,turma))
+  tipo:tipos_projeto(id,nome),
+  alunos:projeto_alunos(
+      turma,
+      aluno:alunos(id,nome,turma)
+  )
 `;
 
 export const listarProjetos = async (filtros = {}) => {
