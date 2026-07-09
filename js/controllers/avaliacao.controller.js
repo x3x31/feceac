@@ -330,7 +330,40 @@ const carregarBase = async (usuario) => {
 };
 
 
+const mostrarObservacoes = (criterioId, descricao) => {
 
+  const textarea = document.querySelector(
+    `#obs-${criterioId}`
+  );
+
+  if (!textarea) {
+    return;
+  }
+
+
+  const observacoes = textarea.value;
+
+
+  if (!observacoes.trim()) {
+
+    toast(
+      'Não existem observações para este critério.',
+      'info'
+    );
+
+    return;
+
+  }
+
+
+  alert(
+    `${descricao}\n\n${observacoes}`
+  );
+
+};
+
+
+window.mostrarObservacoes = mostrarObservacoes;
 
 document.addEventListener(
   'DOMContentLoaded',
