@@ -49,7 +49,6 @@ const renderizarProjetos = (projetos) => {
 
 const renderizarCriterios = (criterios) => {
 
-
   const container = qs('#criterios');
 
   const mensagem = qs('#criteriosMensagem');
@@ -65,7 +64,6 @@ const renderizarCriterios = (criterios) => {
     mensagem.textContent =
       'Não existem critérios cadastrados para este tipo de projeto.';
 
-
     container.innerHTML = '';
 
     return;
@@ -73,57 +71,97 @@ const renderizarCriterios = (criterios) => {
   }
 
 
-
   mensagem.classList.add('d-none');
-
 
 
   container.innerHTML = criterios.map((criterio) => `
 
-    <div class="col-md-6">
-
-      <div class="card border shadow-sm h-100">
-
-        <div class="card-body">
+    <div class="col-md-6 mb-3">
 
 
-          <label class="form-label">
+      <label class="form-label d-flex justify-content-between align-items-center">
 
-            ${escapeHtml(criterio.descricao)}
-
-            <small class="text-muted">
-
-              (Peso: ${Number(criterio.peso).toFixed(2)})
-
-            </small>
-
-          </label>
+        <span>
+          ${escapeHtml(criterio.descricao)}
+          (${Number(criterio.peso).toFixed(2)})
+        </span>
 
 
-          <input
+        ${
+          criterio.observacoes
+            ? `
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-info"
+                onclick="mostrarObservacoes(${criterio.id}, '${escapeHtml(criterio.descricao)}')">
 
-            type="number"
+                <i class="bi bi-info-circle"></i> ❔
 
-            min="0"
-
-            max="10"
-
-            step="0.1"
-
-            required
-
-            class="form-control nota"
-
-            data-criterio-id="${criterio.id}"
-
-            placeholder="Digite a nota (0 a 10)"
-
-          >
+              </button>
+            `
+            : ''
+        }
 
 
-        </div>
+      </label>
 
-      </div>
+
+
+      ${
+        criterio.observacoes
+          ? `
+            <textarea
+              id="obs-${criterio.id}"
+              hidden>${criterio.observacoes}</textarea>
+          `
+          : ''
+      }
+
+
+
+      <select
+        required
+        class="form-select nota"
+        data-criterio-id="${criterio.id}">
+
+
+        <option value="" selected disabled>
+          Selecione uma nota
+        </option>
+
+
+        <option value="5">
+          5 - Fraco ou Ausente
+        </option>
+
+
+        <option value="6">
+          6 - Regular
+        </option>
+
+
+        <option value="7">
+          7 - Bom
+        </option>
+
+
+        <option value="8">
+          8 - Ótimo
+        </option>
+
+
+        <option value="9">
+          9 - Excelente
+        </option>
+
+
+        <option value="10">
+          10 - Supera as expectativas
+        </option>
+
+
+      </select>
+
 
     </div>
 
@@ -217,13 +255,11 @@ const mostrarInformacoesProjeto = async (projeto) => {
 
 const renderizarAvaliacoes = (avaliacoes) => {
 
-
   qs('#avaliacoesTabela').innerHTML =
 
     avaliacoes.map((avaliacao) => `
 
       <tr>
-
 
         <td>
           ${avaliacao.id}
@@ -231,20 +267,9 @@ const renderizarAvaliacoes = (avaliacoes) => {
 
 
         <td>
-
           ${escapeHtml(
             avaliacao.projeto?.titulo || '-'
           )}
-
-        </td>
-
-
-        <td>
-
-          ${escapeHtml(
-            avaliacao.projeto?.tipo?.nome || '-'
-          )}
-
         </td>
 
 
@@ -254,23 +279,18 @@ const renderizarAvaliacoes = (avaliacoes) => {
 
 
         <td>
-
           ${Number(
             avaliacao.nota_final ?? 0
           ).toFixed(2)}
-
         </td>
 
 
         <td>
-
           ${avaliacao.notas?.length || 0}
-
         </td>
 
 
       </tr>
-
 
     `).join('');
 
