@@ -332,33 +332,84 @@ const carregarBase = async (usuario) => {
 
 const mostrarObservacoes = (criterioId, descricao) => {
 
-  const textarea = document.querySelector(
-    `#obs-${criterioId}`
-  );
+  const textarea = document.querySelector(`#obs-${criterioId}`);
 
   if (!textarea) {
     return;
   }
 
+  const observacoes = textarea.value?.trim();
 
-  const observacoes = textarea.value;
-
-
-  if (!observacoes.trim()) {
-
+  if (!observacoes) {
     toast(
       'Não existem observações para este critério.',
       'info'
     );
-
     return;
+  }
+
+  let modal = document.getElementById('modalObservacoes');
+
+  if (!modal) {
+
+    document.body.insertAdjacentHTML('beforeend', `
+      <div class="modal fade" id="modalObservacoes" tabindex="-1" aria-hidden="true">
+
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+
+          <div class="modal-content">
+
+            <div class="modal-header bg-primary text-white">
+
+              <h5 class="modal-title" id="modalObservacoesTitulo"></h5>
+
+              <button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="modal"
+                aria-label="Fechar">
+              </button>
+
+            </div>
+
+            <div class="modal-body">
+
+              <div
+                id="modalObservacoesTexto"
+                style="white-space: pre-wrap;">
+              </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal">
+
+                Fechar
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    `);
+
+    modal = document.getElementById('modalObservacoes');
 
   }
 
+  document.getElementById('modalObservacoesTitulo').textContent = descricao;
 
-  alert(
-    `${descricao}\n\n${observacoes}`
-  );
+  document.getElementById('modalObservacoesTexto').textContent = observacoes;
+
+  bootstrap.Modal.getOrCreateInstance(modal).show();
 
 };
 
