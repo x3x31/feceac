@@ -2,8 +2,14 @@ import { supabase } from '../supabase.js';
 
 const selectProjeto = `
   *,
-  area:areas_conhecimento(id,nome),
-  tipo:tipos_projeto(id,nome),
+  area:areas_conhecimento!projetos_area_id_fkey(
+      id,
+      nome
+  ),
+  tipo:tipos_projeto!projetos_tipo_projeto_id_fkey(
+      id,
+      nome
+  ),
   alunos:projeto_alunos(
       turma,
       aluno:alunos(id,nome,turma)
