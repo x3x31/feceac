@@ -318,6 +318,8 @@ const carregarBase = async (usuario) => {
 
   projetosDisponiveis = projetos;
 
+  console.log(projetosDisponiveis);
+
 
   renderizarProjetos(projetos);
 
