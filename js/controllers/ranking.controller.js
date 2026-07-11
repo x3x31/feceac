@@ -58,9 +58,33 @@ const renderizarDetalhe = (projeto) => {
 };
 
 const renderizar = (projetos) => {
-  const ordenados = projetos
-    .map((projeto) => ({ ...projeto, nota: notaProjeto(projeto) }))
-    .sort((a, b) => (b.nota ?? -1) - (a.nota ?? -1));
+ const ordenados = projetos
+  .map((projeto) => ({
+    ...projeto,
+    nota: notaProjeto(projeto)
+  }))
+  .sort((a, b) => {
+
+    // 1º Tipo do projeto
+    const tipo = (a.tipo?.nome || '').localeCompare(
+      b.tipo?.nome || '',
+      'pt-BR'
+    );
+
+    if (tipo !== 0) return tipo;
+
+    // 2º Área do conhecimento
+    const area = (a.area?.nome || '').localeCompare(
+      b.area?.nome || '',
+      'pt-BR'
+    );
+
+    if (area !== 0) return area;
+
+    // 3º Nota (maior primeiro)
+    return (b.nota ?? -1) - (a.nota ?? -1);
+
+  });
 
   qs('#rankingTabela').innerHTML = ordenados.map((projeto, index) => `
     <tr>
