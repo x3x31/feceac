@@ -278,17 +278,15 @@ const renderizarAvaliacoes = (avaliacoes) => {
         </td>
 
          <td>
-          ${avaliacao.data}
+           ${avaliacao.data
+              ? avaliacao.data.split('-').reverse().join('/')
+              : '-'}
         </td>
 
         <td>
           ${Number(
             avaliacao.nota_final ?? 0
           ).toFixed(2)}
-        </td>
-
-        <td>
-          ${avaliacao.notas?.length || 0}
         </td>
 
       </tr>
