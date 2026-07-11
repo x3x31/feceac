@@ -272,7 +272,7 @@ const renderizarAvaliacoes = (avaliacoes) => {
         </td>
 
         <td>
-          ${projeto.tipo?.nome}
+          ${escapeHtml(projeto.tipo?.nome)}
         </td>
 
          <td>
