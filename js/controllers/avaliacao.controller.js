@@ -37,7 +37,7 @@ const renderizarProjetos = (projetos) => {
 
       return `
         <option value="${projeto.id}">
-          ${escapeHtml(projeto.titulo)}${escapeHtml(tipo)}
+          ${escapeHtml(projeto.titulo)}
         </option>
       `;
 
@@ -265,18 +265,19 @@ const renderizarAvaliacoes = (avaliacoes) => {
           ${avaliacao.id}
         </td>
 
-
         <td>
           ${escapeHtml(
             avaliacao.projeto?.titulo || '-'
           )}
         </td>
 
-
         <td>
-          ${avaliacao.data}
+          ${escapeHtml(tipo)}
         </td>
 
+         <td>
+          ${avaliacao.data}
+        </td>
 
         <td>
           ${Number(
@@ -284,11 +285,9 @@ const renderizarAvaliacoes = (avaliacoes) => {
           ).toFixed(2)}
         </td>
 
-
         <td>
           ${avaliacao.notas?.length || 0}
         </td>
-
 
       </tr>
 
