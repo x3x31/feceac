@@ -111,6 +111,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   renderizar(await listarRanking());
 
+  $('#rankingDataTable').DataTable({
+    language: {
+      url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/pt-BR.json'
+    },
+    order: [
+      [7, 'desc']
+    ],
+    columnDefs: [
+      {
+        orderable: false,
+        targets: 0
+      }
+    ]
+  });
+
   qs('#rankingTabela').addEventListener('click', (event) => {
     if (!event.target.matches('.btn-expandir')) return;
     const detalhe = qs(`.ranking-detalhe[data-projeto-id="${event.target.dataset.id}"]`);
