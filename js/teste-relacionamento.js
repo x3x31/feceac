@@ -6,16 +6,13 @@ import { supabase } from './supabase.js';
     .from('projetos')
     .select(`
       *,
-      tipo:tipos_projeto(
+      tipo:tipos_projeto!projetos_tipo_projeto_id_fkey(
         id,
         nome
       )
     `);
 
-  console.log('ERRO');
   console.log(error);
-
-  console.log('DADOS');
   console.log(data);
 
 })();
