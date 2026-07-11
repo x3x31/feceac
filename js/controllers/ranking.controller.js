@@ -91,10 +91,10 @@ const renderizar = (projetos) => {
       <td><button class="btn btn-sm btn-outline-secondary btn-expandir" data-id="${projeto.id}" type="button">+</button></td>
       <td>${index + 1}</td>
       <td>${escapeHtml(projeto.titulo)}</td>
-      <td>${escapeHtml(projeto.area?.nome || '-')}</td>
-      <td>${escapeHtml(projeto.tipo?.nome || '-')}</td>
       <td>${escapeHtml(projeto.orientador)}</td>
       <td>${escapeHtml(projeto.coorientador || '-')}</td>
+      <td>${escapeHtml(projeto.tipo?.nome || '-')}</td>
+      <td>${escapeHtml(projeto.area?.nome || '-')}</td>
       <td>${projeto.nota?.toFixed(2) || '-'}</td>
     </tr>
     ${renderizarDetalhe(projeto)}
