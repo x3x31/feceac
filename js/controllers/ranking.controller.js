@@ -42,7 +42,7 @@ const renderizarDetalhe = (projeto) => {
   return `
     <tr class="d-none ranking-detalhe" data-projeto-id="${projeto.id}">
       <td></td>
-      <td colspan="6">
+      <td colspan="7">
         <div class="row g-3">
           <div class="col-lg-5">
             <h2 class="h6">Alunos</h2>
@@ -68,6 +68,7 @@ const renderizar = (projetos) => {
       <td>${index + 1}</td>
       <td>${escapeHtml(projeto.titulo)}</td>
       <td>${escapeHtml(projeto.area?.nome || '-')}</td>
+      <td>${escapeHtml(projeto.tipo?.nome || '-')}</td>
       <td>${escapeHtml(projeto.orientador)}</td>
       <td>${escapeHtml(projeto.coorientador || '-')}</td>
       <td>${projeto.nota?.toFixed(2) || '-'}</td>
