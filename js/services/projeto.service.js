@@ -3,38 +3,38 @@ import { supabase } from '../supabase.js';
 const selectProjeto = `
   *,
   area:areas_conhecimento!projetos_area_id_fkey(
-      id,
-      nome
+    id,
+    nome
   ),
   tipo:tipos_projeto!projetos_tipo_projeto_id_fkey(
-      id,
-      nome
+    id,
+    nome
   ),
   alunos:projeto_alunos(
-      turma,
-      aluno:alunos(
-          id,
-          nome,
-          turma
-      )
+    turma,
+    aluno:alunos(
+      id,
+      nome,
+      turma
+    )
   ),
   avaliacoes(
+    id,
+    data,
+    nota_final,
+    avaliador_id,
+    usuario:usuarios(
       id,
-      data,
-      nota_final,
-      avaliador_id,
-      usuario:usuarios(
-          id,
-          nome
-      ),
-      notas(
-          nota,
-          criterio:criterios(
-              id,
-              descricao,
-              peso
-          )
+      nome
+    ),
+    notas(
+      nota,
+      criterio:criterios(
+        id,
+        descricao,
+        peso
       )
+    )
   )
 `;
 
