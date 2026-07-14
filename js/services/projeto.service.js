@@ -12,7 +12,25 @@ const selectProjeto = `
   ),
   alunos:projeto_alunos(
       turma,
-      aluno:alunos(id,nome,turma)
+      aluno:alunos(
+          id,
+          nome,
+          turma
+      )
+  ),
+  avaliacoes(
+      id,
+      avaliador_id,
+      data,
+      nota_final,
+      notas:notas_avaliacao(
+          nota,
+          criterio:criterios_avaliacao(
+              id,
+              descricao,
+              peso
+          )
+      )
   )
 `;
 
