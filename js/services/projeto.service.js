@@ -20,12 +20,16 @@ const selectProjeto = `
   ),
   avaliacoes(
       id,
-      avaliador_id,
       data,
       nota_final,
-      notas:notas_avaliacao(
+      avaliador_id,
+      usuario:usuarios(
+          id,
+          nome
+      ),
+      notas(
           nota,
-          criterio:criterios_avaliacao(
+          criterio:criterios(
               id,
               descricao,
               peso
