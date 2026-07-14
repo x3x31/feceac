@@ -3,6 +3,8 @@ import { listarRanking } from '../services/avaliacao.service.js';
 import { escapeHtml, qs } from '../util.js';
 import { toast } from '../ui.js';
 
+let rankingProjetos = [];
+
 const notaAvaliacao = (avaliacao) => {
   if (avaliacao.nota_final !== null && avaliacao.nota_final !== undefined) {
     return Number(avaliacao.nota_final);
@@ -27,9 +29,19 @@ const notaProjeto = (projeto) => {
 };
 
 const renderizarDetalhe = (projeto) => {
+
   const alunos = (projeto.alunos || []).map((item) => `
-    <tr><td>${escapeHtml(item.aluno.nome)}</td><td>${escapeHtml(item.turma || item.aluno.turma || '-')}</td></tr>
-  `).join('') || '<tr><td colspan="2">Nenhum aluno cadastrado.</td></tr>';
+    <tr>
+      <td>${escapeHtml(item.aluno.nome)}</td>
+      <td>${escapeHtml(item.turma || item.aluno.turma || '-')}</td>
+    </tr>
+  `).join('') || `
+    <tr>
+      <td colspan="2">
+        Nenhum aluno cadastrado.
+      </td>
+    </tr>
+  `;
 
   const avaliacoes = (projeto.avaliacoes || []).map((avaliacao) => `
     <tr>
@@ -37,99 +49,233 @@ const renderizarDetalhe = (projeto) => {
       <td>${escapeHtml(avaliacao.data)}</td>
       <td>${notaAvaliacao(avaliacao)?.toFixed(2) || '-'}</td>
     </tr>
-  `).join('') || '<tr><td colspan="3">Nenhuma avaliação registrada.</td></tr>';
+  `).join('') || `
+    <tr>
+      <td colspan="3">
+        Nenhuma avaliação registrada.
+      </td>
+    </tr>
+  `;
 
   return `
-    <tr class="d-none ranking-detalhe" data-projeto-id="${projeto.id}">
-      <td></td>
-      <td colspan="7">
-        <div class="row g-3">
-          <div class="col-lg-5">
-            <h2 class="h6">Alunos</h2>
-            <table class="table table-sm mb-0"><thead><tr><th>Aluno</th><th>Turma</th></tr></thead><tbody>${alunos}</tbody></table>
-          </div>
-          <div class="col-lg-7">
-            <h2 class="h6">Avaliações</h2>
-            <table class="table table-sm mb-0"><thead><tr><th>Código do avaliador</th><th>Data</th><th>Nota</th></tr></thead><tbody>${avaliacoes}</tbody></table>
-          </div>
-        </div>
-      </td>
-    </tr>`;
+
+    <div class="row g-3">
+
+      <div class="col-lg-5">
+
+        <h2 class="h6">
+          Alunos
+        </h2>
+
+        <table class="table table-sm mb-0">
+
+          <thead>
+
+            <tr>
+
+              <th>Aluno</th>
+
+              <th>Turma</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            ${alunos}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+      <div class="col-lg-7">
+
+        <h2 class="h6">
+          Avaliações
+        </h2>
+
+        <table class="table table-sm mb-0">
+
+          <thead>
+
+            <tr>
+
+              <th>Código do avaliador</th>
+
+              <th>Data</th>
+
+              <th>Nota</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            ${avaliacoes}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  `;
+
 };
 
 const renderizar = (projetos) => {
- const ordenados = projetos
-  .map((projeto) => ({
-    ...projeto,
-    nota: notaProjeto(projeto)
-  }))
-  .sort((a, b) => {
 
-    // 1º Tipo do projeto
-    const tipo = (a.tipo?.nome || '').localeCompare(
-      b.tipo?.nome || '',
-      'pt-BR'
-    );
+  const ordenados = projetos
+    .map((projeto) => ({
+      ...projeto,
+      nota: notaProjeto(projeto)
+    }))
+    .sort((a, b) => {
 
-    if (tipo !== 0) return tipo;
+      const tipo = (a.tipo?.nome || '').localeCompare(
+        b.tipo?.nome || '',
+        'pt-BR'
+      );
 
-    // 2º Área do conhecimento
-    const area = (a.area?.nome || '').localeCompare(
-      b.area?.nome || '',
-      'pt-BR'
-    );
+      if (tipo !== 0) return tipo;
 
-    if (area !== 0) return area;
+      const area = (a.area?.nome || '').localeCompare(
+        b.area?.nome || '',
+        'pt-BR'
+      );
 
-    // 3º Nota (maior primeiro)
-    return (b.nota ?? -1) - (a.nota ?? -1);
+      if (area !== 0) return area;
 
-  });
+      return (b.nota ?? -1) - (a.nota ?? -1);
+
+    });
+
+  // Guarda os projetos já ordenados para uso na expansão
+  rankingProjetos = ordenados;
 
   qs('#rankingTabela').innerHTML = ordenados.map((projeto, index) => `
-    <tr>
-      <td><button class="btn btn-sm btn-outline-secondary btn-expandir" data-id="${projeto.id}" type="button">+</button></td>
+
+    <tr data-projeto-id="${projeto.id}">
+
+      <td>
+
+        <button
+          class="btn btn-sm btn-outline-secondary btn-expandir"
+          data-id="${projeto.id}"
+          type="button">
+
+          +
+
+        </button>
+
+      </td>
+
       <td>${index + 1}</td>
+
       <td>${escapeHtml(projeto.titulo)}</td>
+
       <td>${escapeHtml(projeto.orientador)}</td>
+
       <td>${escapeHtml(projeto.coorientador || '-')}</td>
+
       <td>${escapeHtml(projeto.tipo?.nome || '-')}</td>
+
       <td>${escapeHtml(projeto.area?.nome || '-')}</td>
+
       <td>${projeto.nota?.toFixed(2) || '-'}</td>
+
     </tr>
-    ${renderizarDetalhe(projeto)}
+
   `).join('');
+
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
+
   const usuario = await buscarUsuarioAtual();
+
   if (usuario.tipo !== 'Administrador') {
-    toast('Apenas Administradores podem acessar o ranking.', 'danger');
-    setTimeout(() => { location.href = 'painel.html'; }, 800);
+
+    toast(
+      'Apenas Administradores podem acessar o ranking.',
+      'danger'
+    );
+
+    setTimeout(() => {
+      location.href = 'painel.html';
+    }, 800);
+
     return;
+
   }
 
   renderizar(await listarRanking());
 
-  $('#rankingDataTable').DataTable({
+  const tabela = $('#rankingDataTable').DataTable({
+
     language: {
       url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/pt-BR.json'
     },
+
     order: [
       [7, 'desc']
     ],
+
     columnDefs: [
       {
-        orderable: false,
-        targets: 0
+        targets: 0,
+        orderable: false
       }
     ]
+
   });
 
-  qs('#rankingTabela').addEventListener('click', (event) => {
-    if (!event.target.matches('.btn-expandir')) return;
-    const detalhe = qs(`.ranking-detalhe[data-projeto-id="${event.target.dataset.id}"]`);
-    detalhe.classList.toggle('d-none');
-    event.target.textContent = detalhe.classList.contains('d-none') ? '+' : '-';
-  });
+
+  $('#rankingTabela').on(
+    'click',
+    '.btn-expandir',
+    function () {
+
+      const tr = $(this).closest('tr');
+
+      const row = tabela.row(tr);
+
+      const projetoId =
+        Number(this.dataset.id);
+
+      const projeto =
+        rankingProjetos.find(
+          p => p.id === projetoId
+        );
+
+      if (!projeto) {
+        return;
+      }
+
+      if (row.child.isShown()) {
+
+        row.child.hide();
+
+        this.textContent = '+';
+
+      } else {
+
+        row.child(
+          renderizarDetalhe(projeto)
+        ).show();
+
+        this.textContent = '-';
+
+      }
+
+    }
+
+  );
+
 });
