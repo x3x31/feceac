@@ -109,19 +109,127 @@ const renderizarProjetos = (projetos) => {
         <button class="btn btn-sm btn-outline-danger btn-excluir" data-id="${projeto.id}">Excluir</button>
       </td>
     </tr>
-    <tr class="d-none alunos-detalhe" data-projeto-id="${projeto.id}">
-      <td></td>
-      <td colspan="7">
+   <tr class="d-none alunos-detalhe" data-projeto-id="${projeto.id}">
+  <td></td>
+  <td colspan="7">
+
+    <div class="row">
+
+      <div class="col-md-4">
+
+        <h6>Alunos</h6>
+
         <div class="table-responsive">
-          <table class="table table-sm mb-0">
-            <thead><tr><th>Aluno</th><th>Turma</th></tr></thead>
-            <tbody>${(projeto.alunos || []).map((item) => `
-              <tr><td>${escapeHtml(item.aluno.nome)}</td><td>${escapeHtml(item.turma || item.aluno.turma || '-')}</td></tr>
-            `).join('') || '<tr><td colspan="2">Nenhum aluno cadastrado.</td></tr>'}</tbody>
+          <table class="table table-sm table-bordered mb-0">
+            <thead>
+              <tr>
+                <th>Aluno</th>
+                <th>Turma</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              ${(projeto.alunos || []).map((item) => `
+                <tr>
+                  <td>${escapeHtml(item.aluno.nome)}</td>
+                  <td>${escapeHtml(item.turma || item.aluno.turma || '-')}</td>
+                </tr>
+              `).join('') || `
+                <tr>
+                  <td colspan="2">
+                    Nenhum aluno cadastrado.
+                  </td>
+                </tr>
+              `}
+
+            </tbody>
+
           </table>
         </div>
-      </td>
-    </tr>`).join('');
+
+      </div>
+
+      <div class="col-md-8">
+
+        <h6>Avaliações</h6>
+
+        <div class="table-responsive">
+
+          <table class="table table-sm table-bordered mb-0">
+
+            <thead>
+
+              <tr>
+                <th>Avaliador</th>
+                <th>Critério</th>
+                <th>Peso</th>
+                <th>Nota</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+            ${
+
+              (projeto.avaliacoes || []).length
+
+              ? projeto.avaliacoes.map((avaliacao) =>
+
+                  (avaliacao.notas || []).map((nota) => `
+
+                    <tr>
+
+                      <td>
+                        ${escapeHtml(avaliacao.avaliador_id)}
+                      </td>
+
+                      <td>
+                        ${escapeHtml(nota.criterio?.descricao || '-')}
+                      </td>
+
+                      <td>
+                        ${Number(nota.criterio?.peso || 0).toFixed(2)}
+                      </td>
+
+                      <td>
+                        ${nota.nota}
+                      </td>
+
+                    </tr>
+
+                  `).join('')
+
+                ).join('')
+
+              : `
+
+                <tr>
+
+                  <td colspan="4">
+                    Nenhuma avaliação registrada.
+                  </td>
+
+                </tr>
+
+              `
+
+            }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </td>
+</tr>
+    `).join('');
 };
 
 const carregarProjetos = async () => {
