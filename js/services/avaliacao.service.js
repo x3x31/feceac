@@ -214,8 +214,15 @@ export const listarRanking = async () => {
       id,
       ano,
       titulo,
-      orientador,
-      coorientador,
+
+      orientador:professores!projetos_orientador_id_fkey(
+        id,
+        nome
+      ),
+      coorientador:professores!projetos_coorientador_id_fkey(
+        id,
+        nome
+      ),
 
       tipo:tipos_projeto(
         id,

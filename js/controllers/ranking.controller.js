@@ -85,8 +85,8 @@ const renderizar = (projetos) => {
       <td><button class="btn btn-sm btn-outline-secondary btn-expandir" data-id="${projeto.id}" type="button">+</button></td>
       <td>${index + 1}</td>
       <td>${escapeHtml(projeto.titulo)}</td>
-      <td>${escapeHtml(projeto.orientador)}</td>
-      <td>${escapeHtml(projeto.coorientador || '-')}</td>
+      <td>${escapeHtml(projeto.orientador?.nome || '-')}</td>
+      <td>${escapeHtml(projeto.coorientador?.nome || '-')}</td>
       <td>${escapeHtml(projeto.tipo?.nome || '-')}</td>
       <td>${escapeHtml(projeto.area?.nome || '-')}</td>
       <td>${projeto.nota?.toFixed(2) || '-'}</td>
@@ -437,7 +437,7 @@ const gerarRelatorioPDF = () => {
     y += 5 + linhasExtras * 4;
     doc.setFontSize(8);
     doc.setTextColor(...corTexto);
-    doc.text(`Orientador: ${projeto.orientador}${projeto.coorientador ? ' | Coorientador: ' + projeto.coorientador : ''}`, margin + 10, y);
+    doc.text(`Orientador: ${projeto.orientador?.nome || '-'}${projeto.coorientador?.nome ? ' | Coorientador: ' + projeto.coorientador.nome : ''}`, margin + 10, y);
     y += 4;
     doc.text(`Tipo: ${projeto.tipo?.nome || '-'} | Area: ${projeto.area?.nome || '-'}`, margin + 10, y);
     y += 5;

@@ -217,11 +217,11 @@ const mostrarInformacoesProjeto = async (projeto) => {
 
 
   qs('#infoOrientador').textContent =
-    projeto.orientador || '-';
+    projeto.orientador?.nome || '-';
 
 
   qs('#infoCoorientador').textContent =
-    projeto.coorientador || '-';
+    projeto.coorientador?.nome || '-';
 
 
 

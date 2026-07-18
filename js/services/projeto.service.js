@@ -10,6 +10,14 @@ const selectProjeto = `
     id,
     nome
   ),
+  orientador:professores!projetos_orientador_id_fkey(
+    id,
+    nome
+  ),
+  coorientador:professores!projetos_coorientador_id_fkey(
+    id,
+    nome
+  ),
   alunos:projeto_alunos(
     turma,
     aluno:alunos(
@@ -72,16 +80,36 @@ export const salvarProjeto = async ({ alunos = [], ...projeto }) => {
 
   for (const aluno of alunos.filter((item) => item.nome?.trim())) {
     const turma = aluno.turma?.trim() || 'EMPM1A';
-    const { data: alunoSalvo, error: alunoError } = await supabase
-      .from('alunos')
-      .insert({ nome: aluno.nome.trim(), turma })
-      .select()
-      .single();
-    if (alunoError) throw alunoError;
+
+    let alunoId = aluno.id || null;
+
+    if (!alunoId && aluno.matricula) {
+      const { data: existente } = await supabase
+        .from('alunos')
+        .select('id')
+        .eq('matricula', aluno.matricula)
+        .single();
+      if (existente) alunoId = existente.id;
+    }
+
+    if (!alunoId) {
+      const { data: alunoSalvo, error: alunoError } = await supabase
+        .from('alunos')
+        .insert({
+          nome: aluno.nome.trim(),
+          turma,
+          matricula: aluno.matricula || null,
+          turno: aluno.turno || null
+        })
+        .select()
+        .single();
+      if (alunoError) throw alunoError;
+      alunoId = alunoSalvo.id;
+    }
 
     const { error: relError } = await supabase
       .from('projeto_alunos')
-      .insert({ projeto_id: projetoSalvo.id, aluno_id: alunoSalvo.id, turma });
+      .insert({ projeto_id: projetoSalvo.id, aluno_id: alunoId, turma });
     if (relError) throw relError;
   }
 

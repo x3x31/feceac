@@ -16,6 +16,17 @@ const opcoesTurma = (valor = '') => TURMAS
   .map((turma) => `<option value="${turma}" ${turma === valor ? 'selected' : ''}>${turma}</option>`)
   .join('');
 
+const carregarSelectProfessores = async (select, valor = '') => {
+  const { data, error } = await supabase
+    .from('professores')
+    .select('*')
+    .order('nome');
+  if (error) throw error;
+  select.innerHTML = '<option value="">Selecione</option>' + data
+    .map((p) => `<option value="${p.id}" ${p.id == valor ? 'selected' : ''}>${escapeHtml(p.nome)}</option>`)
+    .join('');
+};
+
 const carregarSelectAreas = async (select, valor = '') => {
   const areas = await listarAreas();
   select.innerHTML = '<option value="">Selecione</option>' + areas
@@ -182,6 +193,8 @@ const iniciarFormularioProjeto = async () => {
   await Promise.all([
     carregarSelectAreas(qs('#area_id')),
     carregarSelectTipos(qs('#tipo_projeto_id')),
+    carregarSelectProfessores(qs('#orientador_id')),
+    carregarSelectProfessores(qs('#coorientador_id')),
   ]);
   adicionarAluno();
   iniciarModalAlunos();
@@ -194,8 +207,8 @@ const iniciarFormularioProjeto = async () => {
     qs('#titulo').value = projeto.titulo;
     qs('#tipo_projeto_id').value = projeto.tipo_projeto_id || '';
     qs('#area_id').value = projeto.area_id;
-    qs('#orientador').value = projeto.orientador;
-    qs('#coorientador').value = projeto.coorientador || '';
+    qs('#orientador_id').value = projeto.orientador_id || '';
+    qs('#coorientador_id').value = projeto.coorientador_id || '';
     qs('#alunosContainer').innerHTML = '';
     projeto.alunos.forEach((item) => adicionarAluno(item.aluno.nome, item.turma || item.aluno.turma));
   }
@@ -217,8 +230,8 @@ const iniciarFormularioProjeto = async () => {
       titulo: qs('#titulo').value.trim(),
       tipo_projeto_id: Number(qs('#tipo_projeto_id').value) || null,
       area_id: Number(qs('#area_id').value),
-      orientador: qs('#orientador').value.trim(),
-      coorientador: qs('#coorientador').value.trim() || null,
+      orientador_id: Number(qs('#orientador_id').value),
+      coorientador_id: Number(qs('#coorientador_id').value) || null,
       alunos: qsa('.aluno-item').map((item) => ({
         nome: qs('.aluno-nome', item).value.trim(),
         turma: qs('.aluno-turma', item).value,
@@ -249,7 +262,7 @@ const renderizarProjetos = (projetos) => {
       <td>${projeto.ano}</td>
       <td>${escapeHtml(projeto.titulo)}</td>
       <td>${escapeHtml(projeto.area?.nome || '-')}</td>
-      <td>${escapeHtml(projeto.orientador)}</td>
+      <td>${escapeHtml(projeto.orientador?.nome || '-')}</td>
       <td>${projeto.alunos?.length || 0}</td>
       <td class="table-actions">
         <a class="btn btn-sm btn-outline-primary" href="editar-projeto.html?id=${projeto.id}">Editar</a>
