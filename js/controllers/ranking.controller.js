@@ -147,19 +147,46 @@ const gerarRelatorioPDF = () => {
   const corPrimaria = [25, 135, 84];
   const corTexto = [33, 37, 41];
   const corCinza = [108, 117, 125];
-  const corAlerta = [255, 193, 7];
 
-  const desenharCabecalho = (titulo = 'FECEAC - Ranking de Projetos') => {
+  let areaAtual = null;
+  const agruparGrupos = {};
+
+  const desenharCabecalho = (titulo) => {
+    const tituloFinal = titulo || 'FECEAC - Ranking de Projetos';
     doc.setFillColor(...corPrimaria);
     doc.rect(0, 0, pageW, 28, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
-    doc.text(titulo, margin, 18);
+    doc.text(tituloFinal, margin, 18);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
     doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, pageW - margin, 18, { align: 'right' });
     y = 36;
+  };
+
+  const desenharSubtituloArea = () => {
+    if (!areaAtual) return;
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...corPrimaria);
+    doc.text(areaAtual, margin, y);
+    y += 2;
+    doc.setDrawColor(...corPrimaria);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, pageW - margin, y);
+    y += 6;
+
+    const projetosArea = agruparGrupos[areaAtual] || [];
+    const notasValidas = projetosArea.filter((p) => p.nota !== null);
+    const mediaArea = notasValidas.length
+      ? (notasValidas.reduce((s, p) => s + p.nota, 0) / notasValidas.length).toFixed(2)
+      : '-';
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...corCinza);
+    doc.text(`${projetosArea.length} projeto(s) | Nota media: ${mediaArea}`, margin, y);
+    y += 6;
   };
 
   const desenharFiltros = () => {
@@ -168,12 +195,12 @@ const gerarRelatorioPDF = () => {
       partes.push(`Tipo: ${qs('#filtroTipoRelatorio').selectedOptions[0]?.text}`);
     }
     if (filtroArea) {
-      partes.push(`Área: ${qs('#filtroAreaRelatorio').selectedOptions[0]?.text}`);
+      partes.push(`Area: ${qs('#filtroAreaRelatorio').selectedOptions[0]?.text}`);
     }
-    partes.push(`Ordenação: ${ordenacao === 'area_nota' ? 'Área → Nota' : 'Nota'}`);
-    if (agruparArea) partes.push('Agrupado por área');
-    partes.push(`Mostrar alunos: ${mostrarAlunos ? 'Sim' : 'Não'}`);
-    partes.push(`Notas: ${notasPorCriterio ? 'Por critério' : 'Geral'}`);
+    partes.push(`Ordenacao: ${ordenacao === 'area_nota' ? 'Area - Nota' : 'Nota'}`);
+    if (agruparArea) partes.push('Agrupado por area');
+    partes.push(`Mostrar alunos: ${mostrarAlunos ? 'Sim' : 'Nao'}`);
+    partes.push(`Notas: ${notasPorCriterio ? 'Por criterio' : 'Geral'}`);
     doc.setFontSize(8);
     doc.setFont('helvetica', 'italic');
     doc.setTextColor(...corCinza);
@@ -181,17 +208,20 @@ const gerarRelatorioPDF = () => {
     y += 6;
   };
 
-  const quebrarPagina = (espacoNecessario) => {
+  const quebrarPagina = (espacoNecessario, comSubtituloArea) => {
     if (y + espacoNecessario > pageH - margin) {
       doc.addPage();
       desenharCabecalho();
+      if (comSubtituloArea && areaAtual) {
+        desenharSubtituloArea();
+      }
       return true;
     }
     return false;
   };
 
   const desenharTituloSecao = (texto) => {
-    quebrarPagina(12);
+    quebrarPagina(12, false);
     doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...corPrimaria);
@@ -237,8 +267,8 @@ const gerarRelatorioPDF = () => {
     const kpis = [
       ['Projetos', totalProjetos],
       ['Alunos', totalAlunos],
-      ['Avaliações', totalAvaliacoes],
-      ['Média Geral', mediaGeral],
+      ['Avaliacoes', totalAvaliacoes],
+      ['Media Geral', mediaGeral],
       ['Melhor Nota', melhorNota],
       ['Pior Nota', piorNota],
     ];
@@ -273,17 +303,17 @@ const gerarRelatorioPDF = () => {
 
     const porArea = {};
     projetos.forEach((p) => {
-      const area = p.area?.nome || 'Sem área';
+      const area = p.area?.nome || 'Sem area';
       if (!porArea[area]) porArea[area] = { qtd: 0, notas: [] };
       porArea[area].qtd++;
       if (p.nota !== null) porArea[area].notas.push(p.nota);
     });
 
-    desenharTituloSecao('Projetos por Área do Conhecimento');
+    desenharTituloSecao('Projetos por Area do Conhecimento');
     doc.autoTable({
       startY: y,
       margin: { left: margin },
-      head: [['Área', 'Projetos', 'Média', 'Melhor']],
+      head: [['Area', 'Projetos', 'Media', 'Melhor']],
       body: Object.entries(porArea).map(([area, d]) => [
         area,
         String(d.qtd),
@@ -307,12 +337,12 @@ const gerarRelatorioPDF = () => {
       .sort((a, b) => b.melhor - a.melhor);
 
     if (porAreaSorted.length) {
-      quebrarPagina(40);
-      desenharTituloSecao('Melhores Projetos por Área');
+      quebrarPagina(40, false);
+      desenharTituloSecao('Melhores Projetos por Area');
       doc.autoTable({
         startY: y,
         margin: { left: margin },
-        head: [['Área', 'Melhor Nota', 'Média da Área']],
+        head: [['Area', 'Melhor Nota', 'Media da Area']],
         body: porAreaSorted.map((d) => [
           d.area,
           d.melhor.toFixed(2),
@@ -335,8 +365,8 @@ const gerarRelatorioPDF = () => {
     });
 
     if (Object.values(faixas).some((v) => v > 0)) {
-      quebrarPagina(40);
-      desenharTituloSecao('Distribuição de Notas');
+      quebrarPagina(40, false);
+      desenharTituloSecao('Distribuicao de Notas');
       doc.autoTable({
         startY: y,
         margin: { left: margin },
@@ -356,14 +386,6 @@ const gerarRelatorioPDF = () => {
     }
   };
 
-  if (mostrarResumo) {
-    desenharResumo();
-    doc.addPage();
-  }
-
-  desenharCabecalho();
-  desenharFiltros();
-
   if (ordenacao === 'area_nota') {
     projetos.sort((a, b) => {
       const area = (a.area?.nome || '').localeCompare(b.area?.nome || '', 'pt-BR');
@@ -374,6 +396,12 @@ const gerarRelatorioPDF = () => {
     projetos.sort((a, b) => (b.nota ?? -1) - (a.nota ?? -1));
   }
 
+  projetos.forEach((p) => {
+    const area = p.area?.nome || 'Sem area';
+    if (!agruparGrupos[area]) agruparGrupos[area] = [];
+    agruparGrupos[area].push(p);
+  });
+
   const desenharProjeto = (projeto, posicao) => {
     const notaFmt = projeto.nota !== null ? projeto.nota.toFixed(2) : '-';
     const temAlunos = mostrarAlunos && (projeto.alunos || []).length;
@@ -383,12 +411,12 @@ const gerarRelatorioPDF = () => {
     if (temAlunos) espacoNecessario += 6 + (projeto.alunos.length + 1) * 5;
     if (temNotasDetalhe) espacoNecessario += 8 + projeto.avaliacoes.length * 6;
 
-    quebrarPagina(espacoNecessario);
+    quebrarPagina(espacoNecessario, !!areaAtual);
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...corTexto);
-    doc.text(`${posicao}º`, margin, y);
+    doc.text(`${posicao}o`, margin, y);
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
@@ -404,7 +432,7 @@ const gerarRelatorioPDF = () => {
     doc.setTextColor(...corTexto);
     doc.text(`Orientador: ${projeto.orientador}${projeto.coorientador ? ' | Coorientador: ' + projeto.coorientador : ''}`, margin + 10, y);
     y += 4;
-    doc.text(`Tipo: ${projeto.tipo?.nome || '-'} | Área: ${projeto.area?.nome || '-'}`, margin + 10, y);
+    doc.text(`Tipo: ${projeto.tipo?.nome || '-'} | Area: ${projeto.area?.nome || '-'}`, margin + 10, y);
     y += 5;
 
     if (temAlunos) {
@@ -430,10 +458,10 @@ const gerarRelatorioPDF = () => {
     }
 
     if (temNotasDetalhe) {
-      quebrarPagina(20);
+      quebrarPagina(20, !!areaAtual);
       doc.setFontSize(8);
       doc.setFont('helvetica', 'bold');
-      doc.text('Avaliações por critério:', margin + 10, y);
+      doc.text('Avaliacoes por criterio:', margin + 10, y);
       y += 4;
 
       const linhasNotas = [];
@@ -452,7 +480,7 @@ const gerarRelatorioPDF = () => {
       doc.autoTable({
         startY: y,
         margin: { left: margin + 10 },
-        head: [['Avaliador', 'Critério', 'Peso', 'Nota']],
+        head: [['Avaliador', 'Criterio', 'Peso', 'Nota']],
         body: linhasNotas,
         theme: 'grid',
         styles: { fontSize: 7, cellPadding: 1.5 },
@@ -475,52 +503,34 @@ const gerarRelatorioPDF = () => {
     y += 5;
   };
 
-  if (agruparArea) {
-    const grupos = {};
-    projetos.forEach((p) => {
-      const area = p.area?.nome || 'Sem área';
-      if (!grupos[area]) grupos[area] = [];
-      grupos[area].push(p);
-    });
+  if (mostrarResumo) {
+    desenharResumo();
+  }
 
-    const areasOrdenadas = Object.keys(grupos).sort((a, b) => a.localeCompare(b, 'pt-BR'));
-    let posicaoGeral = 1;
+  if (agruparArea) {
+    const areasOrdenadas = Object.keys(agruparGrupos).sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
     areasOrdenadas.forEach((area) => {
-      const projetosArea = grupos[area];
-
-      desenharCabecalho(`FECEAC - Ranking por Área`);
-      y += 2;
-
-      doc.setFontSize(12);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(...corPrimaria);
-      doc.text(area, margin, y);
-      y += 2;
-      doc.setDrawColor(...corPrimaria);
-      doc.setLineWidth(0.5);
-      doc.line(margin, y, pageW - margin, y);
-      y += 6;
-
-      doc.setFontSize(8);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(...corCinza);
-      doc.text(`${projetosArea.length} projeto(s) | Nota média: ${
-        projetosArea.filter((p) => p.nota !== null).length
-          ? (projetosArea.filter((p) => p.nota !== null).reduce((s, p) => s + p.nota, 0) /
-             projetosArea.filter((p) => p.nota !== null).length).toFixed(2)
-          : '-'
-      }`, margin, y);
-      y += 6;
+      doc.addPage();
+      areaAtual = area;
+      desenharCabecalho();
+      desenharSubtituloArea();
 
       let posicaoArea = 1;
-      projetosArea.forEach((projeto) => {
+      agruparGrupos[area].forEach((projeto) => {
         desenharProjeto(projeto, posicaoArea);
         posicaoArea++;
-        posicaoGeral++;
       });
     });
+
+    areaAtual = null;
   } else {
+    if (mostrarResumo) {
+      doc.addPage();
+    }
+    desenharCabecalho();
+    desenharFiltros();
+
     let posicao = 1;
     projetos.forEach((projeto) => {
       desenharProjeto(projeto, posicao);
@@ -534,7 +544,7 @@ const gerarRelatorioPDF = () => {
     doc.setFontSize(7);
     doc.setTextColor(...corCinza);
     doc.text(
-      `FECEAC ${new Date().getFullYear()} — Página ${i} de ${totalPaginas}`,
+      `FECEAC ${new Date().getFullYear()} - Pagina ${i} de ${totalPaginas}`,
       pageW / 2, pageH - 6, { align: 'center' }
     );
   }
