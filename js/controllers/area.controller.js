@@ -60,10 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   qs('#areaModal').addEventListener('show.bs.modal', (event) => {
-    const btn = event.relatedTarget;
-    if (btn && btn.matches('.btn-editar')) {
-      popularSelectTipos(btn.dataset.tipo);
-    } else {
+    if (!event.relatedTarget || !event.relatedTarget.matches('.btn-editar')) {
       popularSelectTipos();
     }
   });
@@ -72,6 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (event.target.matches('.btn-editar')) {
       qs('#id').value = event.target.dataset.id;
       qs('#nome').value = event.target.dataset.nome;
+      popularSelectTipos(event.target.dataset.tipo);
       bootstrap.Modal.getOrCreateInstance(qs('#areaModal')).show();
     }
     if (event.target.matches('.btn-excluir') && confirmar('Deseja excluir esta área?')) {
