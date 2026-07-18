@@ -420,12 +420,20 @@ const gerarRelatorioPDF = () => {
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.text(projeto.titulo, margin + 10, y);
+    const tituloInicio = margin + 10;
+    const notaX = pageW - margin;
+    const espacoTitulo = notaX - tituloInicio - 8;
+    let tituloExibicao = projeto.titulo;
+    while (doc.getTextWidth(tituloExibicao) > espacoTitulo && tituloExibicao.length > 3) {
+      tituloExibicao = tituloExibicao.slice(0, -1);
+    }
+    if (tituloExibicao !== projeto.titulo) tituloExibicao += '...';
+    doc.text(tituloExibicao, tituloInicio, y);
 
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(...corCinza);
-    doc.text(`Nota: ${notaFmt}`, pageW - margin, y, { align: 'right' });
+    doc.text(`Nota: ${notaFmt}`, notaX, y, { align: 'right' });
 
     y += 5;
     doc.setFontSize(8);
