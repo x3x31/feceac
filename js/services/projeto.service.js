@@ -51,6 +51,7 @@ export const listarProjetos = async (filtros = {}) => {
 
   if (filtros.nome) query = query.ilike('titulo', `%${filtros.nome}%`);
   if (filtros.area_id) query = query.eq('area_id', filtros.area_id);
+  if (filtros.orientador_id) query = query.eq('orientador_id', filtros.orientador_id);
   if (filtros.ano) query = query.eq('ano', filtros.ano);
 
   const { data, error } = await query;
@@ -88,6 +89,15 @@ export const salvarProjeto = async ({ alunos = [], ...projeto }) => {
         .from('alunos')
         .select('id')
         .eq('matricula', aluno.matricula)
+        .single();
+      if (existente) alunoId = existente.id;
+    }
+
+    if (!alunoId) {
+      const { data: existente } = await supabase
+        .from('alunos')
+        .select('id')
+        .ilike('nome', aluno.nome.trim())
         .single();
       if (existente) alunoId = existente.id;
     }

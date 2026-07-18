@@ -16,13 +16,21 @@ const opcoesTurma = (valor = '') => TURMAS
   .map((turma) => `<option value="${turma}" ${turma === valor ? 'selected' : ''}>${turma}</option>`)
   .join('');
 
-const carregarSelectProfessores = async (select, valor = '') => {
+const opcoesTurno = (valor = '') => {
+  const turnos = ['', 'MATUTINO', 'VESPERTINO', 'INTEGRAL'];
+  const labels = { '': 'Turno', MATUTINO: 'Matutino', VESPERTINO: 'Vespertino', INTEGRAL: 'Integral' };
+  return turnos
+    .map((t) => `<option value="${t}" ${t === valor ? 'selected' : ''}>${labels[t]}</option>`)
+    .join('');
+};
+
+const carregarSelectProfessores = async (select, valor = '', placeholder = 'Selecione') => {
   const { data, error } = await supabase
     .from('professores')
     .select('*')
     .order('nome');
   if (error) throw error;
-  select.innerHTML = '<option value="">Selecione</option>' + data
+  select.innerHTML = `<option value="">${placeholder}</option>` + data
     .map((p) => `<option value="${p.id}" ${p.id == valor ? 'selected' : ''}>${escapeHtml(p.nome)}</option>`)
     .join('');
 };
@@ -46,15 +54,18 @@ const carregarSelectTipos = async (select, valor = '') => {
     .join('');
 };
 
-const linhaAluno = (nome = '', turma = 'EMPM1A') => `
+const linhaAluno = (nome = '', turma = 'EMPM1A', id = '', matricula = '', turno = '') => `
   <div class="input-group aluno-item mb-2">
+    <input type="hidden" class="aluno-id" value="${id}">
     <input class="form-control aluno-nome" value="${escapeHtml(nome)}" required placeholder="Nome do aluno">
+    <input class="form-control aluno-matricula" value="${escapeHtml(matricula)}" placeholder="Matrícula">
+    <select class="form-select aluno-turno" aria-label="Turno do aluno">${opcoesTurno(turno)}</select>
     <select class="form-select aluno-turma" required aria-label="Turma do aluno">${opcoesTurma(turma)}</select>
     <button class="btn btn-outline-danger btn-remover-aluno" type="button">Remover</button>
   </div>`;
 
-const adicionarAluno = (nome = '', turma = 'EMPM1A') => {
-  qs('#alunosContainer').insertAdjacentHTML('beforeend', linhaAluno(nome, turma));
+const adicionarAluno = (nome = '', turma = 'EMPM1A', id = '', matricula = '', turno = '') => {
+  qs('#alunosContainer').insertAdjacentHTML('beforeend', linhaAluno(nome, turma, id, matricula, turno));
 };
 
 const iniciarModalAlunos = () => {
@@ -128,8 +139,8 @@ const iniciarModalAlunos = () => {
 
     msg.classList.add('d-none');
     tabela.innerHTML = data.map((aluno) => `
-      <tr class="aluno-linha" data-id="${aluno.id}" data-nome="${escapeHtml(aluno.nome)}" data-turma="${escapeHtml(aluno.turma)}">
-        <td><input type="checkbox" class="form-check-input aluno-check" data-id="${aluno.id}" data-nome="${escapeHtml(aluno.nome)}" data-turma="${escapeHtml(aluno.turma)}"></td>
+      <tr class="aluno-linha" data-id="${aluno.id}" data-nome="${escapeHtml(aluno.nome)}" data-turma="${escapeHtml(aluno.turma)}" data-turno="${escapeHtml(aluno.turno || '')}">
+        <td><input type="checkbox" class="form-check-input aluno-check" data-id="${aluno.id}" data-nome="${escapeHtml(aluno.nome)}" data-turma="${escapeHtml(aluno.turma)}" data-matricula="${escapeHtml(aluno.matricula || '')}" data-turno="${escapeHtml(aluno.turno || '')}"></td>
         <td>${escapeHtml(aluno.nome)}</td>
         <td>${escapeHtml(aluno.matricula || '-')}</td>
       </tr>
@@ -170,7 +181,7 @@ const iniciarModalAlunos = () => {
     marcados.forEach((cb) => {
       const nome = cb.dataset.nome;
       if (!nomesExistentes.has(nome.toLowerCase())) {
-        adicionarAluno(nome, cb.dataset.turma);
+        adicionarAluno(nome, cb.dataset.turma, cb.dataset.id, cb.dataset.matricula || '', cb.dataset.turno || '');
         nomesExistentes.add(nome.toLowerCase());
         adicionados++;
       }
@@ -210,7 +221,7 @@ const iniciarFormularioProjeto = async () => {
     qs('#orientador_id').value = projeto.orientador_id || '';
     qs('#coorientador_id').value = projeto.coorientador_id || '';
     qs('#alunosContainer').innerHTML = '';
-    projeto.alunos.forEach((item) => adicionarAluno(item.aluno.nome, item.turma || item.aluno.turma));
+    projeto.alunos.forEach((item) => adicionarAluno(item.aluno.nome, item.turma || item.aluno.turma, item.aluno.id, item.aluno.matricula, item.aluno.turno || ''));
   }
 
   qs('#btnAdicionarAluno').addEventListener('click', () => adicionarAluno());
@@ -233,8 +244,11 @@ const iniciarFormularioProjeto = async () => {
       orientador_id: Number(qs('#orientador_id').value),
       coorientador_id: Number(qs('#coorientador_id').value) || null,
       alunos: qsa('.aluno-item').map((item) => ({
+        id: qs('.aluno-id', item).value || null,
+        matricula: qs('.aluno-matricula', item).value || null,
         nome: qs('.aluno-nome', item).value.trim(),
         turma: qs('.aluno-turma', item).value,
+        turno: qs('.aluno-turno', item).value || null,
       })),
     };
 
@@ -394,6 +408,7 @@ const carregarProjetos = async () => {
   const filtros = {
     nome: qs('#filtroNome')?.value.trim(),
     area_id: qs('#filtroArea')?.value,
+    orientador_id: qs('#filtroOrientador')?.value,
     ano: qs('#filtroAno')?.value,
   };
   const projetos = await listarProjetos(filtros);
@@ -401,7 +416,10 @@ const carregarProjetos = async () => {
 };
 
 const iniciarListagemProjetos = async () => {
-  await carregarSelectAreas(qs('#filtroArea'));
+  await Promise.all([
+    carregarSelectAreas(qs('#filtroArea')),
+    carregarSelectProfessores(qs('#filtroOrientador'), '', 'Todos'),
+  ]);
   await carregarProjetos();
 
   qsa('.filtro-projeto').forEach((campo) => {
