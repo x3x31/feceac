@@ -8,12 +8,14 @@ const menusPorPerfil = {
     ['projetos.html', 'Projetos'],
     ['usuarios.html', 'Usuários'],
     ['areas.html', 'Áreas'],
-    ['criterios.html', 'Critérios'],    
+    ['criterios.html', 'Critérios'],
+    ['avaliacoes.html', 'Avaliações'],
     ['ranking.html', 'Ranking'],
   ],
   Professor: [
     ['painel.html', 'Painel'],
-    ['projetos.html', 'Projetos'],    
+    ['projetos.html', 'Projetos'],
+    ['avaliacoes.html', 'Avaliações'],
   ],
   Aluno: [
     ['cadastrar-projeto.html', 'Cadastrar Projeto'],
@@ -24,7 +26,7 @@ const menusPorPerfil = {
 };
 
 const acessoPorPagina = {
-  'avaliacoes.html': ['Avaliador'],
+  'avaliacoes.html': ['Avaliador', 'Administrador', 'Professor'],
   'ranking.html': ['Administrador'],
   'usuarios.html': ['Administrador'],
   'areas.html': ['Administrador'],

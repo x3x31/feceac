@@ -223,13 +223,13 @@ create policy "avaliacoes_admin_all" on public.avaliacoes
 for all to authenticated using (public.is_admin()) with check (public.is_admin());
 create policy "avaliacoes_avaliador_insert" on public.avaliacoes
 for insert to authenticated with check (
-  public.get_tipo_usuario() in ('Avaliador', 'Administrador') and avaliador_id = auth.uid()
+  public.get_tipo_usuario() in ('Avaliador', 'Administrador', 'Professor') and avaliador_id = auth.uid()
 );
 create policy "avaliacoes_avaliador_update" on public.avaliacoes
 for update to authenticated using (
-  public.get_tipo_usuario() in ('Avaliador', 'Administrador') and avaliador_id = auth.uid()
+  public.get_tipo_usuario() in ('Avaliador', 'Administrador', 'Professor') and avaliador_id = auth.uid()
 ) with check (
-  public.get_tipo_usuario() in ('Avaliador', 'Administrador') and avaliador_id = auth.uid()
+  public.get_tipo_usuario() in ('Avaliador', 'Administrador', 'Professor') and avaliador_id = auth.uid()
 );
 
 create policy "notas_select_todos" on public.notas

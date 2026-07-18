@@ -427,7 +427,7 @@ document.addEventListener(
 
 
 
-    if (!usuario || usuario.tipo !== 'Avaliador') {
+    if (!usuario || !['Avaliador', 'Administrador', 'Professor'].includes(usuario.tipo)) {
 
 
       toast(
