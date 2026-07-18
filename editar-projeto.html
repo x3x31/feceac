@@ -51,11 +51,22 @@
         </div>
         <div class="modal-body">
           <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <label class="form-label" for="filtroTurma">Turma</label>
-              <select id="filtroTurma" class="form-select"></select>
+            <div class="col-md-4">
+              <label class="form-label" for="filtroTurno">Turno</label>
+              <select id="filtroTurno" class="form-select">
+                <option value="">Selecione o turno</option>
+                <option value="MATUTINO">Matutino</option>
+                <option value="VESPERTINO">Vespertino</option>
+                <option value="INTEGRAL">Integral</option>
+              </select>
             </div>
-            <div class="col-md-6 d-flex align-items-end">
+            <div class="col-md-4">
+              <label class="form-label" for="filtroTurma">Turma</label>
+              <select id="filtroTurma" class="form-select" disabled>
+                <option value="">Selecione o turno primeiro</option>
+              </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
               <button id="btnFiltrarAlunos" class="btn btn-primary" type="button">Buscar</button>
             </div>
           </div>

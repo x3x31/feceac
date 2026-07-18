@@ -47,14 +47,43 @@ const adicionarAluno = (nome = '', turma = 'EMPM1A') => {
 };
 
 const iniciarModalAlunos = () => {
+  const turnoSelect = qs('#filtroTurno');
   const turmaSelect = qs('#filtroTurma');
-  turmaSelect.innerHTML = '<option value="">Selecione a turma</option>' + opcoesTurma();
+
+  qs('#filtroTurno').addEventListener('change', async () => {
+    const turno = turnoSelect.value;
+    turmaSelect.innerHTML = '<option value="">Carregando...</option>';
+    turmaSelect.disabled = true;
+
+    if (!turno) {
+      turmaSelect.innerHTML = '<option value="">Selecione o turno primeiro</option>';
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('alunos')
+      .select('turma')
+      .eq('turno', turno)
+      .order('turma');
+
+    if (error || !data) {
+      turmaSelect.innerHTML = '<option value="">Erro ao carregar turmas</option>';
+      return;
+    }
+
+    const turmasUnicas = [...new Set(data.map((a) => a.turma))].filter(Boolean);
+    turmaSelect.innerHTML = '<option value="">Selecione a turma</option>' +
+      turmasUnicas.map((t) => `<option value="${t}">${t}</option>`).join('');
+    turmaSelect.disabled = false;
+  });
 
   qs('#btnBuscarAlunos').addEventListener('click', () => {
     qs('#alunosModalTabela').innerHTML = '';
     qs('#alunosModalMensagem').classList.add('d-none');
     qs('#marcarTodosAlunos').checked = false;
-    turmaSelect.value = '';
+    turnoSelect.value = '';
+    turmaSelect.innerHTML = '<option value="">Selecione o turno primeiro</option>';
+    turmaSelect.disabled = true;
     bootstrap.Modal.getOrCreateInstance(qs('#alunosModal')).show();
   });
 
@@ -88,7 +117,7 @@ const iniciarModalAlunos = () => {
 
     msg.classList.add('d-none');
     tabela.innerHTML = data.map((aluno) => `
-      <tr>
+      <tr class="aluno-linha" data-id="${aluno.id}" data-nome="${escapeHtml(aluno.nome)}" data-turma="${escapeHtml(aluno.turma)}">
         <td><input type="checkbox" class="form-check-input aluno-check" data-id="${aluno.id}" data-nome="${escapeHtml(aluno.nome)}" data-turma="${escapeHtml(aluno.turma)}"></td>
         <td>${escapeHtml(aluno.nome)}</td>
         <td>${escapeHtml(aluno.turma)}</td>
@@ -96,8 +125,23 @@ const iniciarModalAlunos = () => {
     `).join('');
   });
 
+  qs('#alunosModalTabela').addEventListener('click', (event) => {
+    const linha = event.target.closest('.aluno-linha');
+    if (!linha) return;
+    const cb = linha.querySelector('.aluno-check');
+    if (event.target.classList.contains('aluno-check')) {
+      linha.style.backgroundColor = cb.checked ? '#b4cdf0' : '';
+      return;
+    }
+    cb.checked = !cb.checked;
+    linha.style.backgroundColor = cb.checked ? '#b4cdf0' : '';
+  });
+
   qs('#marcarTodosAlunos').addEventListener('change', (event) => {
-    qsa('.aluno-check').forEach((cb) => { cb.checked = event.target.checked; });
+    qsa('.aluno-check').forEach((cb) => {
+      cb.checked = event.target.checked;
+      cb.closest('.aluno-linha').style.backgroundColor = cb.checked ? '#b4cdf0' : '';
+    });
   });
 
   qs('#btnConfirmarAlunos').addEventListener('click', () => {
