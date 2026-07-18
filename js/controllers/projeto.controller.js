@@ -2,6 +2,7 @@ import { anoAtual, debounce, escapeHtml, getParam, qs, qsa, validarFormulario } 
 import { confirmar, mensagemVazia, setLoading, toast } from '../ui.js';
 import { listarAreas } from '../services/area.service.js';
 import { excluirProjeto, listarProjetos, obterProjeto, salvarProjeto } from '../services/projeto.service.js';
+import { supabase } from '../supabase.js';
 
 const TURMAS = [
   'EMPINT1A', 'EMPM1A', 'EMPM1B', 'EMPM1C', 'EMPM1D', 'EMPM1E', 'EMPM1F', 'EMPM1G',
@@ -23,6 +24,17 @@ const carregarSelectAreas = async (select, valor = '') => {
   select.value = valor || '';
 };
 
+const carregarSelectTipos = async (select, valor = '') => {
+  const { data, error } = await supabase
+    .from('tipos_projeto')
+    .select('*')
+    .order('nome');
+  if (error) throw error;
+  select.innerHTML = '<option value="">Selecione</option>' + data
+    .map((t) => `<option value="${t.id}" ${t.id == valor ? 'selected' : ''}>${escapeHtml(t.nome)}</option>`)
+    .join('');
+};
+
 const linhaAluno = (nome = '', turma = 'EMPM1A') => `
   <div class="input-group aluno-item mb-2">
     <input class="form-control aluno-nome" value="${escapeHtml(nome)}" required placeholder="Nome do aluno">
@@ -34,12 +46,93 @@ const adicionarAluno = (nome = '', turma = 'EMPM1A') => {
   qs('#alunosContainer').insertAdjacentHTML('beforeend', linhaAluno(nome, turma));
 };
 
+const iniciarModalAlunos = () => {
+  const turmaSelect = qs('#filtroTurma');
+  turmaSelect.innerHTML = '<option value="">Selecione a turma</option>' + opcoesTurma();
+
+  qs('#btnFiltrarAlunos').addEventListener('click', async () => {
+    const turma = turmaSelect.value;
+    if (!turma) {
+      toast('Selecione uma turma.', 'warning');
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('alunos')
+      .select('*')
+      .eq('turma', turma)
+      .order('nome');
+
+    if (error) {
+      toast('Erro ao buscar alunos.', 'danger');
+      return;
+    }
+
+    const tabela = qs('#alunosModalTabela');
+    const msg = qs('#alunosModalMensagem');
+    qs('#marcarTodosAlunos').checked = false;
+
+    if (!data.length) {
+      tabela.innerHTML = '';
+      msg.classList.remove('d-none');
+      return;
+    }
+
+    msg.classList.add('d-none');
+    tabela.innerHTML = data.map((aluno) => `
+      <tr>
+        <td><input type="checkbox" class="form-check-input aluno-check" data-id="${aluno.id}" data-nome="${escapeHtml(aluno.nome)}" data-turma="${escapeHtml(aluno.turma)}"></td>
+        <td>${escapeHtml(aluno.nome)}</td>
+        <td>${escapeHtml(aluno.turma)}</td>
+      </tr>
+    `).join('');
+  });
+
+  qs('#marcarTodosAlunos').addEventListener('change', (event) => {
+    qsa('.aluno-check').forEach((cb) => { cb.checked = event.target.checked; });
+  });
+
+  qs('#btnConfirmarAlunos').addEventListener('click', () => {
+    const marcados = qsa('.aluno-check:checked');
+    if (!marcados.length) {
+      toast('Selecione ao menos um aluno.', 'warning');
+      return;
+    }
+
+    const nomesExistentes = new Set(
+      qsa('.aluno-nome').map((input) => input.value.trim().toLowerCase())
+    );
+
+    let adicionados = 0;
+    marcados.forEach((cb) => {
+      const nome = cb.dataset.nome;
+      if (!nomesExistentes.has(nome.toLowerCase())) {
+        adicionarAluno(nome, cb.dataset.turma);
+        nomesExistentes.add(nome.toLowerCase());
+        adicionados++;
+      }
+    });
+
+    bootstrap.Modal.getInstance(qs('#alunosModal')).hide();
+
+    if (adicionados) {
+      toast(`${adicionados} aluno(s) adicionado(s).`);
+    } else {
+      toast('Todos os alunos selecionados já estão na lista.', 'info');
+    }
+  });
+};
+
 const iniciarFormularioProjeto = async () => {
   const form = qs('#projetoForm');
   const id = getParam('id');
   qs('#ano').value = anoAtual();
-  await carregarSelectAreas(qs('#area_id'));
+  await Promise.all([
+    carregarSelectAreas(qs('#area_id')),
+    carregarSelectTipos(qs('#tipo_projeto_id')),
+  ]);
   adicionarAluno();
+  iniciarModalAlunos();
 
   if (id) {
     const projeto = await obterProjeto(id);
@@ -47,6 +140,7 @@ const iniciarFormularioProjeto = async () => {
     qs('#id').value = projeto.id;
     qs('#ano').value = projeto.ano;
     qs('#titulo').value = projeto.titulo;
+    qs('#tipo_projeto_id').value = projeto.tipo_projeto_id || '';
     qs('#area_id').value = projeto.area_id;
     qs('#orientador').value = projeto.orientador;
     qs('#coorientador').value = projeto.coorientador || '';
@@ -69,6 +163,7 @@ const iniciarFormularioProjeto = async () => {
       id: qs('#id').value || undefined,
       ano: Number(qs('#ano').value),
       titulo: qs('#titulo').value.trim(),
+      tipo_projeto_id: Number(qs('#tipo_projeto_id').value) || null,
       area_id: Number(qs('#area_id').value),
       orientador: qs('#orientador').value.trim(),
       coorientador: qs('#coorientador').value.trim() || null,
@@ -160,12 +255,10 @@ const renderizarProjetos = (projetos) => {
 
             <thead>
 
-              <tr>
-                <th>Avaliador</th>
-                <th>Critério</th>
-                <th>Peso</th>
-                <th>Nota</th>
-              </tr>
+              <th>Avaliador</th>
+              <th>Critério</th>
+              <th>Peso</th>
+              <th>Nota</th>
 
             </thead>
 
