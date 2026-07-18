@@ -121,6 +121,8 @@ const gerarRelatorioPDF = () => {
   const filtroArea = qs('#filtroAreaRelatorio').value;
   const mostrarAlunos = qs('#chkMostrarAlunos').checked;
   const notasPorCriterio = qs('#chkNotasPorCriterio').checked;
+  const agruparArea = qs('#chkAgruparArea').checked;
+  const mostrarResumo = qs('#chkMostrarResumo').checked;
   const ordenacao = qs('input[name="ordenacaoRelatorio"]:checked').value;
 
   let projetos = rankingProjetos.map((p) => ({ ...p, nota: notaProjeto(p) }));
@@ -130,16 +132,6 @@ const gerarRelatorioPDF = () => {
   }
   if (filtroArea) {
     projetos = projetos.filter((p) => String(p.area_id) === filtroArea);
-  }
-
-  if (ordenacao === 'area_nota') {
-    projetos.sort((a, b) => {
-      const area = (a.area?.nome || '').localeCompare(b.area?.nome || '', 'pt-BR');
-      if (area !== 0) return area;
-      return (b.nota ?? -1) - (a.nota ?? -1);
-    });
-  } else {
-    projetos.sort((a, b) => (b.nota ?? -1) - (a.nota ?? -1));
   }
 
   if (!projetos.length) {
@@ -155,37 +147,33 @@ const gerarRelatorioPDF = () => {
   const corPrimaria = [25, 135, 84];
   const corTexto = [33, 37, 41];
   const corCinza = [108, 117, 125];
+  const corAlerta = [255, 193, 7];
 
-  const desenharCabecalho = () => {
+  const desenharCabecalho = (titulo = 'FECEAC - Ranking de Projetos') => {
     doc.setFillColor(...corPrimaria);
     doc.rect(0, 0, pageW, 28, 'F');
-
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
-    doc.text('FECEAC - Ranking de Projetos', margin, 18);
-
+    doc.text(titulo, margin, 18);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
     doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, pageW - margin, 18, { align: 'right' });
-
     y = 36;
   };
 
   const desenharFiltros = () => {
     const partes = [];
     if (filtroTipo) {
-      const nomeTipo = qs('#filtroTipoRelatorio').selectedOptions[0]?.text;
-      partes.push(`Tipo: ${nomeTipo}`);
+      partes.push(`Tipo: ${qs('#filtroTipoRelatorio').selectedOptions[0]?.text}`);
     }
     if (filtroArea) {
-      const nomeArea = qs('#filtroAreaRelatorio').selectedOptions[0]?.text;
-      partes.push(`Área: ${nomeArea}`);
+      partes.push(`Área: ${qs('#filtroAreaRelatorio').selectedOptions[0]?.text}`);
     }
     partes.push(`Ordenação: ${ordenacao === 'area_nota' ? 'Área → Nota' : 'Nota'}`);
+    if (agruparArea) partes.push('Agrupado por área');
     partes.push(`Mostrar alunos: ${mostrarAlunos ? 'Sim' : 'Não'}`);
     partes.push(`Notas: ${notasPorCriterio ? 'Por critério' : 'Geral'}`);
-
     doc.setFontSize(8);
     doc.setFont('helvetica', 'italic');
     doc.setTextColor(...corCinza);
@@ -215,12 +203,178 @@ const gerarRelatorioPDF = () => {
     y += 6;
   };
 
+  const desenharKPI = (label, valor, x, largura) => {
+    doc.setFillColor(245, 245, 245);
+    doc.roundedRect(x, y, largura, 18, 2, 2, 'F');
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...corCinza);
+    doc.text(label, x + largura / 2, y + 7, { align: 'center' });
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...corTexto);
+    doc.text(String(valor), x + largura / 2, y + 14, { align: 'center' });
+  };
+
+  const desenharResumo = () => {
+    desenharCabecalho('FECEAC - Resumo Geral');
+
+    const totalProjetos = projetos.length;
+    const totalAlunos = projetos.reduce((s, p) => s + (p.alunos?.length || 0), 0);
+    const totalAvaliacoes = projetos.reduce((s, p) => s + (p.avaliacoes?.length || 0), 0);
+    const notasValidas = projetos.filter((p) => p.nota !== null);
+    const mediaGeral = notasValidas.length
+      ? (notasValidas.reduce((s, p) => s + p.nota, 0) / notasValidas.length).toFixed(2)
+      : '-';
+    const melhorNota = notasValidas.length
+      ? Math.max(...notasValidas.map((p) => p.nota)).toFixed(2)
+      : '-';
+    const piorNota = notasValidas.length
+      ? Math.min(...notasValidas.map((p) => p.nota)).toFixed(2)
+      : '-';
+
+    desenharTituloSecao('Indicadores Gerais');
+    const kpis = [
+      ['Projetos', totalProjetos],
+      ['Alunos', totalAlunos],
+      ['Avaliações', totalAvaliacoes],
+      ['Média Geral', mediaGeral],
+      ['Melhor Nota', melhorNota],
+      ['Pior Nota', piorNota],
+    ];
+    const kpiW = (pageW - margin * 2 - 15) / 6;
+    kpis.forEach(([label, valor], i) => {
+      desenharKPI(label, valor, margin + i * (kpiW + 3), kpiW);
+    });
+    y += 26;
+
+    const porTipo = {};
+    projetos.forEach((p) => {
+      const tipo = p.tipo?.nome || 'Sem tipo';
+      porTipo[tipo] = (porTipo[tipo] || 0) + 1;
+    });
+
+    desenharTituloSecao('Projetos por Tipo');
+    doc.autoTable({
+      startY: y,
+      margin: { left: margin },
+      head: [['Tipo', 'Quantidade', '%']],
+      body: Object.entries(porTipo).map(([tipo, qtd]) => [
+        tipo,
+        String(qtd),
+        ((qtd / totalProjetos) * 100).toFixed(1) + '%'
+      ]),
+      theme: 'grid',
+      styles: { fontSize: 8, cellPadding: 2 },
+      headStyles: { fillColor: corPrimaria, fontSize: 8 },
+      columnStyles: { 1: { halign: 'center' }, 2: { halign: 'center' } },
+    });
+    y = doc.lastAutoTable.finalY + 6;
+
+    const porArea = {};
+    projetos.forEach((p) => {
+      const area = p.area?.nome || 'Sem área';
+      if (!porArea[area]) porArea[area] = { qtd: 0, notas: [] };
+      porArea[area].qtd++;
+      if (p.nota !== null) porArea[area].notas.push(p.nota);
+    });
+
+    desenharTituloSecao('Projetos por Área do Conhecimento');
+    doc.autoTable({
+      startY: y,
+      margin: { left: margin },
+      head: [['Área', 'Projetos', 'Média', 'Melhor']],
+      body: Object.entries(porArea).map(([area, d]) => [
+        area,
+        String(d.qtd),
+        d.notas.length ? (d.notas.reduce((a, b) => a + b, 0) / d.notas.length).toFixed(2) : '-',
+        d.notas.length ? Math.max(...d.notas).toFixed(2) : '-'
+      ]),
+      theme: 'grid',
+      styles: { fontSize: 8, cellPadding: 2 },
+      headStyles: { fillColor: corPrimaria, fontSize: 8 },
+      columnStyles: { 1: { halign: 'center' }, 2: { halign: 'center' }, 3: { halign: 'center' } },
+    });
+    y = doc.lastAutoTable.finalY + 6;
+
+    const porAreaSorted = Object.entries(porArea)
+      .filter(([, d]) => d.notas.length)
+      .map(([area, d]) => ({
+        area,
+        media: d.notas.reduce((a, b) => a + b, 0) / d.notas.length,
+        melhor: Math.max(...d.notas),
+      }))
+      .sort((a, b) => b.melhor - a.melhor);
+
+    if (porAreaSorted.length) {
+      quebrarPagina(40);
+      desenharTituloSecao('Melhores Projetos por Área');
+      doc.autoTable({
+        startY: y,
+        margin: { left: margin },
+        head: [['Área', 'Melhor Nota', 'Média da Área']],
+        body: porAreaSorted.map((d) => [
+          d.area,
+          d.melhor.toFixed(2),
+          d.media.toFixed(2)
+        ]),
+        theme: 'grid',
+        styles: { fontSize: 8, cellPadding: 2 },
+        headStyles: { fillColor: corPrimaria, fontSize: 8 },
+        columnStyles: { 1: { halign: 'center' }, 2: { halign: 'center' } },
+      });
+      y = doc.lastAutoTable.finalY + 6;
+    }
+
+    const faixas = { '9.0 - 10.0': 0, '7.0 - 8.9': 0, '5.0 - 6.9': 0, 'Abaixo de 5': 0, 'Sem nota': 0 };
+    projetos.forEach((p) => {
+      if (p.nota === null) faixas['Sem nota']++;
+      else if (p.nota >= 9) faixas['9.0 - 10.0']++;
+      else if (p.nota >= 7) faixas['7.0 - 8.9']++;
+      else faixas['5.0 - 6.9']++;
+    });
+
+    if (Object.values(faixas).some((v) => v > 0)) {
+      quebrarPagina(40);
+      desenharTituloSecao('Distribuição de Notas');
+      doc.autoTable({
+        startY: y,
+        margin: { left: margin },
+        head: [['Faixa de Nota', 'Quantidade', '%']],
+        body: Object.entries(faixas)
+          .filter(([, qtd]) => qtd > 0)
+          .map(([faixa, qtd]) => [
+            faixa,
+            String(qtd),
+            ((qtd / totalProjetos) * 100).toFixed(1) + '%'
+          ]),
+        theme: 'grid',
+        styles: { fontSize: 8, cellPadding: 2 },
+        headStyles: { fillColor: corPrimaria, fontSize: 8 },
+        columnStyles: { 1: { halign: 'center' }, 2: { halign: 'center' } },
+      });
+    }
+  };
+
+  if (mostrarResumo) {
+    desenharResumo();
+    doc.addPage();
+  }
+
   desenharCabecalho();
   desenharFiltros();
 
-  let posicao = 1;
+  if (ordenacao === 'area_nota') {
+    projetos.sort((a, b) => {
+      const area = (a.area?.nome || '').localeCompare(b.area?.nome || '', 'pt-BR');
+      if (area !== 0) return area;
+      return (b.nota ?? -1) - (a.nota ?? -1);
+    });
+  } else {
+    projetos.sort((a, b) => (b.nota ?? -1) - (a.nota ?? -1));
+  }
 
-  projetos.forEach((projeto) => {
+  const desenharProjeto = (projeto, posicao) => {
     const notaFmt = projeto.nota !== null ? projeto.nota.toFixed(2) : '-';
     const temAlunos = mostrarAlunos && (projeto.alunos || []).length;
     const temNotasDetalhe = notasPorCriterio && (projeto.avaliacoes || []).length;
@@ -243,11 +397,9 @@ const gerarRelatorioPDF = () => {
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(...corCinza);
-    const notaTexto = `Nota: ${notaFmt}`;
-    doc.text(notaTexto, pageW - margin, y, { align: 'right' });
+    doc.text(`Nota: ${notaFmt}`, pageW - margin, y, { align: 'right' });
 
     y += 5;
-
     doc.setFontSize(8);
     doc.setTextColor(...corTexto);
     doc.text(`Orientador: ${projeto.orientador}${projeto.coorientador ? ' | Coorientador: ' + projeto.coorientador : ''}`, margin + 10, y);
@@ -261,22 +413,19 @@ const gerarRelatorioPDF = () => {
       doc.text('Alunos:', margin + 10, y);
       y += 4;
 
-      const linhasAlunos = projeto.alunos.map((item) => [
-        item.aluno.nome,
-        item.turma || item.aluno.turma || '-'
-      ]);
-
       doc.autoTable({
         startY: y,
         margin: { left: margin + 10 },
         head: [['Aluno', 'Turma']],
-        body: linhasAlunos,
+        body: projeto.alunos.map((item) => [
+          item.aluno.nome,
+          item.turma || item.aluno.turma || '-'
+        ]),
         theme: 'grid',
         styles: { fontSize: 7, cellPadding: 1.5 },
         headStyles: { fillColor: corPrimaria, fontSize: 7 },
         columnStyles: { 0: { cellWidth: 80 } },
       });
-
       y = doc.lastAutoTable.finalY + 4;
     }
 
@@ -297,9 +446,7 @@ const gerarRelatorioPDF = () => {
             String(nota.nota)
           ]);
         });
-        linhasNotas.push([
-          '', '', 'Nota Final:', notaAvaliacao(avaliacao)?.toFixed(2) || '-'
-        ]);
+        linhasNotas.push(['', '', 'Nota Final:', notaAvaliacao(avaliacao)?.toFixed(2) || '-']);
       });
 
       doc.autoTable({
@@ -317,7 +464,6 @@ const gerarRelatorioPDF = () => {
           3: { cellWidth: 20, halign: 'center' },
         },
       });
-
       y = doc.lastAutoTable.finalY + 4;
     } else if (!temAlunos) {
       y += 4;
@@ -327,9 +473,60 @@ const gerarRelatorioPDF = () => {
     doc.setLineWidth(0.2);
     doc.line(margin, y, pageW - margin, y);
     y += 5;
+  };
 
-    posicao++;
-  });
+  if (agruparArea) {
+    const grupos = {};
+    projetos.forEach((p) => {
+      const area = p.area?.nome || 'Sem área';
+      if (!grupos[area]) grupos[area] = [];
+      grupos[area].push(p);
+    });
+
+    const areasOrdenadas = Object.keys(grupos).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    let posicaoGeral = 1;
+
+    areasOrdenadas.forEach((area) => {
+      const projetosArea = grupos[area];
+
+      desenharCabecalho(`FECEAC - Ranking por Área`);
+      y += 2;
+
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...corPrimaria);
+      doc.text(area, margin, y);
+      y += 2;
+      doc.setDrawColor(...corPrimaria);
+      doc.setLineWidth(0.5);
+      doc.line(margin, y, pageW - margin, y);
+      y += 6;
+
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...corCinza);
+      doc.text(`${projetosArea.length} projeto(s) | Nota média: ${
+        projetosArea.filter((p) => p.nota !== null).length
+          ? (projetosArea.filter((p) => p.nota !== null).reduce((s, p) => s + p.nota, 0) /
+             projetosArea.filter((p) => p.nota !== null).length).toFixed(2)
+          : '-'
+      }`, margin, y);
+      y += 6;
+
+      let posicaoArea = 1;
+      projetosArea.forEach((projeto) => {
+        desenharProjeto(projeto, posicaoArea);
+        posicaoArea++;
+        posicaoGeral++;
+      });
+    });
+  } else {
+    let posicao = 1;
+    projetos.forEach((projeto) => {
+      desenharProjeto(projeto, posicao);
+      posicao++;
+    });
+  }
 
   const totalPaginas = doc.internal.getNumberOfPages();
   for (let i = 1; i <= totalPaginas; i++) {
