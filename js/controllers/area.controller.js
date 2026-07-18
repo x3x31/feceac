@@ -59,17 +59,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     await carregar();
   });
 
-  qs('#areaModal').addEventListener('show.bs.modal', (event) => {
-    if (!event.relatedTarget || !event.relatedTarget.matches('.btn-editar')) {
-      popularSelectTipos();
-    }
+  let editandoTipo = '';
+
+  qs('#areaModal').addEventListener('show.bs.modal', () => {
+    popularSelectTipos(editandoTipo);
+    editandoTipo = '';
   });
 
   qs('#areasTabela').addEventListener('click', async (event) => {
     if (event.target.matches('.btn-editar')) {
       qs('#id').value = event.target.dataset.id;
       qs('#nome').value = event.target.dataset.nome;
-      popularSelectTipos(event.target.dataset.tipo);
+      editandoTipo = event.target.dataset.tipo;
       bootstrap.Modal.getOrCreateInstance(qs('#areaModal')).show();
     }
     if (event.target.matches('.btn-excluir') && confirmar('Deseja excluir esta área?')) {

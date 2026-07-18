@@ -76,10 +76,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     await carregar();
   });
 
-  qs('#criterioModal').addEventListener('show.bs.modal', (event) => {
-    if (!event.relatedTarget || !event.relatedTarget.matches('.btn-editar')) {
-      popularSelectTipos();
-    }
+  let editandoTipo = '';
+
+  qs('#criterioModal').addEventListener('show.bs.modal', () => {
+    popularSelectTipos(editandoTipo);
+    editandoTipo = '';
   });
 
   qs('#criteriosTabela').addEventListener('click', async (event) => {
@@ -96,7 +97,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       qs('#descricao').value = event.target.dataset.descricao;
       qs('#peso').value = event.target.dataset.peso;
       qs('#observacoes').value = event.target.dataset.observacoes;
-      popularSelectTipos(event.target.dataset.tipo);
+      editandoTipo = event.target.dataset.tipo;
       bootstrap.Modal.getOrCreateInstance(qs('#criterioModal')).show();
     }
     if (event.target.matches('.btn-excluir') && confirmar('Deseja excluir este critério?')) {
