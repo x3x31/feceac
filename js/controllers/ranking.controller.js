@@ -342,7 +342,9 @@ const gerarRelatorioPDF = () => {
     );
   }
 
-  doc.save(`ranking_feceac_${new Date().toISOString().slice(0, 10)}.pdf`);
+  const blob = doc.output('blob');
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
