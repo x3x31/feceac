@@ -407,7 +407,16 @@ const gerarRelatorioPDF = () => {
     const temAlunos = mostrarAlunos && (projeto.alunos || []).length;
     const temNotasDetalhe = notasPorCriterio && (projeto.avaliacoes || []).length;
 
-    let espacoNecessario = 18;
+    const tituloInicio = margin + 10;
+    const notaX = pageW - margin;
+    const espacoTitulo = notaX - tituloInicio - 8;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    const linhasTitulo = doc.splitTextToSize(projeto.titulo, espacoTitulo);
+    const linhasExtras = Math.max(0, linhasTitulo.length - 1);
+
+    let espacoNecessario = 18 + linhasExtras * 4;
     if (temAlunos) espacoNecessario += 6 + (projeto.alunos.length + 1) * 5;
     if (temNotasDetalhe) espacoNecessario += 8 + projeto.avaliacoes.length * 6;
 
@@ -418,24 +427,14 @@ const gerarRelatorioPDF = () => {
     doc.setTextColor(...corTexto);
     doc.text(`${posicao}o`, margin, y);
 
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-    const tituloInicio = margin + 10;
-    const notaX = pageW - margin;
-    const espacoTitulo = notaX - tituloInicio - 8;
-    let tituloExibicao = projeto.titulo;
-    while (doc.getTextWidth(tituloExibicao) > espacoTitulo && tituloExibicao.length > 3) {
-      tituloExibicao = tituloExibicao.slice(0, -1);
-    }
-    if (tituloExibicao !== projeto.titulo) tituloExibicao += '...';
-    doc.text(tituloExibicao, tituloInicio, y);
+    doc.text(linhasTitulo, tituloInicio, y);
 
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(...corCinza);
     doc.text(`Nota: ${notaFmt}`, notaX, y, { align: 'right' });
 
-    y += 5;
+    y += 5 + linhasExtras * 4;
     doc.setFontSize(8);
     doc.setTextColor(...corTexto);
     doc.text(`Orientador: ${projeto.orientador}${projeto.coorientador ? ' | Coorientador: ' + projeto.coorientador : ''}`, margin + 10, y);
