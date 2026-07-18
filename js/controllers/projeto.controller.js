@@ -120,7 +120,7 @@ const iniciarModalAlunos = () => {
       <tr class="aluno-linha" data-id="${aluno.id}" data-nome="${escapeHtml(aluno.nome)}" data-turma="${escapeHtml(aluno.turma)}">
         <td><input type="checkbox" class="form-check-input aluno-check" data-id="${aluno.id}" data-nome="${escapeHtml(aluno.nome)}" data-turma="${escapeHtml(aluno.turma)}"></td>
         <td>${escapeHtml(aluno.nome)}</td>
-        <td>${escapeHtml(aluno.turma)}</td>
+        <td>${escapeHtml(aluno.matricula || '-')}</td>
       </tr>
     `).join('');
   });
