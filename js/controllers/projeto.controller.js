@@ -50,6 +50,14 @@ const iniciarModalAlunos = () => {
   const turmaSelect = qs('#filtroTurma');
   turmaSelect.innerHTML = '<option value="">Selecione a turma</option>' + opcoesTurma();
 
+  qs('#btnBuscarAlunos').addEventListener('click', () => {
+    qs('#alunosModalTabela').innerHTML = '';
+    qs('#alunosModalMensagem').classList.add('d-none');
+    qs('#marcarTodosAlunos').checked = false;
+    turmaSelect.value = '';
+    bootstrap.Modal.getOrCreateInstance(qs('#alunosModal')).show();
+  });
+
   qs('#btnFiltrarAlunos').addEventListener('click', async () => {
     const turma = turmaSelect.value;
     if (!turma) {
