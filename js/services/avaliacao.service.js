@@ -3,7 +3,7 @@ import { supabase } from '../supabase.js';
 export const listarCriterios = async (tipoProjetoId = null) => {
   let query = supabase
     .from('criterios')
-    .select('*')
+    .select('*, tipo:tipos_projeto(id, nome)')
     .order('id');
 
   if (tipoProjetoId) {
@@ -15,6 +15,11 @@ export const listarCriterios = async (tipoProjetoId = null) => {
   if (error) throw error;
 
   return data;
+};
+
+export const excluirCriterio = async (id) => {
+  const { error } = await supabase.from('criterios').delete().eq('id', id);
+  if (error) throw error;
 };
 
 export const salvarCriterio = async (criterio) => {
