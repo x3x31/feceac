@@ -18,15 +18,27 @@
         <a class="btn btn-primary" href="cadastrar-projeto.html">Cadastrar Projeto</a>
       </div>
       <div class="search-grid mb-3">
-        <input id="filtroNome" class="form-control filtro-projeto" placeholder="Pesquisar por nome">
-        <select id="filtroArea" class="form-select filtro-projeto"></select>
-        <select id="filtroOrientador" class="form-select filtro-projeto"></select>
-        <input id="filtroAno" type="number" class="form-control filtro-projeto" placeholder="Ano">
+        <div>
+          <label class="form-label form-label-sm mb-1 search-label" for="filtroNome">Nome do Projeto</label>
+          <input id="filtroNome" class="form-control form-control-sm filtro-projeto" placeholder="Pesquisar por nome">
+        </div>
+        <div>
+          <label class="form-label form-label-sm mb-1 search-label" for="filtroTipo">Tipo</label>
+          <select id="filtroTipo" class="form-select form-select-sm filtro-projeto"></select>
+        </div>
+        <div>
+          <label class="form-label form-label-sm mb-1 search-label" for="filtroArea">Área</label>
+          <select id="filtroArea" class="form-select form-select-sm filtro-projeto"></select>
+        </div>
+        <div>
+          <label class="form-label form-label-sm mb-1 search-label" for="filtroOrientador">Orientador</label>
+          <select id="filtroOrientador" class="form-select form-select-sm filtro-projeto"></select>
+        </div>
       </div>
       <div id="estadoProjetos"></div>
       <div class="table-responsive bg-white border rounded">
         <table class="table table-hover align-middle mb-0">
-          <thead><tr><th></th><th>ID</th><th>Ano</th><th>Projeto</th><th>Área</th><th>Orientador</th><th>Alunos</th><th>Ações</th></tr></thead>
+          <thead><tr><th></th><th>ID</th><th>Projeto</th><th>Tipo</th><th>Área</th><th>Orientador</th><th>Coorientador</th><th>Alunos</th><th>Ações</th></tr></thead>
           <tbody id="projetosTabela"></tbody>
         </table>
       </div>

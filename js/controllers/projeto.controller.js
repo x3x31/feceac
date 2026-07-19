@@ -338,7 +338,7 @@ const iniciarFormularioProjeto = async () => {
 const renderizarProjetos = (projetos, ehAdmin = false) => {
   const corpo = qs('#projetosTabela');
   if (!projetos.length) {
-    corpo.innerHTML = `<tr><td colspan="8">${mensagemVazia()}</td></tr>`;
+    corpo.innerHTML = `<tr><td colspan="9">${mensagemVazia()}</td></tr>`;
     return;
   }
 
@@ -346,10 +346,11 @@ const renderizarProjetos = (projetos, ehAdmin = false) => {
     <tr>
       <td><button class="btn btn-sm btn-outline-secondary btn-expandir" data-id="${projeto.id}" type="button">+</button></td>
       <td>${projeto.id}</td>
-      <td>${projeto.ano}</td>
       <td>${escapeHtml(projeto.titulo)}</td>
+      <td>${escapeHtml(projeto.tipo?.nome || '-')}</td>
       <td>${escapeHtml(projeto.area?.nome || '-')}</td>
       <td>${escapeHtml(projeto.orientador?.nome || '-')}</td>
+      <td>${escapeHtml(projeto.coorientador?.nome || '-')}</td>
       <td>${projeto.alunos?.length || 0}</td>
       <td class="table-actions">
         <a class="btn btn-sm btn-outline-primary" href="editar-projeto.html?id=${projeto.id}">Editar</a>
@@ -358,7 +359,7 @@ const renderizarProjetos = (projetos, ehAdmin = false) => {
     </tr>
    <tr class="d-none alunos-detalhe" data-projeto-id="${projeto.id}">
   <td></td>
-  <td colspan="7">
+  <td colspan="8">
 
     <div class="row">
 
@@ -444,7 +445,7 @@ const renderizarProjetos = (projetos, ehAdmin = false) => {
 
                     </tr>
 
-                  `).join('')
+                  ).join('')
 
                 ).join('')
 
@@ -479,30 +480,56 @@ const renderizarProjetos = (projetos, ehAdmin = false) => {
 
 let ehAdmin = false;
 
+let tiposProjeto = [];
+
 const carregarProjetos = async () => {
   const filtros = {
     nome: qs('#filtroNome')?.value.trim(),
+    tipo_projeto_id: qs('#filtroTipo')?.value,
     area_id: qs('#filtroArea')?.value,
     orientador_id: qs('#filtroOrientador')?.value,
-    ano: qs('#filtroAno')?.value,
   };
   const projetos = await listarProjetos(filtros);
   renderizarProjetos(projetos, ehAdmin);
+};
+
+const carregarSelectTiposFiltro = async (valor = '') => {
+  const { data, error } = await supabase
+    .from('tipos_projeto')
+    .select('*')
+    .order('nome');
+  if (error) throw error;
+  tiposProjeto = data;
+  const select = qs('#filtroTipo');
+  select.innerHTML = '<option value="">Todos</option>' + data
+    .map((t) => `<option value="${t.id}" ${t.id == valor ? 'selected' : ''}>${escapeHtml(t.nome)}</option>`)
+    .join('');
 };
 
 const iniciarListagemProjetos = async () => {
   const usuario = await buscarUsuarioAtual();
   ehAdmin = usuario?.tipo === 'Administrador';
   await Promise.all([
-    carregarSelectAreas(qs('#filtroArea')),
+    carregarSelectTiposFiltro(),
     carregarSelectProfessores(qs('#filtroOrientador'), '', 'Todos'),
   ]);
+  await carregarSelectAreas(qs('#filtroArea'));
   await carregarProjetos();
 
-  qsa('.filtro-projeto').forEach((campo) => {
-    campo.addEventListener('input', debounce(carregarProjetos));
-    campo.addEventListener('change', carregarProjetos);
+  qs('#filtroNome').addEventListener('input', debounce(carregarProjetos));
+  qs('#filtroOrientador').addEventListener('change', carregarProjetos);
+
+  qs('#filtroTipo').addEventListener('change', async () => {
+    const tipoId = qs('#filtroTipo').value;
+    const valorAtualArea = qs('#filtroArea').value;
+    await carregarSelectAreas(qs('#filtroArea'), '', tipoId || null);
+    if (valorAtualArea && qs(`#filtroArea option[value="${valorAtualArea}"]`)) {
+      qs('#filtroArea').value = valorAtualArea;
+    }
+    await carregarProjetos();
   });
+
+  qs('#filtroArea').addEventListener('change', carregarProjetos);
 
   qs('#projetosTabela').addEventListener('click', async (event) => {
     if (event.target.matches('.btn-expandir')) {

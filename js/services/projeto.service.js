@@ -50,6 +50,7 @@ export const listarProjetos = async (filtros = {}) => {
   let query = supabase.from('projetos').select(selectProjeto).order('titulo');
 
   if (filtros.nome) query = query.ilike('titulo', `%${filtros.nome}%`);
+  if (filtros.tipo_projeto_id) query = query.eq('tipo_projeto_id', filtros.tipo_projeto_id);
   if (filtros.area_id) query = query.eq('area_id', filtros.area_id);
   if (filtros.orientador_id) query = query.eq('orientador_id', filtros.orientador_id);
   if (filtros.ano) query = query.eq('ano', filtros.ano);
