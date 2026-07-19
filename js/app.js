@@ -87,6 +87,7 @@ const aplicarMenu = (usuario, pagina) => {
   }
 
   if (usuario.tipo === 'Professor' && PAGINAS_BOTTOMNAV.includes(pagina)) {
+    document.body.classList.add('has-bottomnav');
     document.body.insertAdjacentHTML('beforeend', BOTTOMNAV_HTML);
     qsa('.bv-bottomnav-item').forEach((item) => {
       if (item.getAttribute('href') === pagina) item.classList.add('active');

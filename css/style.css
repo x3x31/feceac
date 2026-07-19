@@ -25,6 +25,11 @@ body {
   width: 260px;
   background: #ffffff;
   border-right: 1px solid #e5e7eb;
+  display: none;
+}
+
+.user-admin .sidebar {
+  display: block;
 }
 
 .sidebar .nav-link {
@@ -95,6 +100,10 @@ body {
 }
 
 /* Bottom Navigation Bar */
+body.has-bottomnav .content-area {
+  padding-bottom: 80px;
+}
+
 .pb-nav-spacer {
   padding-bottom: 80px;
 }
