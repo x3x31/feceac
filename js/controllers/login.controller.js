@@ -7,6 +7,7 @@ import { toast } from '../ui.js';
 const paginaInicial = (perfil) => {
   if (perfil === 'Aluno') return 'cadastrar-projeto.html';
   if (perfil === 'Avaliador') return 'boas-vindas.html';
+  if (perfil === 'Professor') return 'professor-boas-vindas.html';
   return APP.paginaPainel;
 };
 

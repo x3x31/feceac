@@ -30,6 +30,7 @@ const menusPorPerfil = {
 const acessoPorPagina = {
   'avaliacoes.html': ['Avaliador', 'Administrador', 'Professor'],
   'boas-vindas.html': ['Avaliador'],
+  'professor-boas-vindas.html': ['Professor'],
   'ranking.html': ['Administrador'],
   'usuarios.html': ['Administrador'],
   'professores.html': ['Administrador'],
@@ -43,6 +44,7 @@ const acessoPorPagina = {
 const paginaInicial = (perfil) => {
   if (perfil === 'Aluno') return 'cadastrar-projeto.html';
   if (perfil === 'Avaliador') return 'boas-vindas.html';
+  if (perfil === 'Professor') return 'professor-boas-vindas.html';
   return 'painel.html';
 };
 
@@ -79,6 +81,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (pagina === 'painel.html' && usuario.tipo === 'Avaliador') {
       location.href = 'boas-vindas.html';
+      return;
+    }
+
+    if (pagina === 'painel.html' && usuario.tipo === 'Professor') {
+      location.href = 'professor-boas-vindas.html';
       return;
     }
 
