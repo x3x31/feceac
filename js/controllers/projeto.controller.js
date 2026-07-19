@@ -36,8 +36,8 @@ const carregarSelectProfessores = async (select, valor = '', placeholder = 'Sele
     .join('');
 };
 
-const carregarSelectAreas = async (select, valor = '') => {
-  const areas = await listarAreas();
+const carregarSelectAreas = async (select, valor = '', tipoId = null) => {
+  const areas = await listarAreas(tipoId);
   select.innerHTML = '<option value="">Selecione</option>' + areas
     .map((area) => `<option value="${area.id}">${escapeHtml(area.nome)}</option>`)
     .join('');
@@ -209,12 +209,21 @@ const iniciarFormularioProjeto = async () => {
   const form = qs('#projetoForm');
   const id = getParam('id');
   qs('#ano').value = anoAtual();
+  await carregarSelectTipos(qs('#tipo_projeto_id'));
   await Promise.all([
-    carregarSelectAreas(qs('#area_id')),
-    carregarSelectTipos(qs('#tipo_projeto_id')),
+    carregarSelectAreas(qs('#area_id'), '', qs('#tipo_projeto_id').value || null),
     carregarSelectProfessores(qs('#orientador_id')),
     carregarSelectProfessores(qs('#coorientador_id')),
   ]);
+
+  qs('#tipo_projeto_id').addEventListener('change', async () => {
+    const valorAtual = qs('#area_id').value;
+    await carregarSelectAreas(qs('#area_id'), '', qs('#tipo_projeto_id').value || null);
+    if (valorAtual && qs(`#area_id option[value="${valorAtual}"]`)) {
+      qs('#area_id').value = valorAtual;
+    }
+  });
+
   adicionarAluno();
   iniciarModalAlunos();
 
@@ -225,7 +234,7 @@ const iniciarFormularioProjeto = async () => {
     qs('#ano').value = projeto.ano;
     qs('#titulo').value = projeto.titulo;
     qs('#tipo_projeto_id').value = projeto.tipo_projeto_id || '';
-    qs('#area_id').value = projeto.area_id;
+    await carregarSelectAreas(qs('#area_id'), projeto.area_id, projeto.tipo_projeto_id || null);
     qs('#orientador_id').value = projeto.orientador_id || '';
     qs('#coorientador_id').value = projeto.coorientador_id || '';
     qs('#alunosContainer').innerHTML = '';

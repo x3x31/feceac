@@ -1,10 +1,12 @@
 import { supabase } from '../supabase.js';
 
-export const listarAreas = async () => {
-  const { data, error } = await supabase
+export const listarAreas = async (tipoId = null) => {
+  let query = supabase
     .from('areas_conhecimento')
     .select('*, tipo:tipos_projeto(id, nome)')
     .order('nome');
+  if (tipoId) query = query.eq('tipo_projeto_id', tipoId);
+  const { data, error } = await query;
   if (error) throw error;
   return data;
 };
