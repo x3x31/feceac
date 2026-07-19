@@ -30,7 +30,45 @@ export const toast = (mensagem, tipo = 'success') => {
   item.addEventListener('hidden.bs.toast', () => item.remove());
 };
 
-export const confirmar = (mensagem) => window.confirm(mensagem);
+export const confirmar = (mensagem) => new Promise((resolve) => {
+  let modalEl = qs('#confirmarModal');
+  if (!modalEl) {
+    modalEl = document.createElement('div');
+    modalEl.id = 'confirmarModal';
+    modalEl.className = 'modal fade';
+    modalEl.tabIndex = -1;
+    modalEl.innerHTML = `
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title h5">Confirmação</h2>
+            <button class="btn-close" data-bs-dismiss="modal" type="button"></button>
+          </div>
+          <div class="modal-body" id="confirmarMensagem"></div>
+          <div class="modal-footer">
+            <button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">Cancelar</button>
+            <button class="btn btn-danger" id="confirmarBtnOk" type="button">Confirmar</button>
+          </div>
+        </div>
+      </div>`;
+    document.body.appendChild(modalEl);
+  }
+
+  qs('#confirmarMensagem').textContent = mensagem;
+  const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+  const limpar = () => {
+    qs('#confirmarBtnOk').removeEventListener('click', onOk);
+    modalEl.removeEventListener('hidden.bs.modal', onHidden);
+  };
+
+  const onOk = () => { limpar(); modal.hide(); resolve(true); };
+  const onHidden = () => { limpar(); resolve(false); };
+
+  qs('#confirmarBtnOk').addEventListener('click', onOk);
+  modalEl.addEventListener('hidden.bs.modal', onHidden);
+  modal.show();
+});
 
 export const mensagemVazia = (texto = 'Nenhum registro encontrado.') => (
   `<div class="alert alert-light border text-center mb-0">${escapeHtml(texto)}</div>`

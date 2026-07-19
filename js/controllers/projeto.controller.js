@@ -2,6 +2,7 @@ import { anoAtual, debounce, escapeHtml, getParam, qs, qsa, validarFormulario } 
 import { confirmar, mensagemVazia, setLoading, toast } from '../ui.js';
 import { listarAreas } from '../services/area.service.js';
 import { excluirProjeto, listarProjetos, obterProjeto, salvarProjeto } from '../services/projeto.service.js';
+import { buscarUsuarioAtual } from '../services/usuario.service.js';
 import { supabase } from '../supabase.js';
 
 const TURMAS = [
@@ -264,7 +265,7 @@ const iniciarFormularioProjeto = async () => {
   });
 };
 
-const renderizarProjetos = (projetos) => {
+const renderizarProjetos = (projetos, ehAdmin = false) => {
   const corpo = qs('#projetosTabela');
   if (!projetos.length) {
     corpo.innerHTML = `<tr><td colspan="8">${mensagemVazia()}</td></tr>`;
@@ -282,7 +283,7 @@ const renderizarProjetos = (projetos) => {
       <td>${projeto.alunos?.length || 0}</td>
       <td class="table-actions">
         <a class="btn btn-sm btn-outline-primary" href="editar-projeto.html?id=${projeto.id}">Editar</a>
-        <button class="btn btn-sm btn-outline-danger btn-excluir" data-id="${projeto.id}">Excluir</button>
+        ${ehAdmin ? `<button class="btn btn-sm btn-outline-danger btn-excluir" data-id="${projeto.id}">Excluir</button>` : ''}
       </td>
     </tr>
    <tr class="d-none alunos-detalhe" data-projeto-id="${projeto.id}">
@@ -406,6 +407,8 @@ const renderizarProjetos = (projetos) => {
     `).join('');
 };
 
+let ehAdmin = false;
+
 const carregarProjetos = async () => {
   const filtros = {
     nome: qs('#filtroNome')?.value.trim(),
@@ -414,10 +417,12 @@ const carregarProjetos = async () => {
     ano: qs('#filtroAno')?.value,
   };
   const projetos = await listarProjetos(filtros);
-  renderizarProjetos(projetos);
+  renderizarProjetos(projetos, ehAdmin);
 };
 
 const iniciarListagemProjetos = async () => {
+  const usuario = await buscarUsuarioAtual();
+  ehAdmin = usuario?.tipo === 'Administrador';
   await Promise.all([
     carregarSelectAreas(qs('#filtroArea')),
     carregarSelectProfessores(qs('#filtroOrientador'), '', 'Todos'),
@@ -438,14 +443,15 @@ const iniciarListagemProjetos = async () => {
       return;
     }
 
-    if (!event.target.matches('.btn-excluir')) return;
-    if (!confirmar('Deseja excluir este projeto?')) return;
-    try {
-      await excluirProjeto(event.target.dataset.id);
-      toast('Projeto excluído.');
-      await carregarProjetos();
-    } catch (error) {
-      toast(error.message || 'Erro ao excluir projeto.', 'danger');
+    if (event.target.matches('.btn-excluir')) {
+      if (!await confirmar('Deseja excluir este projeto?')) return;
+      try {
+        await excluirProjeto(event.target.dataset.id);
+        toast('Projeto excluído.');
+        await carregarProjetos();
+      } catch (error) {
+        toast(error.message || 'Erro ao excluir projeto.', 'danger');
+      }
     }
   });
 };

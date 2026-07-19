@@ -64,7 +64,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       bootstrap.Modal.getOrCreateInstance(qs('#usuarioModal')).show();
     }
 
-    if (botao.matches('.btn-excluir') && confirmar('Deseja excluir este usuário?')) {
+    if (botao.matches('.btn-excluir')) {
+      if (!await confirmar('Deseja excluir este usuário?')) return;
       await excluirUsuario(botao.dataset.id);
       toast('Usuário excluído.');
       await carregar();

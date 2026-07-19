@@ -73,7 +73,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       editandoTipo = event.target.dataset.tipo;
       bootstrap.Modal.getOrCreateInstance(qs('#areaModal')).show();
     }
-    if (event.target.matches('.btn-excluir') && confirmar('Deseja excluir esta área?')) {
+    if (event.target.matches('.btn-excluir')) {
+      if (!await confirmar('Deseja excluir esta área?')) return;
       await excluirArea(event.target.dataset.id);
       toast('Área excluída.');
       await carregar();

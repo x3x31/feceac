@@ -100,7 +100,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       editandoTipo = event.target.dataset.tipo;
       bootstrap.Modal.getOrCreateInstance(qs('#criterioModal')).show();
     }
-    if (event.target.matches('.btn-excluir') && confirmar('Deseja excluir este critério?')) {
+    if (event.target.matches('.btn-excluir')) {
+      if (!await confirmar('Deseja excluir este critério?')) return;
       await excluirCriterio(event.target.dataset.id);
       toast('Critério excluído.');
       await carregar();
