@@ -55,17 +55,22 @@ const carregarSelectTipos = async (select, valor = '') => {
     .join('');
 };
 
-const linhaAluno = (nome = '', turma = 'EMPM1A', id = '', matricula = '', turno = '') => `
+const linhaAluno = (nome = '', turma = 'EMPM1A', id = '', matricula = '', turno = '') => {
+  const vinculado = !!id;
+  const disabled = vinculado ? 'disabled' : '';
+  const readonly = vinculado ? 'readonly' : '';
+  return `
   <div class="aluno-item mb-2">
     <input type="hidden" class="aluno-id" value="${id}">
     <div class="aluno-grid">
-      <input class="form-control aluno-nome" value="${escapeHtml(nome)}" required placeholder="Nome do aluno">
-      <input class="form-control aluno-matricula" value="${escapeHtml(matricula)}" placeholder="Matrícula">
-      <select class="form-select aluno-turno" aria-label="Turno do aluno">${opcoesTurno(turno)}</select>
-      <select class="form-select aluno-turma" required aria-label="Turma do aluno">${opcoesTurma(turma)}</select>
+      <input class="form-control aluno-nome" value="${escapeHtml(nome)}" required placeholder="Nome do aluno" ${readonly}>
+      <input class="form-control aluno-matricula" value="${escapeHtml(matricula)}" placeholder="Matrícula" ${readonly}>
+      <select class="form-select aluno-turno" aria-label="Turno do aluno" ${disabled}>${opcoesTurno(turno)}</select>
+      <select class="form-select aluno-turma" required aria-label="Turma do aluno" ${disabled}>${opcoesTurma(turma)}</select>
       <button class="btn btn-outline-danger btn-remover-aluno" type="button">Remover</button>
     </div>
   </div>`;
+};
 
 const adicionarAluno = (nome = '', turma = 'EMPM1A', id = '', matricula = '', turno = '') => {
   qs('#alunosContainer').insertAdjacentHTML('beforeend', linhaAluno(nome, turma, id, matricula, turno));
@@ -228,8 +233,9 @@ const iniciarFormularioProjeto = async () => {
   }
 
   qs('#btnAdicionarAluno').addEventListener('click', () => adicionarAluno());
-  qs('#alunosContainer').addEventListener('click', (event) => {
+  qs('#alunosContainer').addEventListener('click', async (event) => {
     if (!event.target.matches('.btn-remover-aluno')) return;
+    if (!await confirmar('Deseja remover este aluno do projeto?')) return;
     event.target.closest('.aluno-item').remove();
     if (!qsa('.aluno-item').length) adicionarAluno();
   });
