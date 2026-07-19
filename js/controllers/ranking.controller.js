@@ -115,7 +115,7 @@ const popularFiltrosRelatorio = async () => {
 
 const gerarRelatorioPDF = () => {
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
   const filtroTipo = qs('#filtroTipoRelatorio').value;
   const filtroArea = qs('#filtroAreaRelatorio').value;
@@ -175,17 +175,6 @@ const gerarRelatorioPDF = () => {
     doc.setDrawColor(...corPrimaria);
     doc.setLineWidth(0.5);
     doc.line(margin, y, pageW - margin, y);
-    y += 6;
-
-    const projetosArea = agruparGrupos[areaAtual] || [];
-    const notasValidas = projetosArea.filter((p) => p.nota !== null);
-    const mediaArea = notasValidas.length
-      ? (notasValidas.reduce((s, p) => s + p.nota, 0) / notasValidas.length).toFixed(2)
-      : '-';
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(...corCinza);
-    doc.text(`${projetosArea.length} projeto(s) | Nota media: ${mediaArea}`, margin, y);
     y += 6;
   };
 
@@ -408,8 +397,7 @@ const gerarRelatorioPDF = () => {
     const temNotasDetalhe = notasPorCriterio && (projeto.avaliacoes || []).length;
 
     const tituloInicio = margin + 10;
-    const notaX = pageW - margin;
-    const espacoTitulo = notaX - tituloInicio - 8;
+    const espacoTitulo = pageW - margin - tituloInicio - 2;
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
@@ -428,13 +416,13 @@ const gerarRelatorioPDF = () => {
     doc.text(`${posicao}o`, margin, y);
 
     doc.text(linhasTitulo, tituloInicio, y);
+    y += 5 + linhasExtras * 4;
 
     doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(...corCinza);
-    doc.text(`Nota: ${notaFmt}`, notaX, y, { align: 'right' });
-
-    y += 5 + linhasExtras * 4;
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...corPrimaria);
+    doc.text(`Nota: ${notaFmt}`, tituloInicio, y);
+    y += 4;
     doc.setFontSize(8);
     doc.setTextColor(...corTexto);
     doc.text(`Orientador: ${projeto.orientador?.nome || '-'}${projeto.coorientador?.nome ? ' | Coorientador: ' + projeto.coorientador.nome : ''}`, margin + 10, y);
@@ -493,10 +481,10 @@ const gerarRelatorioPDF = () => {
         styles: { fontSize: 7, cellPadding: 1.5 },
         headStyles: { fillColor: [108, 117, 125], fontSize: 7 },
         columnStyles: {
-          0: { cellWidth: 50 },
-          1: { cellWidth: 90 },
-          2: { cellWidth: 20, halign: 'center' },
-          3: { cellWidth: 20, halign: 'center' },
+          0: { cellWidth: 35 },
+          1: { cellWidth: 70 },
+          2: { cellWidth: 15, halign: 'center' },
+          3: { cellWidth: 15, halign: 'center' },
         },
       });
       y = doc.lastAutoTable.finalY + 4;
