@@ -9,19 +9,21 @@
 
 .bv-main {
   min-height: calc(100vh - 60px);
-  background: #f9fafa;
+  background:
+    linear-gradient(rgba(20, 83, 45, .78), rgba(15, 118, 110, .78)),
+    url('../assets/logos/fundologin.png') center/cover no-repeat fixed;
   padding: 2rem 1rem;
 }
 
 .bv-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, .95);
+  border: none;
   border-top: 4px solid var(--feceac-primary);
   border-radius: 12px;
   padding: 3rem 2.5rem;
   max-width: 520px;
   width: 100%;
-  box-shadow: 0 4px 20px rgba(20, 83, 45, .08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .3);
 }
 
 .bv-logo-principal {
