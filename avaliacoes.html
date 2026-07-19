@@ -83,24 +83,27 @@
 
                 <label 
                   class="form-label required"
-                  for="projeto_id">
+                  for="projetoBusca">
 
                   Projeto
 
                 </label>
 
-
-                <select 
-                  id="projeto_id"
-                  class="form-select"
-                  required>
-
-                  <option value="">
-                    Selecione um projeto
-                  </option>
-
-                </select>
-
+                <div class="position-relative">
+                  <input type="hidden" id="projeto_id" required>
+                  <input 
+                    id="projetoBusca"
+                    type="text"
+                    class="form-control"
+                    placeholder="Digite para buscar..."
+                    autocomplete="off"
+                    required>
+                  <div 
+                    id="projetoDropdown"
+                    class="list-group position-absolute w-100 d-none"
+                    style="z-index: 1050; max-height: 300px; overflow-y: auto;">
+                  </div>
+                </div>
 
               </div>
 
@@ -121,6 +124,7 @@
                   id="data"
                   type="date"
                   class="form-control"
+                  readonly
                   required>
 
 

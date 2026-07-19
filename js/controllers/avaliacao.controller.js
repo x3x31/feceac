@@ -20,29 +20,14 @@ let projetosDisponiveis = [];
 
 
 const renderizarProjetos = (projetos) => {
-
-  qs('#projeto_id').innerHTML =
-    `
-      <option value="">
-        Selecione um projeto
-      </option>
-    `
-    +
-    projetos.map((projeto) => {
-
-      const tipo =
-        projeto.tipo?.nome
-          ? ` - ${projeto.tipo.nome}`
-          : '';
-
-      return `
-        <option value="${projeto.id}">
-          ${escapeHtml(projeto.titulo)}
-        </option>
-      `;
-
-    }).join('');
-
+  const dropdown = qs('#projetoDropdown');
+  dropdown.innerHTML = projetos.length
+    ? projetos.map((projeto) => `
+      <button type="button" class="list-group-item list-group-item-action" data-id="${projeto.id}" data-titulo="${escapeHtml(projeto.titulo)}">
+        ${escapeHtml(projeto.titulo)}
+      </button>
+    `).join('')
+    : '<div class="list-group-item text-muted">Nenhum projeto encontrado</div>';
 };
 
 
@@ -317,9 +302,6 @@ const carregarBase = async (usuario) => {
 
   projetosDisponiveis = projetos;
 
-  console.log(projetosDisponiveis);
-
-
   renderizarProjetos(projetos);
 
 
@@ -457,35 +439,48 @@ document.addEventListener(
 
     await carregarBase(usuario);
 
+    const buscaInput = qs('#projetoBusca');
+    const dropdown = qs('#projetoDropdown');
+    const hiddenInput = qs('#projeto_id');
 
+    buscaInput.addEventListener('input', () => {
+      const termo = buscaInput.value.trim().toLowerCase();
+      const itens = dropdown.querySelectorAll('.list-group-item[data-id]');
+      let visiveis = 0;
+      itens.forEach((item) => {
+        const titulo = item.dataset.titulo.toLowerCase();
+        const mostra = !termo || titulo.includes(termo);
+        item.classList.toggle('d-none', !mostra);
+        if (mostra) visiveis++;
+      });
+      dropdown.classList.remove('d-none');
+      if (!visiveis && termo) {
+        dropdown.innerHTML = '<div class="list-group-item text-muted">Nenhum projeto encontrado</div>';
+      } else if (!termo) {
+        renderizarProjetos(projetosDisponiveis);
+      }
+    });
 
-    qs('#projeto_id')
-      .addEventListener(
-        'change',
-        async (event) => {
+    buscaInput.addEventListener('focus', () => {
+      renderizarProjetos(projetosDisponiveis);
+      dropdown.classList.remove('d-none');
+    });
 
+    dropdown.addEventListener('click', (event) => {
+      const btn = event.target.closest('[data-id]');
+      if (!btn) return;
+      hiddenInput.value = btn.dataset.id;
+      buscaInput.value = btn.dataset.titulo;
+      dropdown.classList.add('d-none');
+      const projeto = projetosDisponiveis.find((p) => p.id === Number(btn.dataset.id));
+      mostrarInformacoesProjeto(projeto);
+    });
 
-          const projetoId =
-            Number(event.target.value);
-
-
-
-          const projeto =
-            projetosDisponiveis.find(
-              (item) =>
-                item.id === projetoId
-            );
-
-
-
-          await mostrarInformacoesProjeto(
-            projeto
-          );
-
-
-        }
-
-      );
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('#projetoBusca') && !event.target.closest('#projetoDropdown')) {
+        dropdown.classList.add('d-none');
+      }
+    });
 
 
 
@@ -566,7 +561,8 @@ document.addEventListener(
               usuario
             );
 
-
+            qs('#projeto_id').value = '';
+            qs('#projetoBusca').value = '';
             qs('#criterios').innerHTML = '';
 
 
