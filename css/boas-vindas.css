@@ -1,47 +1,52 @@
 .bv-navbar {
-  background: var(--feceac-primary);
-  border-bottom: 0;
+  background: #f9fafa;
+  border-bottom: 2px solid var(--feceac-primary);
+}
+
+.bv-navbar .navbar-brand img {
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.08));
 }
 
 .bv-main {
   min-height: calc(100vh - 60px);
-  background:
-    linear-gradient(rgba(20, 83, 45, .85), rgba(15, 118, 110, .85)),
-    url('../assets/logos/fundologin.png') center/cover no-repeat fixed;
+  background: #f9fafa;
   padding: 2rem 1rem;
 }
 
 .bv-card {
-  background: rgba(255, 255, 255, .95);
-  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-top: 4px solid var(--feceac-primary);
+  border-radius: 12px;
   padding: 3rem 2.5rem;
   max-width: 520px;
   width: 100%;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, .25);
+  box-shadow: 0 4px 20px rgba(20, 83, 45, .08);
 }
 
 .bv-logo-principal {
   max-width: 260px;
   width: 100%;
-  border-radius: 12px;
+  border-radius: 10px;
 }
 
 .bv-logo-secundario {
-  max-width: 160px;
+  max-width: 140px;
   width: 100%;
-  border-radius: 8px;
-  opacity: .85;
+  border-radius: 6px;
+  opacity: .7;
+  filter: grayscale(.15);
 }
 
 .bv-titulo {
-  font-size: 1.8rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: var(--feceac-primary);
-  margin-bottom: .25rem;
+  margin-bottom: .2rem;
 }
 
 .bv-nome {
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   font-weight: 600;
   color: var(--feceac-ink);
   margin-bottom: .5rem;
@@ -49,7 +54,16 @@
 
 .bv-subtexto {
   color: var(--feceac-muted);
-  font-size: .95rem;
+  font-size: .9rem;
+  margin-bottom: .5rem;
+}
+
+.bv-separator {
+  width: 60px;
+  height: 3px;
+  background: var(--feceac-accent);
+  border-radius: 2px;
+  margin: 0 auto 1.25rem;
 }
 
 .bv-btn {
@@ -58,6 +72,7 @@
   color: #fff;
   font-weight: 600;
   border-radius: 8px;
+  padding: .6rem 2rem;
   transition: background .2s, transform .15s;
 }
 
@@ -66,4 +81,12 @@
   border-color: #0f3f22;
   color: #fff;
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(20, 83, 45, .25);
+}
+
+.bv-tipo-badge {
+  background: var(--feceac-primary);
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: .02em;
 }

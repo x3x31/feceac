@@ -1,10 +1,21 @@
 import { APP } from '../config.js';
 import { cadastrarConta, login, obterSessao } from '../auth.js';
+import { buscarUsuarioAtual } from '../services/usuario.service.js';
 import { qs, redirect, validarFormulario } from '../util.js';
 import { toast } from '../ui.js';
 
+const paginaInicial = (perfil) => {
+  if (perfil === 'Aluno') return 'cadastrar-projeto.html';
+  if (perfil === 'Avaliador') return 'boas-vindas.html';
+  return APP.paginaPainel;
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
-  if (await obterSessao()) redirect(APP.paginaPainel);
+  if (await obterSessao()) {
+    const usuario = await buscarUsuarioAtual();
+    redirect(paginaInicial(usuario?.tipo));
+    return;
+  }
 
   qs('#loginForm').addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -17,7 +28,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
       await login(qs('#email').value.trim(), qs('#senha').value);
-      redirect(APP.paginaPainel);
+      const usuario = await buscarUsuarioAtual();
+      redirect(paginaInicial(usuario?.tipo));
     } catch (error) {
       toast(error.message || 'Não foi possível entrar.', 'danger');
       botao.disabled = false;
