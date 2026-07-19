@@ -1,9 +1,25 @@
 import { debounce, escapeHtml, qs, qsa, validarFormulario } from '../util.js';
+import { supabase } from '../supabase.js';
 import { confirmar, mensagemVazia, setLoading, toast } from '../ui.js';
 import { buscarUsuarioAtual } from '../services/usuario.service.js';
 import { excluirAluno, listarAlunos, salvarAluno } from '../services/aluno.service.js';
 
 let alunos = [];
+
+const carregarTurmas = async (turno) => {
+  const sel = qs('#turma');
+  sel.innerHTML = '<option value="">Carregando...</option>';
+  sel.disabled = true;
+  if (!turno) {
+    sel.innerHTML = '<option value="">Selecione o turno primeiro</option>';
+    return [];
+  }
+  const { data } = await supabase.from('alunos').select('turma').eq('turno', turno).not('turma', 'is', null);
+  const turmas = [...new Set((data || []).map((a) => a.turma).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="">Selecione a turma</option>' + turmas.map((t) => `<option>${escapeHtml(t)}</option>`).join('');
+  sel.disabled = false;
+  return turmas;
+};
 
 const renderizar = (lista) => {
   const corpo = qs('#alunosTabela');
@@ -61,10 +77,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     campo.addEventListener('input', debounce(aplicarFiltros));
   });
 
-  qs('#btnNovoAluno').addEventListener('click', () => {
+  qs('#btnNovoAluno').addEventListener('click', async () => {
     qs('#alunoForm').reset();
     qs('#id').value = '';
+    qs('#turma').innerHTML = '<option value="">Selecione o turno primeiro</option>';
+    qs('#turma').disabled = true;
     bootstrap.Modal.getOrCreateInstance(qs('#alunoModal')).show();
+  });
+
+  qs('#turno').addEventListener('change', async () => {
+    await carregarTurmas(qs('#turno').value);
   });
 
   qs('#alunosTabela').addEventListener('click', async (event) => {
@@ -72,8 +94,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       qs('#id').value = event.target.dataset.id;
       qs('#nome').value = event.target.dataset.nome;
       qs('#matricula').value = event.target.dataset.matricula;
-      qs('#turma').value = event.target.dataset.turma;
       qs('#turno').value = event.target.dataset.turno;
+      await carregarTurmas(qs('#turno').value);
+      qs('#turma').value = event.target.dataset.turma;
       bootstrap.Modal.getOrCreateInstance(qs('#alunoModal')).show();
     }
     if (event.target.matches('.btn-excluir')) {
