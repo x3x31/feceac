@@ -25,13 +25,59 @@ const opcoesTurno = (valor = '') => {
     .join('');
 };
 
-const carregarSelectProfessores = async (select, valor = '', placeholder = 'Selecione') => {
+let professoresDisponiveis = [];
+
+const carregarProfessores = async () => {
   const { data, error } = await supabase
     .from('professores')
     .select('*')
     .order('nome');
   if (error) throw error;
-  select.innerHTML = `<option value="">${placeholder}</option>` + data
+  professoresDisponiveis = data;
+};
+
+const renderizarDropdownProfessores = (dropdownId, buscaId, termo = '') => {
+  const dropdown = qs(`#${dropdownId}`);
+  const termoLower = termo.toLowerCase();
+  const itens = professoresDisponiveis.filter((p) => !termoLower || p.nome.toLowerCase().includes(termoLower));
+  dropdown.innerHTML = itens.length
+    ? itens.map((p) => `<button type="button" class="list-group-item list-group-item-action" data-id="${p.id}" data-nome="${escapeHtml(p.nome)}">${escapeHtml(p.nome)}</button>`).join('')
+    : '<div class="list-group-item text-muted">Nenhum professor encontrado</div>';
+};
+
+const iniciarBuscaProfessor = (buscaId, dropdownId, hiddenId, placeholder = 'Selecione') => {
+  const busca = qs(`#${buscaId}`);
+  const dropdown = qs(`#${dropdownId}`);
+  const hidden = qs(`#${hiddenId}`);
+
+  busca.addEventListener('input', () => {
+    renderizarDropdownProfessores(dropdownId, buscaId, busca.value.trim());
+    dropdown.classList.remove('d-none');
+  });
+
+  busca.addEventListener('focus', () => {
+    renderizarDropdownProfessores(dropdownId, buscaId, busca.value.trim());
+    dropdown.classList.remove('d-none');
+  });
+
+  dropdown.addEventListener('click', (event) => {
+    const btn = event.target.closest('[data-id]');
+    if (!btn) return;
+    hidden.value = btn.dataset.id;
+    busca.value = btn.dataset.nome;
+    dropdown.classList.add('d-none');
+  });
+};
+
+const fecharDropdownsProfessores = (event) => {
+  if (!event.target.closest('.position-relative')) {
+    qsa('#orientadorDropdown, #coorientadorDropdown').forEach((d) => d.classList.add('d-none'));
+  }
+};
+
+const carregarSelectProfessores = async (select, valor = '', placeholder = 'Selecione') => {
+  if (!professoresDisponiveis.length) await carregarProfessores();
+  select.innerHTML = `<option value="">${placeholder}</option>` + professoresDisponiveis
     .map((p) => `<option value="${p.id}" ${p.id == valor ? 'selected' : ''}>${escapeHtml(p.nome)}</option>`)
     .join('');
 };
@@ -212,9 +258,12 @@ const iniciarFormularioProjeto = async () => {
   await carregarSelectTipos(qs('#tipo_projeto_id'));
   await Promise.all([
     carregarSelectAreas(qs('#area_id'), '', qs('#tipo_projeto_id').value || null),
-    carregarSelectProfessores(qs('#orientador_id')),
-    carregarSelectProfessores(qs('#coorientador_id')),
+    carregarProfessores(),
   ]);
+
+  iniciarBuscaProfessor('orientadorBusca', 'orientadorDropdown', 'orientador_id');
+  iniciarBuscaProfessor('coorientadorBusca', 'coorientadorDropdown', 'coorientador_id');
+  document.addEventListener('click', fecharDropdownsProfessores);
 
   qs('#tipo_projeto_id').addEventListener('change', async () => {
     const valorAtual = qs('#area_id').value;
@@ -235,8 +284,14 @@ const iniciarFormularioProjeto = async () => {
     qs('#titulo').value = projeto.titulo;
     qs('#tipo_projeto_id').value = projeto.tipo_projeto_id || '';
     await carregarSelectAreas(qs('#area_id'), projeto.area_id, projeto.tipo_projeto_id || null);
-    qs('#orientador_id').value = projeto.orientador_id || '';
-    qs('#coorientador_id').value = projeto.coorientador_id || '';
+    if (projeto.orientador_id) {
+      qs('#orientador_id').value = projeto.orientador_id;
+      qs('#orientadorBusca').value = projeto.orientador?.nome || '';
+    }
+    if (projeto.coorientador_id) {
+      qs('#coorientador_id').value = projeto.coorientador_id;
+      qs('#coorientadorBusca').value = projeto.coorientador?.nome || '';
+    }
     qs('#alunosContainer').innerHTML = '';
     projeto.alunos.forEach((item) => adicionarAluno(item.aluno.nome, item.turma || item.aluno.turma, item.aluno.id, item.aluno.matricula, item.aluno.turno || ''));
   }

@@ -20,8 +20,22 @@
             <div class="col-md-10"><label class="form-label required" for="titulo">Nome do Projeto</label><input id="titulo" class="form-control" required maxlength="200"></div>
             <div class="col-md-4"><label class="form-label required" for="tipo_projeto_id">Tipo do Projeto</label><select id="tipo_projeto_id" class="form-select" required></select></div>
             <div class="col-md-4"><label class="form-label required" for="area_id">Área do Conhecimento</label><select id="area_id" class="form-select" required></select></div>
-            <div class="col-md-4"><label class="form-label required" for="orientador_id">Orientador</label><select id="orientador_id" class="form-select" required><option value="">Selecione</option></select></div>
-            <div class="col-md-6"><label class="form-label" for="coorientador_id">Coorientador</label><select id="coorientador_id" class="form-select"><option value="">Selecione</option></select></div>
+            <div class="col-md-4">
+              <label class="form-label required" for="orientadorBusca">Orientador</label>
+              <div class="position-relative">
+                <input type="hidden" id="orientador_id" required>
+                <input id="orientadorBusca" type="text" class="form-control" placeholder="Digite para buscar..." autocomplete="off" required>
+                <div id="orientadorDropdown" class="list-group position-absolute w-100 d-none" style="z-index: 1050; max-height: 300px; overflow-y: auto;"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="coorientadorBusca">Coorientador</label>
+              <div class="position-relative">
+                <input type="hidden" id="coorientador_id">
+                <input id="coorientadorBusca" type="text" class="form-control" placeholder="Digite para buscar..." autocomplete="off">
+                <div id="coorientadorDropdown" class="list-group position-absolute w-100 d-none" style="z-index: 1050; max-height: 300px; overflow-y: auto;"></div>
+              </div>
+            </div>
             <div class="col-12">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <label class="form-label mb-0 required">Alunos</label>
