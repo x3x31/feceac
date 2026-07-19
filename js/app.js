@@ -77,6 +77,7 @@ const aplicarMenu = (usuario, pagina) => {
   const itens = menusPorPerfil[usuario.tipo] || [];
 
   if (usuario.tipo === 'Administrador') {
+    document.body.classList.add('user-admin');
     qsa('.sidebar .nav').forEach((nav) => {
       nav.innerHTML = itens.map(([href, texto]) => (
         `<a class="nav-link ${href === pagina ? 'active' : ''}" href="${href}">${texto}</a>`
