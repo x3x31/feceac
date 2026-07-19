@@ -511,13 +511,50 @@ const iniciarListagemProjetos = async () => {
   ehAdmin = usuario?.tipo === 'Administrador';
   await Promise.all([
     carregarSelectTiposFiltro(),
-    carregarSelectProfessores(qs('#filtroOrientador'), '', 'Todos'),
+    carregarProfessores(),
   ]);
   await carregarSelectAreas(qs('#filtroArea'));
   await carregarProjetos();
 
   qs('#filtroNome').addEventListener('input', debounce(carregarProjetos));
-  qs('#filtroOrientador').addEventListener('change', carregarProjetos);
+
+  const buscaOrientador = qs('#filtroOrientadorBusca');
+  const dropdownOrientador = qs('#filtroOrientadorDropdown');
+  const hiddenOrientador = qs('#filtroOrientador');
+
+  const renderizarFiltroOrientador = (termo = '') => {
+    const termoLower = termo.toLowerCase();
+    const itens = professoresDisponiveis.filter((p) => !termoLower || p.nome.toLowerCase().includes(termoLower));
+    const todosBtn = '<button type="button" class="list-group-item list-group-item-action fw-semibold" data-id="" data-nome="Todos">Todos</button>';
+    dropdownOrientador.innerHTML = todosBtn + (itens.length
+      ? itens.map((p) => `<button type="button" class="list-group-item list-group-item-action" data-id="${p.id}" data-nome="${escapeHtml(p.nome)}">${escapeHtml(p.nome)}</button>`).join('')
+      : '<div class="list-group-item text-muted">Nenhum professor encontrado</div>');
+  };
+
+  buscaOrientador.addEventListener('input', () => {
+    renderizarFiltroOrientador(buscaOrientador.value.trim());
+    dropdownOrientador.classList.remove('d-none');
+  });
+
+  buscaOrientador.addEventListener('focus', () => {
+    renderizarFiltroOrientador(buscaOrientador.value.trim());
+    dropdownOrientador.classList.remove('d-none');
+  });
+
+  dropdownOrientador.addEventListener('click', (event) => {
+    const btn = event.target.closest('[data-id]');
+    if (!btn) return;
+    hiddenOrientador.value = btn.dataset.id;
+    buscaOrientador.value = btn.dataset.nome === 'Todos' ? '' : btn.dataset.nome;
+    dropdownOrientador.classList.add('d-none');
+    carregarProjetos();
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('#filtroOrientadorBusca') && !event.target.closest('#filtroOrientadorDropdown')) {
+      dropdownOrientador.classList.add('d-none');
+    }
+  });
 
   qs('#filtroTipo').addEventListener('change', async () => {
     const tipoId = qs('#filtroTipo').value;

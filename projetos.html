@@ -31,8 +31,12 @@
           <select id="filtroArea" class="form-select form-select-sm filtro-projeto"></select>
         </div>
         <div>
-          <label class="form-label form-label-sm mb-1 search-label" for="filtroOrientador">Orientador</label>
-          <select id="filtroOrientador" class="form-select form-select-sm filtro-projeto"></select>
+          <label class="form-label form-label-sm mb-1 search-label" for="filtroOrientadorBusca">Orientador</label>
+          <div class="position-relative">
+            <input type="hidden" id="filtroOrientador">
+            <input id="filtroOrientadorBusca" type="text" class="form-control form-control-sm" placeholder="Todos" autocomplete="off">
+            <div id="filtroOrientadorDropdown" class="list-group position-absolute w-100 d-none" style="z-index: 1050; max-height: 250px; overflow-y: auto;"></div>
+          </div>
         </div>
       </div>
       <div id="estadoProjetos"></div>
