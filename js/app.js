@@ -48,13 +48,50 @@ const paginaInicial = (perfil) => {
   return 'painel.html';
 };
 
+const BOTTOMNAV_HTML = `
+<nav class="bv-bottomnav">
+  <a href="professor-boas-vindas.html" class="bv-bottomnav-item">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+      <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 2 7.5V14a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V7.5a.5.5 0 0 0-.146-.354l-6-6z"/>
+      <path d="M3.146 8.354a.5.5 0 0 1 0-.708l5-5a.5.5 0 0 1 .708.708L4.707 7.5H12.5a.5.5 0 0 1 0 1H4.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5z"/>
+    </svg>
+    <span>Início</span>
+  </a>
+  <a href="projetos.html" class="bv-bottomnav-item">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+      <path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.56 2.311 1.184C7.985 3.648 8.48 4 9 4h4.5A1.5 1.5 0 0 1 15 5.5v7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9zM2.5 3a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5H9c-.964 0-1.71-.605-2.264-1.264A.5.5 0 0 0 6.264 3H2.5z"/>
+    </svg>
+    <span>Projetos</span>
+  </a>
+  <a href="avaliacoes.html" class="bv-bottomnav-item">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+      <path d="M2.5 0A2.5 2.5 0 0 0 0 2.5v11A2.5 2.5 0 0 0 2.5 16h11a2.5 2.5 0 0 0 2.5-2.5v-11A2.5 2.5 0 0 0 13.5 0h-11zm4.354 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L5.793 7.5 3.146 4.854a.5.5 0 1 1 .708-.708l3 3zM8 10a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5A.5.5 0 0 1 8 10z"/>
+    </svg>
+    <span>Avaliações</span>
+  </a>
+</nav>`;
+
+const PAGINAS_BOTTOMNAV = ['projetos.html', 'avaliacoes.html'];
+
 const aplicarMenu = (usuario, pagina) => {
   const itens = menusPorPerfil[usuario.tipo] || [];
-  qsa('.sidebar .nav').forEach((nav) => {
-    nav.innerHTML = itens.map(([href, texto]) => (
-      `<a class="nav-link ${href === pagina ? 'active' : ''}" href="${href}">${texto}</a>`
-    )).join('');
-  });
+
+  if (usuario.tipo === 'Administrador') {
+    qsa('.sidebar .nav').forEach((nav) => {
+      nav.innerHTML = itens.map(([href, texto]) => (
+        `<a class="nav-link ${href === pagina ? 'active' : ''}" href="${href}">${texto}</a>`
+      )).join('');
+    });
+  } else {
+    qsa('.sidebar').forEach((s) => s.classList.add('d-none'));
+  }
+
+  if (usuario.tipo === 'Professor' && PAGINAS_BOTTOMNAV.includes(pagina)) {
+    document.body.insertAdjacentHTML('beforeend', BOTTOMNAV_HTML);
+    qsa('.bv-bottomnav-item').forEach((item) => {
+      if (item.getAttribute('href') === pagina) item.classList.add('active');
+    });
+  }
 
    qsa('a[href]').forEach((link) => {
     const href = link.getAttribute('href');
