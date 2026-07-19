@@ -82,14 +82,14 @@ export const salvarProjeto = async ({ alunos = [], ...projeto }) => {
   for (const aluno of alunos.filter((item) => item.nome?.trim())) {
     const turma = aluno.turma?.trim() || 'EMPM1A';
 
-    let alunoId = aluno.id || null;
+    let alunoId = aluno.id ? Number(aluno.id) : null;
 
     if (!alunoId && aluno.matricula) {
       const { data: existente } = await supabase
         .from('alunos')
         .select('id')
         .eq('matricula', aluno.matricula)
-        .single();
+        .maybeSingle();
       if (existente) alunoId = existente.id;
     }
 
@@ -98,19 +98,19 @@ export const salvarProjeto = async ({ alunos = [], ...projeto }) => {
         .from('alunos')
         .select('id')
         .ilike('nome', aluno.nome.trim())
-        .single();
+        .maybeSingle();
       if (existente) alunoId = existente.id;
     }
 
     if (!alunoId) {
       const { data: alunoSalvo, error: alunoError } = await supabase
         .from('alunos')
-        .insert({
+        .upsert({
           nome: aluno.nome.trim(),
           turma,
           matricula: aluno.matricula || null,
           turno: aluno.turno || null
-        })
+        }, { onConflict: 'id', ignoreDuplicates: false })
         .select()
         .single();
       if (alunoError) throw alunoError;
@@ -119,7 +119,7 @@ export const salvarProjeto = async ({ alunos = [], ...projeto }) => {
 
     const { error: relError } = await supabase
       .from('projeto_alunos')
-      .insert({ projeto_id: projetoSalvo.id, aluno_id: alunoId, turma });
+      .upsert({ projeto_id: projetoSalvo.id, aluno_id: alunoId, turma }, { onConflict: 'projeto_id,aluno_id' });
     if (relError) throw relError;
   }
 

@@ -55,13 +55,15 @@ const carregarSelectTipos = async (select, valor = '') => {
 };
 
 const linhaAluno = (nome = '', turma = 'EMPM1A', id = '', matricula = '', turno = '') => `
-  <div class="input-group aluno-item mb-2">
+  <div class="aluno-item mb-2">
     <input type="hidden" class="aluno-id" value="${id}">
-    <input class="form-control aluno-nome" value="${escapeHtml(nome)}" required placeholder="Nome do aluno">
-    <input class="form-control aluno-matricula" value="${escapeHtml(matricula)}" placeholder="Matrícula">
-    <select class="form-select aluno-turno" aria-label="Turno do aluno">${opcoesTurno(turno)}</select>
-    <select class="form-select aluno-turma" required aria-label="Turma do aluno">${opcoesTurma(turma)}</select>
-    <button class="btn btn-outline-danger btn-remover-aluno" type="button">Remover</button>
+    <div class="aluno-grid">
+      <input class="form-control aluno-nome" value="${escapeHtml(nome)}" required placeholder="Nome do aluno">
+      <input class="form-control aluno-matricula" value="${escapeHtml(matricula)}" placeholder="Matrícula">
+      <select class="form-select aluno-turno" aria-label="Turno do aluno">${opcoesTurno(turno)}</select>
+      <select class="form-select aluno-turma" required aria-label="Turma do aluno">${opcoesTurma(turma)}</select>
+      <button class="btn btn-outline-danger btn-remover-aluno" type="button">Remover</button>
+    </div>
   </div>`;
 
 const adicionarAluno = (nome = '', turma = 'EMPM1A', id = '', matricula = '', turno = '') => {
