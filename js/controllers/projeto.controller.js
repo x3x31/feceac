@@ -445,7 +445,7 @@ const renderizarProjetos = (projetos, ehAdmin = false) => {
 
                     </tr>
 
-                  ).join('')
+                  `).join('')
 
                 ).join('')
 

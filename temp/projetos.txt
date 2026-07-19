@@ -1,0 +1,95 @@
+TÍTULO DO PROJETO;PROFESSOR ORIENTADOR:;TURNO;ÁREA DO CONHECIMENTO;ALUNO 1;ALUNO 2;ALUNO 3;ALUNO 4;CO-ORIENTADOR
+FOGUETE PET;Alderi;MATUTINO;Linguagens e suas Tecnologias;Israel lima da Silva;Rafael Batista de Oliveira;Manuel Hernandes Diogenes Costa;;
+Animatrônico cupcake;Alderi;MATUTINO;Exatas e Engenharia;Lucas Marques Bezerra;Washington de Araújo;Júlio César de Araújo Filho;;Paloma
+Eco-Inovação: Moldando o Futuro Sustentável;Ana Celi;MATUTINO;Ciências biológicas e da saúde;Victor Emanuel de Souza dias;Ana Vitória Ferreira Mariano;Davi Marques Ferreira da Silva;;
+Como Cuidar da Saúde da Pele Usando Ingredientes Simples para criar uma pomada de tratamento;Ana Celi;MATUTINO;Ciências biológicas e da saúde;Davy Lucas Alves de Sousa;Anna Bheatriz Almeida Ferreira;Lara Alexandra Ferreira de Lira;;
+Ecogota;Ana Celi;MATUTINO;Exatas e Engenharia;Adna Caroline da Silva Bezerra;Weverton Cabral da Silva;;;
+Microplástico;Ana celi.;MATUTINO;Ciências biológicas e da saúde;Victor Emanuel de Souza dias;Davi Marques Ferreira da Silva;Ana Vitória Ferreira Mariano;;
+Eletroímã: magnegisto a partir da eletricidade;Andeyerly;MATUTINO;Exatas e Engenharia;João Eduardo de Lima Reis;Gabriel de Carvalho Lima;Lucas Gabriel de Lima Reis;;Alderi
+Sistema de Triagem Pediátrica Inteligente;Fernando Tásio;MATUTINO;Ciências biológicas e da saúde;João Gabriel Oliveira de Freitas;Nadja Evelyn Souza Simão;Flávia Alessandra Marques Ferreira;;
+Áreas de Absorção Nos Grandes Centros Urbanos;Fernando Tásio Rêgo De Oliveira;MATUTINO;Ciências biológicas e da saúde;Emanuelly Jamily Silva de Medeiros;Maria Rhyana Mendes da Silva;Alanny Taís Fernandes Rocha;;
+Potencial Bioinseticida da Hortelã-Pimenta (Mentha × piperita): Uma Abordagem Sustentável para o Controle de Insetos;Fernando Tásio Rêgo de Oliveira;MATUTINO;Ciências biológicas e da saúde;Ana Clara Pereira da Silva;Karla Letícia Ferreira de Aquino;Maria Júlia Batista Vieira;;
+Cápsula de Germinação Biodegradável (CGB): Tecnologia de encapsulamento central para plantio direto;Francelia;MATUTINO;Ciências Humanas e Sociais Aplicadas;Pedro Henrique Américo Cosme;Lázaro Almeida de Oliveira;Júlio Cesar de Oliveira Bonifácio;;
+Produção de bioplástico com resíduos orgânicos: uma alternativa sustentável;Francelia;MATUTINO;Ciências biológicas e da saúde;Jhennifer emillayne de lima ferreira;Yasmim lucio Martins;Mayra Nickoly da Silva Felipe;;Francelia Nunes de Medeiros Ferreira
+Ler mais significa escrever melhor? Uma análise dos hábitos de leitura entre jovens;Francelia;MATUTINO;Linguagens e suas Tecnologias;Alexandra Paulino da Silva Filha;Felipe Irenilson de Jesus Ribeiro Carlos;Plácido de Brito Arruda;;Laison
+Linguagem alternativa para casos de agreção a mulher;Francisca Erika Leal Linhares;MATUTINO;Ciências Humanas e Sociais Aplicadas;Hertã Fernandes de Lima Moura;Maria Yasmin Xavier;Willian Samuel Costa e Silva;;Josirrany Priscila da Silva
+Plantas Medicinais e Seus Benefícios para a Saúde;Francisca Erika Leal Linhares;MATUTINO;Ciências biológicas e da saúde;Elis Raquel Oliveira Ferreira;Antônio madyson Klinsmann Santos Andrade;Isa Gabriely Macedo do Nascimento;;
+Investigação sobre a aprendizagem dos estudantes com autismo na E.E.P. Abel Freire Coelho;Francisca Erika Leal Linhares;MATUTINO;Ciências Humanas e Sociais Aplicadas;Antonia Raquel Vieira Domiciano;Lara Beatriz Silva de Macedo;Clara Vitória da Silva Batista;;
+Mentes diversas no Abel Freire Coelho: Caminhos de aprendizagem dos estudantes com TEA do ensino médio, focado no 1º ano.;Francisca EriKa Leal Linhares;MATUTINO;Ciências Humanas e Sociais Aplicadas;Antônia Raquel Vieira Domiciano;Clara Vitoria da Silva Batinha;Lara Beatriz Silva de Macedo;;
+A Obesidade infantil e suas Consequências para a Sociedade;Giselly almeida;VESPERTINO;Ciências biológicas e da saúde;Sérgio Emanuel Nogueira de Miranda;Angelo guilherme lopes da Silva;Arthur henrique melo machado da silva;;Karla rafaella
+MoViTEA: Tecnologia e Movimento para Inclusão;Giselly almeida;VESPERTINO;Ciências biológicas e da saúde;Ketlin Vitória Rodrigues do Nascimento;Neide Maria de souza neta;Maria Clara jácome da silva;;
+Aloe Vera e a Revolução dos Bioplásticos;Giselly almeida;VESPERTINO;Exatas e Engenharia;Aquiles Dantas de Medeiros;Julianny Mirely Alves Silva Nobre;Victoria Clarysse Barbalho da Costa;;
+influência da prática regular de exercício físico nos níveis de timidez e ansiedade social;Giselly almeida;VESPERTINO;Ciências biológicas e da saúde;Anne Caroline Dantas Silva;Dianna Nogueira da Costa;;;
+O Ensino de Libras Nas Escolas;Josirranny Priscila da Silva;MATUTINO;Linguagens e suas Tecnologias;Livia Natália Filgueira da Silva;Clara Evellyn Lopes da paixão;Ially Carine Teixeira da Silva;;
+ALTERAÇÃO DO NOME DO PROJETO: O SISTEMA DE JOGO RPG COMO FERRAMENTA DIDÁTICO-PEDAGÓGICA PARA O ENSINO DA LITERATURA NO ENSINO MÉDIO;Josirranny Priscilla da Silva;MATUTINO;Linguagens e suas Tecnologias;Antoniel Nycolas Benício Rocha;Vitória Giovanna;Erick Cauã;;Mansinho
+Filtro de Água: Uma Solução para o Acesso à Água Limpa em Áreas Rurais;Karla Raphaela Cardoso;VESPERTINO;Ciências biológicas e da saúde;Guilherme Benjamin Messias do Nascimento;Zaion Marley Medeiros Rebouças;Yure Salles;;
+Micro plástico;Karla Raphaela Cardoso;VESPERTINO;Ciências biológicas e da saúde;Ícaro Kauê Noronha;Josué Sarmento da Silva Filho;Eduardo Fernandes Rocha;;Giselly
+Desigualdade urbana: um estudo sobre o impacto local;Karla Raphaela Cardoso;VESPERTINO;Ciências Humanas e Sociais Aplicadas;Geovania lima Ferreira;Laura Eloize dos santos oliveira;Caio Erick Cabral da Silva Lopes;;
+O descarte incorreto de lixos eletrônicos;Karla Raphaela Cardoso;VESPERTINO;Ciências Humanas e Sociais Aplicadas;João Pedro Silva da Costa;João Carlos;Letícia perobeli;;Tomaz
+Click no futuro sustentável: a coleta de lixo na zona rural de Mossoró em um site de informações ambiental;Karla Raphaela Cardoso;VESPERTINO;Exatas e Engenharia;Nathaly Esmerina dantas de Araújo;;;;
+Ser a Voz de Quem Não Tem Voz;Kellyan;MATUTINO;Ciências Humanas e Sociais Aplicadas;Antonio Klayton de Lima Filho;Heloisa Yasmin Rodrigues da Silva;Kauanny midian da silva;;Mara
+Avaliação da Atividade Antioxidante do Extrato Hidroalcoólico de Cúrcuma (Curcuma longa L.) por Meio da Redução do Permanganato de Potássio;luiza bento;MATUTINO;Ciências biológicas e da saúde;julia victoria pereira de morais;lara evellyn falcão de menezes;maria cecillya de santana dantas;;benedito
+DESENVOLVIMENTO DE UM BIOPOLÍMERO BIODEGRADÁVEL A PARTIR DAS FIBRAS DA CASCA DA MANGA-ESPADA (Mangifera indica L.);Luiza Bento de Queiroz Neta;MATUTINO;Ciências biológicas e da saúde;Madjoly Lawany Saldanha De Araújo;Luna Rosalina Moreira de Azevedo;;;
+Eco Bite;Luiza Bento De Queiroz Neta;MATUTINO;Ciências biológicas e da saúde;Pedro Lucas de Sousa Lopes;Sibelly Oliveira Luciano;Marianna Yasmim Frutuoso dos Santos;;Lenilton Maia
+Plantas medicinais e seus benefícios;Luiza bento de Queiroz neta;MATUTINO;Ciências biológicas e da saúde;Cauany Stefhany da Silva;Érica Camilla da Silva leite;Thauany Vitória Gomes de Medeiros;;ANDEYERLLY DE PAIVA LIMA
+Reaproveitamento do mesocarpo e bráctea do coco (cocos nucifera) na produção de materiais sustentáveis;Luiza Bento de Queiroz Neta;MATUTINO;Ciências biológicas e da saúde;Karla Vitória Dantas da Silva;Maria Clara Souza de Oliveira;Maria Clara Fernandes de Brito;;
+ReAqua: Coletor de água de ar-condicionado;Mansinho;MATUTINO;Exatas e Engenharia;Társis Gabriel Da Costa Silva;Lizianny Ingridy Alves de Queiroz;José Márcio De Lima Filho;;
+Do lixo ao Luxo: Transformando resíduos Orgânicos em Adubo.;Mansinho;VESPERTINO;Ciências biológicas e da saúde;Janyelle Layane Pereira Da Silva;Alicia Beatriz Rocha Mesquita;;;Fernando
+Carro do futuro;Mansinho;MATUTINO;Exatas e Engenharia;Levi Melo Batista Neto;Alexandra Danielly Pinheiro Castro;Eduardo Alves De Azevedo;;Mansinho
+Levitador Magnético;Mansinho;MATUTINO;Exatas e Engenharia;Keilly André Bernardo Farache Júnior;Renan Lucas Alves Pinheiro Fagundes;Mateus Adrian Ferreira Damasceno Silva Melo;Tony Edson Pereira praxedes filho;Selma
+MATEMÁTICA LÚDICA E COLABORATIVA: UMA PROPOSTA PEDAGÓGICA;Márcio;VESPERTINO;Ciências Humanas e Sociais Aplicadas;Jaedson Arthur Mendes Lopes;Lauã Lucas Santos Lopes;Felipe Gabriel Vale De Oliveira;;
+Meios preventivos para enfermidades fúngicas;Michael Alves;VESPERTINO;Ciências biológicas e da saúde;Enoc José de Souza Neto;Diogo Marcolino Alves Freitas;Pablo Henrique Matias Carvalho de Souza;;
+OTIMIZAÇÃO DO PROCESSO DE ENRIQUECIMENTO PROTEICO MICROBIANO DE RESÍDUOS AGROINDUSTRIAIS PARA APLICAÇÃO EM BARRAS DE CEREAIS;Michael Pratini;MATUTINO;Ciências biológicas e da saúde;Manuela Corrêa Perobelli Assis;;;;
+Tenébrio 2 fase (ainda não tem título definido);Michael Pratini;MATUTINO;Ciências biológicas e da saúde;Lílian Victória Ribeiro Santos;Anny Letícia Lopes Bezerra;Ana Júlia Gomes da Silva;;Tomaz
+Prosopis coffee;Michael pratini;VESPERTINO;Ciências biológicas e da saúde;Havila nayane De Sousa Alves;Gustavo Henrique Gonçalves de Medeiros;Lucas Renan de lima Ferreira;;Carla
+SFAI: Plataforma de orientação para feira de ciências;Michael Pratini Silva de Souza;VESPERTINO;Exatas e Engenharia;Davi Natalino da Silva Basto;Murilo Talmom Gomes Ferreira;;;Michel William Alves
+Genesis;Michael Pratini Silva de Souza;VESPERTINO;Ciências biológicas e da saúde;Mickael medeiros rodrigues;Davi Hensley de Araujo Costa;;;Jackson Mateus Alencar Oliveira
+Bioprospecção do extrato da Myracrodruon urundeuva (Aroeira do sertão): Avaliação da atividade cicatrizante;Michael Pratini Silva de Souza;VESPERTINO;Ciências biológicas e da saúde;Anderson Carlos Bezerra Nunes;Tainara Gabriella de Melo Medeiros;Victor Ezequias de Aquino Ribeiro;;Otávio da Costa Nogueira
+Plataforma de Apoio à Saúde Mental Estudantil para Prevenção de Burnout e Evasão Escolar;Michel Alves;VESPERTINO;Linguagens e suas Tecnologias;Cristian Davi Santos de Freitas;;;;
+SUSPIRO: uma nova tecnologia para autenticar a realidade digital;Michel Alves;VESPERTINO;Exatas e Engenharia;Mírian Vitória Reinaldo Marcelino;Vitória Leticia Sombra Aires;;;
+Voz Segura;Michel W. Alves;VESPERTINO;Exatas e Engenharia;Ana Júlia Lima araujo;Maria vitória da Silva moura;;;
+Conecta TEA: Conectando a inclusão;Michel William Alves;VESPERTINO;Ciências biológicas e da saúde;Maria Elenilda;Maria Eduarda Guilherme;Ana Raquel;;
+ISANARA: uma plataforma web interativa para artistas mossoroenses.;Michel William Alves;VESPERTINO;Exatas e Engenharia;Ana Laura de Souza Cavalcante;Andressa Sabrina de Souza Cunha;Isa Mariany de Souza Cunha;;Cintia Caetano
+Site Debbie A.r.t - arte que transforma;Michel william alves;VESPERTINO;Exatas e Engenharia;Déborah de amorim ferreira;Luiza raquel barboza de souza;Ilana laís guedes das chagas;;Carla cardoso
+BiblioConnect: Sistema Inteligente de Localização e Gerenciamento de Livros em Bibliotecas Escolares;Michel William Alves;VESPERTINO;Linguagens e suas Tecnologias;Joyce Lorena Gomes dos Santos;Jennyfer Louise Gomes dos Santos;Ana Vitoria Gaudêncio do Vale;;Cintia Lucia Silva Ferreira Caetano
+Bibliogestão: Sistema de otimização do cadastramento e empréstimo de livros da biblioteca da Escola Estadual Professor Abel Freire Coelho.;Michel William Alves;VESPERTINO;Exatas e Engenharia;Adrielly Rocha de Souza;Klarisse Isabelle Costa Damasceno;;;
+PINKZONE - Rosa é sua zona segura;Michel Willian Alves;VESPERTINO;Linguagens e suas Tecnologias;Kaio Jerry Paulino De Souza Lima;Valdemar Soares De Brito Neto;;;
+mães Atípicas Conectadas: Informação, Apoio e Inclusão.;Michel Willian Alves;VESPERTINO;Ciências Humanas e Sociais Aplicadas;Pedro Henrique Nunes Mesquita;Guilherme Cauã da Silva Pereira;Nícolas Ariel Silva de Morais;;Cintia Lúcia Silva Ferreira Caetano
+Educação Inclusiva: Inserindo Libras como Disciplina Obrigatória;Sebastião;MATUTINO;Ciências Humanas e Sociais Aplicadas;Ruamma Kawanny de Oliveira Almeida;Iago Felipe da Silva;WESLEY HAYRAN AGOSTINHO DE ARAUJO;;
+A violência contra a mulher no ramo de trabalho;Selma;MATUTINO;Ciências Humanas e Sociais Aplicadas;Jeovanna Gabriely;Leonardo;Jasmim Felipe;;
+Índice de feminicídio no Brasil e crimes contra mulheres. Maneira de como testemunhar e se defender.;selma;MATUTINO;Ciências biológicas e da saúde;MARIA HELENA DA SILVA;MARIA ANTÔNIA ALMEIDA DE OLIVEIRA;Nataly Beatriz Filgueira Coutinho Pires;;selma
+Corpo perfeito ou saúde ? Os riscos da bulimia na adolescência;Selma;MATUTINO;Ciências biológicas e da saúde;Lara Beatriz de Medeiros Gurgel;;;;Selma
+Amigos sem fronteiras: estudo de caso de uma estudante venezuelana que aprendeu a falar português na convivência escolar;Tabitha Talitha;MATUTINO;Linguagens e suas Tecnologias;DARNELLY XAKARY MORA DURAN;IESUS MAGNUS DE FREITAS SILVESTRE;;;Lenilton Maia
+Insônia na adolescência: causas, consequências e impactos no desempenho escolar e nas atividades do cotidiano;Tabitha Talitha;MATUTINO;Ciências biológicas e da saúde;Lorrany Gabriely da Silva Costa;Ana Clara Dantas Mendes;Emilly Maria Carlos Andrade Arlindo;;
+Detector de gás e fumaça com arduino;Tomaz;MATUTINO;Exatas e Engenharia;Walesca Passarinho Coelho;Lilia Nayara Avelino Lopes;Maria Luiza da Silva Alves;;
+SENTINELA DAS ÁGUAS;Tomaz;MATUTINO;Exatas e Engenharia;Anna Vitória Campos Duarte;Brena Layane nascimentos silva;Anita Saori Marinho da Costa;;
+Os perigos da mistura de produtos de limpeza;Tomaz;MATUTINO;Ciências biológicas e da saúde;Daniel Heitor Oliveira Rocha;João Matheus Fernandes;Pedro Henrique Novais da Silva;;
+Plástico que some;Tomaz;MATUTINO;Ciências biológicas e da saúde;Andersson Gustavo Rodrigues dos Santos;Pedro Vinícius Monteiro de Moura;Erik kaua Soares do Nascimento;;
+Inseticida natural;Tomaz;VESPERTINO;Ciências biológicas e da saúde;Mariana Thais Gonçalves de Oliveira;Ellen Alessandra Bezerra De Morais Silva;;;
+primeiros socorros da escola;Tomaz Guilherme Pereira de Sena;VESPERTINO;Ciências biológicas e da saúde;Ariely pereira vieira;Shofia vitória;;;
+Lifestyle APP;TOMAZ GUILHERME PEREIRA DE SENA;MATUTINO;Exatas e Engenharia;Pérola Rebeca Filgueira De Andrade;rayna sara de oliveira freitas;Miriam Maria da Costa e Silva;;Francisco de Assis Verissimo Junior
+Química Dos Bioplásticos;Tomaz Guilherme Pereira de Sena;MATUTINO;Ciências biológicas e da saúde;Italo Arthur Oliveira da Silva;Ana Khiara Araújo da Silva;;;Vando Rocha da Silva
+Aloe Vera e a Revolução dos Bioplásticos;Tomaz Guilherme Pereira de Sena;VESPERTINO;Exatas e Engenharia;Julianny Mirely Alves Silva Nobre;Aquiles Dantas de Medeiros;Victoria Clarysse Barbalho da Costa;;
+Mulheres que mudaram o mundo em silêncio;Ulysses;MATUTINO;Ciências Humanas e Sociais Aplicadas;Emilly yasmim de Oliveira Gonçalves;Agnes Beatryce da Silva;Lara Beatriz da Silva Pereira;;
+A necessidade de conscientização e orientação antes do uso do Implanon.;Ulysses;MATUTINO;Ciências biológicas e da saúde;Alicia Eduarda Moreira Da Silva;Laís Jhovanna de Souza Morais Prado;;;
+Vôlei em Movimento: Desenvolvendo a Coordenação Motora por Meio do Esporte;Vando;MATUTINO;Ciências biológicas e da saúde;Gustavo Erick Rocha dos Santos;Josué rocha;;;Vitória
+Curativo inteligente com sensor por mudança de cor;Vando;MATUTINO;Ciências biológicas e da saúde;Evelyn Jordany Da Costa Bezerra;Felicio Wendell Feliciano Da Silva;Kaio Samuel Oliveira Nascimento;;Joselito
+O lado obscuro da força digital: Os perigos ocultos da IA.;Vando;MATUTINO;Linguagens e suas Tecnologias;Maria Cecílya da Silva Fagundes;Sarah Shirley Mendes de Figueiredo;;;
+Os impactos da energia eólica no cotidiano;Vando;MATUTINO;Exatas e Engenharia;Vitória gabriely da Cunha Rebouças;Ícaro Genivan Fernandes da Silva;Ana Beatriz Souza Rebouças;;Luiza Bento
+O impacto do uso das tecnologias no início do desenvolvimento cognitivo;Vando;MATUTINO;Ciências biológicas e da saúde;Kawe mecias Cavalcante costa;Dafny Lavinia do Vale Silva;Rayara kettilly Fernandes da Silva;;Josy
+Os Malefícios e os Benefícios da Inteligência Artificial;Vando;MATUTINO;Linguagens e suas Tecnologias;André Guilherme Araújo de Oliveira;Jhonata Felipe Ferreira de Lima;Heverton Kelven Lima de Oliveira;;
+levantamento;vando;MATUTINO;Ciências biológicas e da saúde;Felipe irenilson de jesus ribeiro Carlos;Alexandra Paulina da Silva filha;plácido de Brito arruda;;
+Cultura potiguar;Vando;MATUTINO;Linguagens e suas Tecnologias;João ícaro de Oliveira Albuquerque;João Victor morais Gomes;João Guilherme Almeida nobre de souza;;
+O Que Está Escondido Nos Objetos?;VANDO;MATUTINO;Ciências biológicas e da saúde;Erick Matheus Da Silva Bezerra;Carlos Augusto Andrade Sabino;;;
+Desenvolvimento de um Limpador de vidros sustentável.;Vando;MATUTINO;Ciências biológicas e da saúde;José Victor Silva Fernandes;Francisco Ewerson Oliveira Teixeira da Silva.;Iago de Oliveira Paiva;;
+História perdida;Vando;MATUTINO;Linguagens e suas Tecnologias;João ícaro de Oliveira Albuquerque;João Victor morais gomes;João Guilherme Almeida nobre de souza;;
+Filtro de água caseiro;Vando;MATUTINO;Ciências biológicas e da saúde;Henzo Wellyson Soares Da Silva;Kairon Emanuel Marques De Oliveira;Vinícius Bruno Maia De Morais;;
+brinquedos reciclagens;vando;MATUTINO;Linguagens e suas Tecnologias;João Victor Almeida Oliveira;;;;
+DNA do morango 🍓;vando;MATUTINO;Ciências biológicas e da saúde;Marie kauane;;Analice gomes da silva;;luiza bento
+O que a política mudou em Mossoró em questão histórica e econômica;Vando;MATUTINO;Ciências Humanas e Sociais Aplicadas;Ruan Gabriel saraiva da silva;Wellyson Ramon Ramos de Oliveira;Pedro Luiz Alves falcão;;Francisco de Assis (mansinho)
+Da Misoginia Online à Violência de Gênero: O caso do Movimento Red Pill;Vando;MATUTINO;Ciências Humanas e Sociais Aplicadas;Isabella Souza Brito;Isadora Paiva Barreto;Francisco Henrique de Oliveira Fernandes;;
+Por que os jovens estão cada vez mais polarizados politicamente?;VANDO ROCHA DA SILVA;MATUTINO;Ciências Humanas e Sociais Aplicadas;Wallace Samuel Pereira Da Silva;Izabely Thaissa Moura Gomes;Anna Celina Silva Tavares;;MARA RENATA BARROS BARBOSA
+Cheirou mal, acendeu! Detector de gás inteligente;Vando Rocha da Silva;MATUTINO;Exatas e Engenharia;Kaio Gabriel da Silva Sousa;Wellyson Ramon Ramos de Oliveira;Pedro Luiz Alves Falcão;;Francisco de Assis Verissimo Júnior
+Energia eólica e seus benefícios;Vando Silva;MATUTINO;Ciências biológicas e da saúde;Ana Beatriz Souza Rebouças;Vitória Gabrielly da Cunha Rebouças;Ícaro Genivan Fernandes da Silva;;Luiza Queiroz
+Gases naturais;Vando silva;MATUTINO;Ciências biológicas e da saúde;Gabriel Alves da Silva;Kennedy Lindeson da Silva;Thalisson Ramon Peixoto Ferreira;;Vando Silva
+Adubo Reciclável;Vando Silva;MATUTINO;Ciências biológicas e da saúde;Suiany Karoline da Silva Melo;Viviane Gabriely Gomes da Silva;Rebeca Byanka Oliveira Nascimento;;Luiza Bento

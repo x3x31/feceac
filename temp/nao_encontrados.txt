@@ -1,0 +1,48 @@
+============================================================
+FECEAC - Itens não encontrados no banco de dados
+============================================================
+
+TOTAL: 11 itens não encontrados
+  Professores: 10
+  Alunos: 1
+
+------------------------------------------------------------
+PROFESSORES NÃO ENCONTRADOS
+------------------------------------------------------------
+Professor (Coorientador): Paloma
+  Projeto: Animatrônico cupcake
+
+Professor (Coorientador): Laison
+  Projeto: Ler mais significa escrever melhor? Uma análise dos hábitos de leitura entre jovens
+
+Professor (Orientador): Francisca Erika Leal Linhares
+  Projeto: Linguagem alternativa para casos de agreção a mulher
+
+Professor (Orientador): Francisca Erika Leal Linhares
+  Projeto: Plantas Medicinais e Seus Benefícios para a Saúde
+
+Professor (Orientador): Francisca Erika Leal Linhares
+  Projeto: Investigação sobre a aprendizagem dos estudantes com autismo na E.E.P. Abel Freire Coelho
+
+Professor (Orientador): Francisca EriKa Leal Linhares
+  Projeto: Mentes diversas no Abel Freire Coelho: Caminhos de aprendizagem dos estudantes com TEA do ensino médio, focado no 1º ano.
+
+Professor (Coorientador): benedito
+  Projeto: Avaliação da Atividade Antioxidante do Extrato Hidroalcoólico de Cúrcuma (Curcuma longa L.) por Meio da Redução do Permanganato de Potássio
+
+Professor (Coorientador): Jackson Mateus Alencar Oliveira
+  Projeto: Genesis
+
+Professor (Coorientador): Otávio da Costa Nogueira
+  Projeto: Bioprospecção do extrato da Myracrodruon urundeuva (Aroeira do sertão): Avaliação da atividade cicatrizante
+
+Professor (Coorientador): Josy
+  Projeto: O impacto do uso das tecnologias no início do desenvolvimento cognitivo
+
+------------------------------------------------------------
+ALUNOS NÃO ENCONTRADOS
+------------------------------------------------------------
+Shofia vitória
+  Projeto: primeiros socorros da escola
+  Turno: VESPERTINO
+
