@@ -16,7 +16,7 @@
 }
 
 .bv-card {
-  background: rgba(255, 255, 255, .95);
+  background: rgb(252 253 253);
   border: none;
   border-top: 4px solid var(--feceac-primary);
   border-radius: 12px;
@@ -24,6 +24,7 @@
   max-width: 520px;
   width: 100%;
   box-shadow: 0 12px 40px rgba(0, 0, 0, .3);
+  margin-bottom: 40px;
 }
 
 .bv-logo-principal {
