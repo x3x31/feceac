@@ -139,26 +139,44 @@
 }
 
 .ficha-legenda {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .6rem 1.2rem;
-  align-items: baseline;
-  padding: .5rem .7rem;
+  padding: .6rem .8rem;
   background: #f8f9fa;
   border: 1px solid #e9ecef;
   border-radius: 6px;
-  font-size: .78rem;
+  font-size: .8rem;
 }
 
 .ficha-legenda-titulo {
   font-weight: 700;
   color: #333;
-  white-space: nowrap;
+  margin-bottom: .3rem;
+}
+
+.ficha-legendas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem 1.5rem;
 }
 
 .ficha-legenda-item {
   color: #555;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+}
+
+.nota-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  background: #198754;
+  color: #fff;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: .75rem;
 }
 
 .ficha-assinaturas {
