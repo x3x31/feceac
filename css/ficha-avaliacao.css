@@ -213,11 +213,7 @@
 }
 
 .ficha-footer-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-top: .8rem;
-  gap: 2rem;
+  margin-top: .6rem;
 }
 
 .ficha-assinatura {
@@ -306,7 +302,23 @@
     margin-top: .4rem !important;
   }
 
-  .ficha-legenda-box {
+.ficha-legenda-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem 1rem;
+  margin-bottom: .5rem;
+  font-size: .75rem;
+  color: #666;
+}
+
+.ficha-legenda-inline-item {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  white-space: nowrap;
+}
+
+.ficha-legenda-box {
     font-size: .65rem !important;
   }
 

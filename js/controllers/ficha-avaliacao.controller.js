@@ -17,8 +17,8 @@ const renderizarCriterios = (criterios) => {
   }
   return `<table class="table table-bordered table-sm ficha-tabela-criterios mb-0">
     <thead><tr>
-      <th style="width:85%">Critério</th>
-      <th style="width:15%">Nota</th>
+      <th style="width:90%">Critério</th>
+      <th style="width:10%">Nota</th>
     </tr></thead>
     <tbody>${criterios.map((c) => `
       <tr>
@@ -49,12 +49,6 @@ const renderizarFicha = (projeto, criterios) => {
     }
   }
   qs('#fichaAlunosLinhas').innerHTML = linhasAlunos.join('');
-
-  const extras = [];
-  for (let i = 0; i < FILTRO_NUM_ALUNOS; i++) {
-    extras.push(`<div class="ficha-linha-aluno"><span class="ficha-linha-aluno-num"></span><div class="ficha-linha-aluno-linha"></div></div>`);
-  }
-  qs('#fichaAlunosExtras').innerHTML = extras.join('');
 
   qs('#fichaContainer').classList.remove('d-none');
 };
