@@ -1,6 +1,6 @@
 import { escapeHtml, qs, validarFormulario } from '../util.js';
 import { confirmar, toast } from '../ui.js';
-import { buscarUsuarioAtual, excluirUsuario, listarUsuarios, salvarUsuario } from '../services/usuario.service.js';
+import { buscarUsuarioAtual, excluirUsuario, listarUsuarios, salvarUsuario, filtrarUsuarios, atualizarAtivoUsuarios } from '../services/usuario.service.js';
 
 let usuarios = [];
 
@@ -53,6 +53,60 @@ const carregar = async () => {
   aplicarFiltros();
 };
 
+const carregarAtivacao = async () => {
+  const tipo = qs('#filtroAtivacaoTipo').value;
+  const ativo = qs('#filtroAtivacaoStatus').value === 'true';
+  const lista = await filtrarUsuarios(tipo, ativo);
+
+  qs('#chkSelecionarTodosAtivacao').checked = false;
+  qs('#chkSelecionarTodosAtivacao').indeterminate = false;
+
+  const inativos = ativo === false;
+  const btn = qs('#btnAtivarInativar');
+  btn.disabled = true;
+  if (inativos) {
+    btn.textContent = 'Ativar selecionados';
+    btn.classList.remove('btn-warning');
+    btn.classList.add('btn-success');
+  } else {
+    btn.textContent = 'Inativar selecionados';
+    btn.classList.remove('btn-success');
+    btn.classList.add('btn-warning');
+  }
+
+  const tbody = qs('#ativacaoTabela');
+  const vazio = qs('#ativacaoVazio');
+
+  if (lista.length === 0) {
+    tbody.innerHTML = '';
+    vazio.classList.remove('d-none');
+    return;
+  }
+
+  vazio.classList.add('d-none');
+  tbody.innerHTML = lista.map(u => `
+    <tr>
+      <td><input class="form-check-input chk-ativacao" type="checkbox" data-id="${u.id}"></td>
+      <td>${escapeHtml(u.nome)}</td>
+      <td>${escapeHtml(u.email)}</td>
+    </tr>`).join('');
+
+  tbody.querySelectorAll('.chk-ativacao').forEach(chk => {
+    chk.addEventListener('change', () => {
+      const todos = tbody.querySelectorAll('.chk-ativacao');
+      const marcados = tbody.querySelectorAll('.chk-ativacao:checked');
+      qs('#chkSelecionarTodosAtivacao').checked = todos.length === marcados.length;
+      qs('#chkSelecionarTodosAtivacao').indeterminate = marcados.length > 0 && todos.length !== marcados.length;
+      btn.disabled = marcados.length === 0;
+    });
+  });
+};
+
+const toggleAllAtivacao = (marcar) => {
+  qs('#ativacaoTabela').querySelectorAll('.chk-ativacao').forEach(chk => { chk.checked = marcar; });
+  qs('#btnAtivarInativar').disabled = !marcar;
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
   const usuarioAtual = await buscarUsuarioAtual();
   if (usuarioAtual.tipo !== 'Administrador') {
@@ -66,6 +120,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.querySelectorAll('.filtro-usuario').forEach(el => {
     el.addEventListener('input', aplicarFiltros);
     el.addEventListener('change', aplicarFiltros);
+  });
+
+  const modalAtivacao = bootstrap.Modal.getOrCreateInstance(qs('#ativacaoModal'));
+  await carregarAtivacao();
+  modalAtivacao.show();
+
+  qs('#filtroAtivacaoTipo').addEventListener('change', carregarAtivacao);
+  qs('#filtroAtivacaoStatus').addEventListener('change', carregarAtivacao);
+
+  qs('#chkSelecionarTodosAtivacao').addEventListener('change', (e) => {
+    toggleAllAtivacao(e.target.checked);
+  });
+
+  qs('#btnAtivarInativar').addEventListener('click', async () => {
+    const marcados = [...qs('#ativacaoTabela').querySelectorAll('.chk-ativacao:checked')].map(c => c.dataset.id);
+    if (marcados.length === 0) return;
+
+    const ativar = qs('#btnAtivarInativar').classList.contains('btn-success');
+    const texto = ativar ? 'ativar' : 'inativar';
+    if (!await confirmar(`Deseja ${texto} ${marcados.length} usuário(s)?`)) return;
+
+    await atualizarAtivoUsuarios(marcados, ativar);
+    toast(`${marcados.length} usuário(s) ${texto === 'ativar' ? 'ativado(s)' : 'inativado(s)'}.`);
+    modalAtivacao.hide();
+    await carregar();
   });
 
   qs('#usuarioForm').addEventListener('submit', async (event) => {

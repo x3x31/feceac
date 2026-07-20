@@ -39,3 +39,21 @@ export const excluirUsuario = async (id) => {
   if (error) throw error;
 };
 
+export const filtrarUsuarios = async (tipo, ativo) => {
+  let query = supabase.from('usuarios').select('*');
+  if (tipo) query = query.eq('tipo', tipo);
+  if (ativo !== null && ativo !== undefined) query = query.eq('ativo', ativo);
+  query = query.order('nome');
+  const { data, error } = await query;
+  if (error) throw error;
+  return data;
+};
+
+export const atualizarAtivoUsuarios = async (ids, ativo) => {
+  const { error } = await supabase
+    .from('usuarios')
+    .update({ ativo })
+    .in('id', ids);
+  if (error) throw error;
+};
+
