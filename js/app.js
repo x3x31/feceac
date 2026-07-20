@@ -75,6 +75,11 @@ const BOTTOMNAV_HTML = `
 
 const PAGINAS_BOTTOMNAV = ['projetos.html', 'avaliacoes.html'];
 
+const HAMBURGER_HTML = `
+<button id="btnToggleSidebar" class="btn btn-sm btn-outline-secondary me-2" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/></svg>
+</button>`;
+
 const aplicarMenu = (usuario, pagina) => {
   const itens = menusPorPerfil[usuario.tipo] || [];
 
@@ -85,6 +90,21 @@ const aplicarMenu = (usuario, pagina) => {
         `<a class="nav-link ${href === pagina ? 'active' : ''}" href="${href}">${texto}</a>`
       )).join('');
     });
+
+    const navbar = qs('.navbar .container-fluid');
+    if (navbar && !qs('#btnToggleSidebar')) {
+      navbar.insertAdjacentHTML('afterbegin', HAMBURGER_HTML);
+      qs('#btnToggleSidebar').addEventListener('click', () => {
+        qs('.sidebar').classList.toggle('sidebar--hidden');
+        document.body.classList.toggle('sidebar-open');
+      });
+      document.addEventListener('click', (e) => {
+        if (document.body.classList.contains('sidebar-open') && e.target === document.body) {
+          qs('.sidebar').classList.add('sidebar--hidden');
+          document.body.classList.remove('sidebar-open');
+        }
+      });
+    }
   } else {
     qsa('.sidebar').forEach((s) => s.classList.add('d-none'));
   }
