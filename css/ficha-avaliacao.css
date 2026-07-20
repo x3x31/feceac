@@ -10,14 +10,9 @@
 .ficha-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
   margin-bottom: .5rem;
-}
-
-.ficha-logos {
-  display: flex;
-  align-items: center;
-  gap: .5rem;
 }
 
 .ficha-logo {
