@@ -5,6 +5,7 @@
   padding: 2rem;
   max-width: 900px;
   margin: 0 auto;
+  font-size: .82rem;
 }
 
 .ficha-header {
@@ -187,50 +188,35 @@
   margin-bottom: .15rem;
 }
 
-.ficha-legenda {
-  padding: .6rem .8rem;
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
-  font-size: .8rem;
+.ficha-legenda-box {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: .4rem .6rem;
+  font-size: .7rem;
+  max-width: 280px;
 }
 
-.ficha-legenda-titulo {
+.ficha-legenda-box-title {
   font-weight: 700;
-  color: #333;
-  margin-bottom: .3rem;
-}
-
-.ficha-legendas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .4rem 1.5rem;
-}
-
-.ficha-legenda-item {
+  font-size: .72rem;
   color: #555;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: .35rem;
+  margin-bottom: .2rem;
 }
 
-.nota-badge {
+.ficha-legenda-box-item {
+  color: #555;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 1.6rem;
-  height: 1.6rem;
-  background: #198754;
-  color: #fff;
-  border-radius: 4px;
-  font-weight: 700;
-  font-size: .75rem;
+  gap: .25rem;
+  margin-right: .6rem;
+  white-space: nowrap;
 }
 
-.ficha-assinaturas {
+.ficha-footer-row {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: .8rem;
   gap: 2rem;
 }
 
@@ -249,6 +235,19 @@
 .ficha-assinatura span {
   font-size: .8rem;
   color: #555;
+}
+
+.nota-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.3rem;
+  height: 1.3rem;
+  background: #198754;
+  color: #fff;
+  border-radius: 3px;
+  font-weight: 700;
+  font-size: .65rem;
 }
 
 @media print {
@@ -303,20 +302,17 @@
     border-bottom: 2px solid #333 !important;
   }
 
-  .ficha-assinatura-linha {
-    margin-top: 1.5rem !important;
+  .ficha-footer-row {
+    margin-top: .4rem !important;
   }
 
-  .ficha-legenda {
-    margin-top: .3rem !important;
+  .ficha-legenda-box {
+    font-size: .65rem !important;
   }
 
-  .ficha-linha-aluno {
-    margin-bottom: .25rem !important;
-  }
-
-  .ficha-obs-linha {
-    min-height: 1.2rem !important;
-    margin-bottom: .1rem !important;
+  .nota-badge {
+    width: 1.1rem !important;
+    height: 1.1rem !important;
+    font-size: .6rem !important;
   }
 }

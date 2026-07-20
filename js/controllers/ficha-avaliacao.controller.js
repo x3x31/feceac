@@ -50,6 +50,12 @@ const renderizarFicha = (projeto, criterios) => {
   }
   qs('#fichaAlunosLinhas').innerHTML = linhasAlunos.join('');
 
+  const extras = [];
+  for (let i = 0; i < FILTRO_NUM_ALUNOS; i++) {
+    extras.push(`<div class="ficha-linha-aluno"><span class="ficha-linha-aluno-num"></span><div class="ficha-linha-aluno-linha"></div></div>`);
+  }
+  qs('#fichaAlunosExtras').innerHTML = extras.join('');
+
   qs('#fichaContainer').classList.remove('d-none');
 };
 
