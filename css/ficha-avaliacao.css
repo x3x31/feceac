@@ -76,6 +76,22 @@
   min-height: 1.2em;
 }
 
+.ficha-criterios-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: .2rem;
+  margin-bottom: .4rem;
+  margin-top: .8rem;
+}
+
+.ficha-criterios-header .ficha-section-title {
+  border-bottom: none;
+  margin: 0;
+  padding: 0;
+}
+
 .ficha-section-title {
   font-size: .85rem;
   font-weight: 700;
@@ -305,9 +321,8 @@
 .ficha-legenda-inline {
   display: flex;
   flex-wrap: wrap;
-  gap: .3rem 1rem;
-  margin-bottom: .5rem;
-  font-size: .75rem;
+  gap: .3rem .8rem;
+  font-size: .7rem;
   color: #666;
 }
 
