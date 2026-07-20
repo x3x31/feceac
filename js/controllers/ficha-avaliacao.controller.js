@@ -9,7 +9,7 @@ let todosProjetos = [];
 let todosProfessores = [];
 let projetosFiltrados = [];
 
-const FILTRO_NUM_ALUNOS = 10;
+const FILTRO_NUM_ALUNOS = 8;
 
 const renderizarCriterios = (criterios) => {
   if (criterios.length === 0) {
@@ -17,16 +17,14 @@ const renderizarCriterios = (criterios) => {
   }
   return `<table class="table table-bordered table-sm ficha-tabela-criterios mb-0">
     <thead><tr>
-      <th style="width:40%">Critério</th>
-      <th style="width:10%">Peso</th>
-      <th style="width:30%">Observação</th>
-      <th style="width:12%">Nota</th>
+      <th style="width:60%">Critério</th>
+      <th style="width:12%">Peso</th>
+      <th style="width:14%">Nota</th>
     </tr></thead>
     <tbody>${criterios.map((c) => `
       <tr>
-        <td>${escapeHtml(c.descricao)}</td>
+        <td><strong>${escapeHtml(c.descricao)}</strong>${c.observacoes ? '<br><span class="text-muted">' + escapeHtml(c.observacoes) + '</span>' : ''}</td>
         <td class="text-center">${Number(c.peso)}</td>
-        <td class="text-muted">${escapeHtml(c.observacoes || '-')}</td>
         <td></td>
       </tr>`).join('')}
     </tbody>
@@ -158,11 +156,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const tiposSelect = qs('#filtroTipo');
 
   tiposSelect.addEventListener('change', () => {
+    const tipoNome = tiposSelect.options[tiposSelect.selectedIndex]?.text || '';
+    qs('#fichaTipo').textContent = tipoNome || '-';
     qs('#filtroOrientador').value = '';
     qs('#filtroOrientadorBusca').value = '';
     qs('#projetoId').value = '';
     qs('#filtroProjetoBusca').value = '';
-    qs('#fichaContainer').classList.add('d-none');
+    qs('#fichaContainer').classList.remove('d-none');
     aplicarFiltrosProjeto();
     carregarCriteriosTipo();
   });

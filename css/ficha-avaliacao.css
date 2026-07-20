@@ -70,13 +70,13 @@
 }
 
 .ficha-section-title {
-  font-size: .9rem;
+  font-size: .85rem;
   font-weight: 700;
   color: #198754;
   border-bottom: 2px solid #dee2e6;
-  padding-bottom: .3rem;
-  margin-bottom: .6rem;
-  margin-top: 1.2rem;
+  padding-bottom: .2rem;
+  margin-bottom: .4rem;
+  margin-top: .8rem;
 }
 
 .ficha-criterios-lista {
@@ -116,7 +116,7 @@
   display: flex;
   align-items: center;
   gap: .5rem;
-  margin-bottom: .6rem;
+  margin-bottom: .35rem;
   font-size: .85rem;
 }
 
@@ -176,8 +176,8 @@
 
 .ficha-obs-linha {
   border-bottom: 1px solid #999;
-  min-height: 1.8rem;
-  margin-bottom: .2rem;
+  min-height: 1.5rem;
+  margin-bottom: .15rem;
 }
 
 .ficha-legenda {
@@ -236,7 +236,7 @@
 .ficha-assinatura-linha {
   border-top: 1px solid #333;
   margin-bottom: .3rem;
-  margin-top: 3rem;
+  margin-top: 2rem;
 }
 
 .ficha-assinatura span {
@@ -274,11 +274,32 @@
     box-shadow: none !important;
   }
 
+  .ficha-section-title {
+    margin-top: .5rem !important;
+    margin-bottom: .3rem !important;
+  }
+
+  .ficha-info {
+    margin-bottom: .5rem !important;
+  }
+
+  .ficha-divider {
+    margin-bottom: .6rem !important;
+  }
+
+  .ficha-nota-final {
+    margin-top: .5rem !important;
+  }
+
   .ficha-nota-final-campo {
     border-bottom: 2px solid #333 !important;
   }
 
   .ficha-assinatura-linha {
-    margin-top: 3rem;
+    margin-top: 1.5rem !important;
+  }
+
+  .ficha-legenda {
+    margin-top: .3rem !important;
   }
 }
