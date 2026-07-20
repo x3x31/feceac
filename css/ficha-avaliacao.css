@@ -135,12 +135,43 @@
 .ficha-tabela-criterios td {
   font-size: .8rem;
   vertical-align: middle;
+  word-wrap: break-word;
 }
 
 .ficha-linha-aluno-linha {
   flex: 1;
   border-bottom: 1px solid #999;
   min-height: 1.4rem;
+}
+
+.ficha-linha-aluno-nome {
+  font-size: .85rem;
+  color: #333;
+  border-bottom: 1px dotted #ccc;
+  flex: 1;
+  min-height: 1.4rem;
+}
+
+.ficha-nota-final {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  margin-top: .8rem;
+  margin-bottom: .5rem;
+}
+
+.ficha-nota-final-label {
+  font-weight: 700;
+  font-size: .95rem;
+  color: #333;
+  white-space: nowrap;
+}
+
+.ficha-nota-final-campo {
+  width: 80px;
+  border-bottom: 2px solid #333;
+  min-height: 1.6rem;
+  text-align: center;
 }
 
 .ficha-obs-linha {
@@ -241,6 +272,10 @@
     padding: 0 !important;
     max-width: 100% !important;
     box-shadow: none !important;
+  }
+
+  .ficha-nota-final-campo {
+    border-bottom: 2px solid #333 !important;
   }
 
   .ficha-assinatura-linha {

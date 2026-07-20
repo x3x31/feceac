@@ -17,17 +17,17 @@ const renderizarCriterios = (criterios) => {
   }
   return `<table class="table table-bordered table-sm ficha-tabela-criterios mb-0">
     <thead><tr>
-      <th style="width:5%">Nº</th>
-      <th style="width:55%">Critério</th>
+      <th style="width:40%">Critério</th>
       <th style="width:10%">Peso</th>
-      <th style="width:30%">Observação do Critério</th>
+      <th style="width:30%">Observação</th>
+      <th style="width:12%">Nota</th>
     </tr></thead>
-    <tbody>${criterios.map((c, i) => `
+    <tbody>${criterios.map((c) => `
       <tr>
-        <td class="text-center">${i + 1}</td>
         <td>${escapeHtml(c.descricao)}</td>
         <td class="text-center">${Number(c.peso)}</td>
         <td class="text-muted">${escapeHtml(c.observacoes || '-')}</td>
+        <td></td>
       </tr>`).join('')}
     </tbody>
   </table>`;
@@ -42,11 +42,18 @@ const renderizarFicha = (projeto, criterios) => {
 
   qs('#fichaCriterios').innerHTML = renderizarCriterios(criterios);
 
-  const linhas = [];
-  for (let i = 1; i <= FILTRO_NUM_ALUNOS; i++) {
-    linhas.push(`<div class="ficha-linha-aluno"><span class="ficha-linha-aluno-num">${i}º</span><div class="ficha-linha-aluno-linha"></div></div>`);
+  const alunos = (projeto.alunos || []).map((pa) => pa.aluno).filter(Boolean);
+  if (alunos.length > 0) {
+    qs('#fichaAlunosLinhas').innerHTML = alunos.map((a, i) =>
+      `<div class="ficha-linha-aluno"><span class="ficha-linha-aluno-num">${i + 1}º</span><span class="ficha-linha-aluno-nome">${escapeHtml(a.nome)}${a.turma ? ' — ' + escapeHtml(a.turma) : ''}</span></div>`
+    ).join('');
+  } else {
+    const linhas = [];
+    for (let i = 1; i <= FILTRO_NUM_ALUNOS; i++) {
+      linhas.push(`<div class="ficha-linha-aluno"><span class="ficha-linha-aluno-num">${i}º</span><div class="ficha-linha-aluno-linha"></div></div>`);
+    }
+    qs('#fichaAlunosLinhas').innerHTML = linhas.join('');
   }
-  qs('#fichaAlunosLinhas').innerHTML = linhas.join('');
 
   qs('#fichaContainer').classList.remove('d-none');
 };
