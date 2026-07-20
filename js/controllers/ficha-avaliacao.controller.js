@@ -173,7 +173,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     popularDropdownOrientadores(orientadorInput.value);
     qs('#projetoId').value = '';
     qs('#filtroProjetoBusca').value = '';
-    qs('#fichaContainer').classList.add('d-none');
+    if (!qs('#fichaContainer').classList.contains('d-none')) {
+      qs('#fichaTipo').textContent = tiposSelect.options[tiposSelect.selectedIndex]?.text || '-';
+    }
     aplicarFiltrosProjeto();
   });
 
@@ -191,7 +193,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     orientadorDropdown.classList.add('d-none');
     qs('#projetoId').value = '';
     qs('#filtroProjetoBusca').value = '';
-    qs('#fichaContainer').classList.add('d-none');
     aplicarFiltrosProjeto();
   });
 

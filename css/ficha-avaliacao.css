@@ -2,10 +2,10 @@
   background: #fff;
   border: 1px solid #dee2e6;
   border-radius: 8px;
-  padding: 2rem;
+  padding: 1.5rem;
   max-width: 900px;
   margin: 0 auto;
-  font-size: .82rem;
+  font-size: .8rem;
 }
 
 .ficha-header {
@@ -13,11 +13,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: .5rem;
+  margin-bottom: .3rem;
 }
 
 .ficha-logo {
-  max-width: 80px;
+  max-width: 70px;
   border-radius: 8px;
 }
 
@@ -28,48 +28,48 @@
 
 .ficha-header-text h2 {
   margin: 0;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: #198754;
   font-weight: 700;
 }
 
 .ficha-header-text p {
   margin: 0;
-  font-size: .85rem;
+  font-size: .8rem;
   color: #6c757d;
 }
 
 .ficha-divider {
   border-top: 3px solid #198754;
-  margin-bottom: 1.2rem;
+  margin-bottom: .8rem;
 }
 
 .ficha-info {
-  margin-bottom: 1rem;
+  margin-bottom: .6rem;
 }
 
 .ficha-info-row {
   display: flex;
   gap: .5rem;
   align-items: baseline;
-  margin-bottom: .4rem;
+  margin-bottom: .3rem;
 }
 
 .ficha-info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: .4rem 2rem;
+  gap: .3rem 2rem;
 }
 
 .ficha-label {
   font-weight: 600;
-  font-size: .85rem;
+  font-size: .8rem;
   white-space: nowrap;
   color: #333;
 }
 
 .ficha-valor {
-  font-size: .85rem;
+  font-size: .8rem;
   color: #555;
   border-bottom: 1px dotted #ccc;
   flex: 1;
@@ -82,8 +82,8 @@
   align-items: baseline;
   border-bottom: 2px solid #dee2e6;
   padding-bottom: .2rem;
-  margin-bottom: .4rem;
-  margin-top: .8rem;
+  margin-bottom: .3rem;
+  margin-top: .5rem;
 }
 
 .ficha-criterios-header .ficha-section-title {
@@ -93,17 +93,17 @@
 }
 
 .ficha-section-title {
-  font-size: .85rem;
+  font-size: .8rem;
   font-weight: 700;
   color: #198754;
   border-bottom: 2px solid #dee2e6;
   padding-bottom: .2rem;
-  margin-bottom: .4rem;
-  margin-top: .8rem;
+  margin-bottom: .3rem;
+  margin-top: .6rem;
 }
 
 .ficha-criterios-lista {
-  font-size: .82rem;
+  font-size: .78rem;
   padding-left: 0;
   list-style: none;
 }
@@ -111,7 +111,7 @@
 .ficha-criterios-lista .criterio-item {
   display: flex;
   gap: .5rem;
-  padding: .25rem 0;
+  padding: .2rem 0;
   border-bottom: 1px dotted #eee;
 }
 
@@ -131,16 +131,28 @@
   white-space: nowrap;
 }
 
+.ficha-tabela-criterios th {
+  background: #f8f9fa;
+  font-size: .78rem;
+  font-weight: 600;
+}
+
+.ficha-tabela-criterios td {
+  font-size: .78rem;
+  vertical-align: middle;
+  word-wrap: break-word;
+}
+
 .ficha-linhas-alunos {
-  margin-bottom: .5rem;
+  margin-bottom: .3rem;
 }
 
 .ficha-linha-aluno {
   display: flex;
   align-items: center;
   gap: .5rem;
-  margin-bottom: .35rem;
-  font-size: .85rem;
+  margin-bottom: .3rem;
+  font-size: .8rem;
 }
 
 .ficha-linha-aluno-num {
@@ -149,30 +161,18 @@
   min-width: 1.2rem;
 }
 
-.ficha-tabela-criterios th {
-  background: #f8f9fa;
-  font-size: .8rem;
-  font-weight: 600;
-}
-
-.ficha-tabela-criterios td {
-  font-size: .8rem;
-  vertical-align: middle;
-  word-wrap: break-word;
-}
-
 .ficha-linha-aluno-linha {
   flex: 1;
   border-bottom: 1px solid #999;
-  min-height: 1.4rem;
+  min-height: 1.3rem;
 }
 
 .ficha-linha-aluno-nome {
-  font-size: .85rem;
+  font-size: .8rem;
   color: #333;
   border-bottom: 1px dotted #ccc;
   flex: 1;
-  min-height: 1.4rem;
+  min-height: 1.3rem;
 }
 
 .ficha-nota-final {
@@ -180,13 +180,13 @@
   align-items: center;
   justify-content: flex-end;
   gap: .8rem;
-  margin-top: .4rem;
+  margin-top: .3rem;
   margin-bottom: .3rem;
 }
 
 .ficha-nota-final-label {
   font-weight: 700;
-  font-size: .95rem;
+  font-size: .9rem;
   color: #333;
   white-space: nowrap;
 }
@@ -194,129 +194,19 @@
 .ficha-nota-final-campo {
   width: 80px;
   border-bottom: 2px solid #333;
-  min-height: 1.6rem;
+  min-height: 1.4rem;
   text-align: center;
+}
+
+.ficha-obs {
+  margin-bottom: .2rem;
 }
 
 .ficha-obs-linha {
   border-bottom: 1px solid #999;
-  min-height: 1.5rem;
-  margin-bottom: .15rem;
+  min-height: 1.4rem;
+  margin-bottom: .1rem;
 }
-
-.ficha-legenda-box {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: .4rem .6rem;
-  font-size: .7rem;
-  max-width: 280px;
-}
-
-.ficha-legenda-box-title {
-  font-weight: 700;
-  font-size: .72rem;
-  color: #555;
-  margin-bottom: .2rem;
-}
-
-.ficha-legenda-box-item {
-  color: #555;
-  display: inline-flex;
-  align-items: center;
-  gap: .25rem;
-  margin-right: .6rem;
-  white-space: nowrap;
-}
-
-.ficha-footer-row {
-  margin-top: .6rem;
-}
-
-.ficha-assinatura {
-  text-align: center;
-  flex: 1;
-  max-width: 250px;
-}
-
-.ficha-assinatura-linha {
-  border-top: 1px solid #333;
-  margin-bottom: .3rem;
-  margin-top: 2rem;
-}
-
-.ficha-assinatura span {
-  font-size: .8rem;
-  color: #555;
-}
-
-.nota-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.3rem;
-  height: 1.3rem;
-  background: #198754;
-  color: #fff;
-  border-radius: 3px;
-  font-weight: 700;
-  font-size: .65rem;
-}
-
-@media print {
-  body {
-    background: #fff !important;
-  }
-
-  .navbar, .sidebar, #btnImprimir, .ficha-filtros {
-    display: none !important;
-  }
-
-  .app-shell {
-    display: block !important;
-  }
-
-  .content-area {
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-
-  #fichaContainer {
-    display: block !important;
-  }
-
-  .ficha-page {
-    border: none !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
-    max-width: 100% !important;
-    box-shadow: none !important;
-    page-break-inside: avoid;
-  }
-
-  .ficha-section-title {
-    margin-top: .5rem !important;
-    margin-bottom: .3rem !important;
-  }
-
-  .ficha-info {
-    margin-bottom: .5rem !important;
-  }
-
-  .ficha-divider {
-    margin-bottom: .6rem !important;
-  }
-
-  .ficha-nota-final {
-    margin-top: .5rem !important;
-  }
-
-  .ficha-nota-final-campo {
-    border-bottom: 2px solid #333 !important;
-  }
-
-  .ficha-footer-row {
-    margin-top: .4rem !important;
-  }
 
 .ficha-legenda-inline {
   display: flex;
@@ -334,12 +224,153 @@
 }
 
 .ficha-legenda-box {
-    font-size: .65rem !important;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: .4rem .6rem;
+  font-size: .65rem;
+  max-width: 280px;
+}
+
+.ficha-legenda-box-title {
+  font-weight: 700;
+  font-size: .7rem;
+  color: #555;
+  margin-bottom: .2rem;
+}
+
+.ficha-legenda-box-item {
+  color: #555;
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  margin-right: .6rem;
+  white-space: nowrap;
+}
+
+.ficha-footer-row {
+  margin-top: .4rem;
+}
+
+.ficha-assinatura {
+  text-align: center;
+  flex: 1;
+  max-width: 250px;
+}
+
+.ficha-assinatura-linha {
+  border-top: 1px solid #333;
+  margin-bottom: .3rem;
+  margin-top: 1.5rem;
+}
+
+.ficha-assinatura span {
+  font-size: .75rem;
+  color: #555;
+}
+
+.nota-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  background: #198754;
+  color: #fff;
+  border-radius: 3px;
+  font-weight: 700;
+  font-size: .6rem;
+}
+
+@media print {
+  @page {
+    margin: 10mm;
+    size: A4 portrait;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .navbar, .sidebar, #btnImprimir, .ficha-filtros {
+    display: none !important;
+  }
+
+  .app-shell {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .content-area {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #fichaContainer {
+    display: block !important;
+  }
+
+  .ficha-page {
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+
+  .ficha-divider {
+    margin-bottom: .4rem !important;
+  }
+
+  .ficha-info {
+    margin-bottom: .3rem !important;
+  }
+
+  .ficha-section-title {
+    margin-top: .3rem !important;
+    margin-bottom: .2rem !important;
+  }
+
+  .ficha-criterios-header {
+    margin-top: .3rem !important;
+    margin-bottom: .2rem !important;
+  }
+
+  .ficha-nota-final {
+    margin-top: .2rem !important;
+    margin-bottom: .2rem !important;
+  }
+
+  .ficha-nota-final-campo {
+    border-bottom: 2px solid #333 !important;
+  }
+
+  .ficha-footer-row {
+    margin-top: .3rem !important;
+  }
+
+  .ficha-assinatura-linha {
+    margin-top: 1rem !important;
+  }
+
+  .ficha-obs-linha {
+    min-height: 1.2rem !important;
+    margin-bottom: .05rem !important;
+  }
+
+  .ficha-linha-aluno {
+    margin-bottom: .2rem !important;
   }
 
   .nota-badge {
-    width: 1.1rem !important;
-    height: 1.1rem !important;
-    font-size: .6rem !important;
+    width: 1rem !important;
+    height: 1rem !important;
+    font-size: .55rem !important;
   }
 }
