@@ -1,9 +1,14 @@
-import { escapeHtml, qs, qsa } from '../util.js';
+import { escapeHtml, qs } from '../util.js';
 import { toast } from '../ui.js';
 import { obterProjeto, listarProjetos } from '../services/projeto.service.js';
 import { listarCriterios } from '../services/avaliacao.service.js';
+import { listarProfessores } from '../services/professor.service.js';
 
 let todosProjetos = [];
+let todosProfessores = [];
+let projetosFiltrados = [];
+
+const FILTRO_NUM_ALUNOS = 10;
 
 const renderizarFicha = (projeto, criterios) => {
   qs('#fichaTitulo').textContent = projeto.titulo || '-';
@@ -12,42 +17,44 @@ const renderizarFicha = (projeto, criterios) => {
   qs('#fichaOrientador').textContent = projeto.orientador?.nome || '-';
   qs('#fichaCoorientador').textContent = projeto.coorientador?.nome || '-';
 
-  const alunos = (projeto.alunos || [])
-    .map((pa) => pa.aluno)
-    .filter(Boolean);
+  qs('#fichaCriterios').innerHTML = criterios.length > 0
+    ? criterios.map((c, i) => `
+      <div class="criterio-item">
+        <span class="criterio-num">${i + 1}.</span>
+        <span class="criterio-texto">${escapeHtml(c.descricao)}</span>
+        <span class="criterio-peso">(peso: ${Number(c.peso)})</span>
+      </div>`).join('')
+    : '<div class="text-muted">Nenhum critério cadastrado para este tipo de projeto.</div>';
 
-  qs('#fichaAlunos').innerHTML = alunos.length > 0
-    ? alunos.map((a, i) => `<div class="ficha-alunos-item">${i + 1}. ${escapeHtml(a.nome)}${a.turma ? ' — ' + escapeHtml(a.turma) : ''}</div>`).join('')
-    : '<div class="ficha-alunos-item text-muted">Nenhum aluno cadastrado</div>';
-
-  qs('#fichaCriterios').innerHTML = criterios.map((c, i) => `
-    <tr>
-      <td class="text-center">${i + 1}</td>
-      <td class="criterio-desc">${escapeHtml(c.descricao)}${c.observacoes ? '<br><small class="text-muted">' + escapeHtml(c.observacoes) + '</small>' : ''}</td>
-      <td class="text-center">${Number(c.peso)}</td>
-      <td class="criterio-obs">&nbsp;</td>
-      <td class="criterio-nota">&nbsp;</td>
-    </tr>`).join('');
+  const linhas = [];
+  for (let i = 1; i <= FILTRO_NUM_ALUNOS; i++) {
+    linhas.push(`<div class="ficha-linha-aluno"><span class="ficha-linha-aluno-num">${i}º</span><div class="ficha-linha-aluno-linha"></div></div>`);
+  }
+  qs('#fichaAlunosLinhas').innerHTML = linhas.join('');
 
   qs('#fichaContainer').classList.remove('d-none');
+  qs('#btnImprimir').classList.remove('d-none');
 };
 
-const carregarProjeto = async (id) => {
-  try {
-    const projeto = await obterProjeto(id);
-    const criterios = await listarCriterios(projeto.tipo_projeto_id);
-    renderizarFicha(projeto, criterios);
-  } catch (error) {
-    toast(error.message || 'Erro ao carregar projeto.', 'danger');
-  }
+const aplicarFiltrosProjeto = () => {
+  const tipoId = qs('#filtroTipo').value;
+  const orientadorId = qs('#filtroOrientador').value;
+
+  projetosFiltrados = todosProjetos.filter((p) => {
+    if (tipoId && String(p.tipo_projeto_id) !== tipoId) return false;
+    if (orientadorId && String(p.orientador_id) !== orientadorId) return false;
+    return true;
+  });
+
+  popularDropdownProjetos(qs('#filtroProjetoBusca').value);
 };
 
-const popularDropdown = (termo = '') => {
+const popularDropdownProjetos = (termo = '') => {
   const dropdown = qs('#filtroProjetoDropdown');
   const lower = termo.toLowerCase();
   const filtrados = lower
-    ? todosProjetos.filter((p) => p.titulo.toLowerCase().includes(lower))
-    : todosProjetos;
+    ? projetosFiltrados.filter((p) => p.titulo.toLowerCase().includes(lower))
+    : projetosFiltrados;
 
   if (filtrados.length === 0) {
     dropdown.classList.add('d-none');
@@ -60,41 +67,140 @@ const popularDropdown = (termo = '') => {
   dropdown.classList.remove('d-none');
 };
 
+const popularDropdownOrientadores = (termo = '') => {
+  const dropdown = qs('#filtroOrientadorDropdown');
+  const lower = termo.toLowerCase();
+  const filtrados = lower
+    ? todosProfessores.filter((p) => p.nome.toLowerCase().includes(lower))
+    : todosProfessores;
+
+  dropdown.innerHTML = `<button type="button" class="list-group-item list-group-item-action" data-id="">Todos</button>` +
+    filtrados.slice(0, 50).map((p) =>
+      `<button type="button" class="list-group-item list-group-item-action" data-id="${p.id}">${escapeHtml(p.nome)}</button>`
+    ).join('');
+  dropdown.classList.remove('d-none');
+};
+
+const carregarProjeto = async (id) => {
+  try {
+    const projeto = await obterProjeto(id);
+    const criterios = await listarCriterios(projeto.tipo_projeto_id);
+    renderizarFicha(projeto, criterios);
+  } catch (error) {
+    toast(error.message || 'Erro ao carregar projeto.', 'danger');
+  }
+};
+
+const carregarCriteriosTipo = async () => {
+  const tipoId = qs('#filtroTipo').value;
+  if (!tipoId) {
+    qs('#fichaCriterios').innerHTML = '<div class="text-muted">Selecione um tipo de projeto para ver os critérios.</div>';
+    return;
+  }
+  try {
+    const criterios = await listarCriterios(Number(tipoId));
+    qs('#fichaCriterios').innerHTML = criterios.length > 0
+      ? criterios.map((c, i) => `
+        <div class="criterio-item">
+          <span class="criterio-num">${i + 1}.</span>
+          <span class="criterio-texto">${escapeHtml(c.descricao)}</span>
+          <span class="criterio-peso">(peso: ${Number(c.peso)})</span>
+        </div>`).join('')
+      : '<div class="text-muted">Nenhum critério cadastrado para este tipo.</div>';
+  } catch (error) {
+    toast(error.message || 'Erro ao carregar critérios.', 'danger');
+  }
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    const projetos = await listarProjetos();
+    const [projetos, professores] = await Promise.all([listarProjetos(), listarProfessores()]);
     todosProjetos = projetos;
+    todosProfessores = professores;
+    projetosFiltrados = projetos;
   } catch (error) {
-    toast(error.message || 'Erro ao carregar projetos.', 'danger');
+    toast(error.message || 'Erro ao carregar dados.', 'danger');
     return;
   }
 
-  const input = qs('#filtroProjeto');
-  const dropdown = qs('#filtroProjetoDropdown');
-  const hiddenId = qs('#projetoId');
+  const tiposSelect = qs('#filtroTipo');
+  const tipos = [...new Map(todosProjetos.filter((p) => p.tipo).map((p) => [p.tipo.id, p.tipo])).values()];
+  tiposSelect.innerHTML = '<option value="">Selecione</option>' +
+    tipos.map((t) => `<option value="${t.id}">${escapeHtml(t.nome)}</option>`).join('');
 
-  input.addEventListener('input', () => {
-    hiddenId.value = '';
-    popularDropdown(input.value);
+  tiposSelect.addEventListener('change', () => {
+    qs('#filtroOrientador').value = '';
+    qs('#filtroOrientadorBusca').value = '';
+    qs('#projetoId').value = '';
+    qs('#filtroProjetoBusca').value = '';
+    qs('#fichaContainer').classList.add('d-none');
+    qs('#btnImprimir').classList.add('d-none');
+    aplicarFiltrosProjeto();
+    carregarCriteriosTipo();
   });
 
-  input.addEventListener('focus', () => {
-    popularDropdown(input.value);
+  const orientadorInput = qs('#filtroOrientadorBusca');
+  const orientadorDropdown = qs('#filtroOrientadorDropdown');
+  const orientadorHidden = qs('#filtroOrientador');
+
+  orientadorInput.addEventListener('input', () => {
+    orientadorHidden.value = '';
+    popularDropdownOrientadores(orientadorInput.value);
+    qs('#projetoId').value = '';
+    qs('#filtroProjetoBusca').value = '';
+    qs('#fichaContainer').classList.add('d-none');
+    qs('#btnImprimir').classList.add('d-none');
+    aplicarFiltrosProjeto();
   });
 
-  dropdown.addEventListener('click', (event) => {
+  orientadorInput.addEventListener('focus', () => {
+    popularDropdownOrientadores(orientadorInput.value);
+  });
+
+  orientadorDropdown.addEventListener('click', (event) => {
     const btn = event.target.closest('[data-id]');
     if (!btn) return;
-    hiddenId.value = btn.dataset.id;
-    const projeto = todosProjetos.find((p) => String(p.id) === btn.dataset.id);
-    input.value = projeto ? projeto.titulo : '';
-    dropdown.classList.add('d-none');
+    orientadorHidden.value = btn.dataset.id;
+    orientadorInput.value = btn.dataset.id
+      ? todosProfessores.find((p) => String(p.id) === btn.dataset.id)?.nome || ''
+      : '';
+    orientadorDropdown.classList.add('d-none');
+    qs('#projetoId').value = '';
+    qs('#filtroProjetoBusca').value = '';
+    qs('#fichaContainer').classList.add('d-none');
+    qs('#btnImprimir').classList.add('d-none');
+    aplicarFiltrosProjeto();
+  });
+
+  const projetoInput = qs('#filtroProjetoBusca');
+  const projetoDropdown = qs('#filtroProjetoDropdown');
+  const projetoHidden = qs('#projetoId');
+
+  projetoInput.addEventListener('input', () => {
+    projetoHidden.value = '';
+    popularDropdownProjetos(projetoInput.value);
+  });
+
+  projetoInput.addEventListener('focus', () => {
+    popularDropdownProjetos(projetoInput.value);
+  });
+
+  projetoDropdown.addEventListener('click', (event) => {
+    const btn = event.target.closest('[data-id]');
+    if (!btn) return;
+    projetoHidden.value = btn.dataset.id;
+    const projeto = projetosFiltrados.find((p) => String(p.id) === btn.dataset.id);
+    projetoInput.value = projeto ? projeto.titulo : '';
+    projetoDropdown.classList.add('d-none');
     carregarProjeto(btn.dataset.id);
   });
 
   document.addEventListener('click', (event) => {
-    if (!dropdown.contains(event.target) && event.target !== input) {
-      dropdown.classList.add('d-none');
+    if (!orientadorDropdown.contains(event.target) && event.target !== orientadorInput) {
+      orientadorDropdown.classList.add('d-none');
+    }
+    if (!projetoDropdown.contains(event.target) && event.target !== projetoInput) {
+      projetoDropdown.classList.add('d-none');
     }
   });
 
@@ -107,8 +213,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (projetoId) {
     const projeto = todosProjetos.find((p) => String(p.id) === projetoId);
     if (projeto) {
-      input.value = projeto.titulo;
-      hiddenId.value = projeto.id;
+      projetoInput.value = projeto.titulo;
+      projetoHidden.value = projeto.id;
+      if (projeto.tipo) {
+        tiposSelect.value = projeto.tipo.id;
+        await carregarCriteriosTipo();
+      }
+      if (projeto.orientador) {
+        orientadorHidden.value = projeto.orientador.id;
+        orientadorInput.value = projeto.orientador.nome;
+      }
+      aplicarFiltrosProjeto();
       carregarProjeto(projetoId);
     }
   }

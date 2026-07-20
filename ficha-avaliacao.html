@@ -16,19 +16,35 @@
     <section class="content-area flex-grow-1">
       <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
         <h1 class="page-title mb-0">Ficha de Avaliação</h1>
-        <div class="d-flex gap-2">
-          <button id="btnImprimir" class="btn btn-success">Imprimir</button>
+        <button id="btnImprimir" class="btn btn-success d-none">Imprimir</button>
+      </div>
+      <div class="ficha-filtros mb-3">
+        <div class="row g-2">
+          <div class="col-md-3">
+            <label class="form-label form-label-sm" for="filtroTipo">Tipo do Projeto</label>
+            <select id="filtroTipo" class="form-select form-select-sm">
+              <option value="">Selecione</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label form-label-sm" for="filtroOrientadorBusca">Orientador</label>
+            <div class="position-relative">
+              <input type="hidden" id="filtroOrientador">
+              <input id="filtroOrientadorBusca" type="text" class="form-control form-control-sm" placeholder="Todos" autocomplete="off">
+              <div id="filtroOrientadorDropdown" class="list-group position-absolute w-100 d-none" style="z-index: 1050; max-height: 250px; overflow-y: auto;"></div>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <label class="form-label form-label-sm" for="filtroProjetoBusca">Projeto</label>
+            <div class="position-relative">
+              <input type="hidden" id="projetoId">
+              <input id="filtroProjetoBusca" type="text" class="form-control form-control-sm" placeholder="Pesquisar projeto..." autocomplete="off">
+              <div id="filtroProjetoDropdown" class="list-group position-absolute w-100 d-none" style="z-index: 1050; max-height: 300px; overflow-y: auto;"></div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="mb-3">
-        <label class="form-label" for="filtroProjeto">Selecionar Projeto</label>
-        <div class="position-relative">
-          <input type="hidden" id="projetoId">
-          <input id="filtroProjeto" type="text" class="form-control" placeholder="Pesquisar projeto..." autocomplete="off">
-          <div id="filtroProjetoDropdown" class="list-group position-absolute w-100 d-none" style="z-index: 1050; max-height: 300px; overflow-y: auto;"></div>
-        </div>
-      </div>
-      <div id="fichaContainer" class="ficha-print d-none">
+      <div id="fichaContainer" class="d-none">
         <div class="ficha-page">
           <div class="ficha-header">
             <img src="assets/logos/feceac.jpeg" alt="Logo FECEAC" class="ficha-logo">
@@ -64,28 +80,27 @@
               </div>
             </div>
           </div>
-          <div class="ficha-section-title">Alunos</div>
-          <div id="fichaAlunos" class="ficha-alunos"></div>
           <div class="ficha-section-title">Critérios de Avaliação</div>
-          <table class="table table-bordered ficha-tabela mb-0">
-            <thead>
-              <tr>
-                <th style="width:5%">Nº</th>
-                <th style="width:35%">Critério</th>
-                <th style="width:8%">Peso</th>
-                <th style="width:32%">Observações</th>
-                <th style="width:10%">Nota (0-10)</th>
-              </tr>
-            </thead>
-            <tbody id="fichaCriterios"></tbody>
-          </table>
-          <div class="ficha-obs mt-4">
-            <div class="ficha-section-title">Observações Gerais</div>
+          <div id="fichaCriterios" class="ficha-criterios-lista mb-3"></div>
+          <div class="ficha-section-title">Alunos</div>
+          <div id="fichaAlunosLinhas" class="ficha-linhas-alunos"></div>
+          <div class="ficha-section-title">Observações Gerais</div>
+          <div class="ficha-obs">
+            <div class="ficha-obs-linha">&nbsp;</div>
             <div class="ficha-obs-linha">&nbsp;</div>
             <div class="ficha-obs-linha">&nbsp;</div>
             <div class="ficha-obs-linha">&nbsp;</div>
           </div>
-          <div class="ficha-assinaturas mt-5">
+          <div class="ficha-legenda mt-3">
+            <span class="ficha-legenda-titulo">Legenda de Notas:</span>
+            <span class="ficha-legenda-item"><strong>5</strong> - Insuficiente</span>
+            <span class="ficha-legenda-item"><strong>6</strong> - Regular</span>
+            <span class="ficha-legenda-item"><strong>7</strong> - Bom</span>
+            <span class="ficha-legenda-item"><strong>8</strong> - Muito Bom</span>
+            <span class="ficha-legenda-item"><strong>9</strong> - Excelente</span>
+            <span class="ficha-legenda-item"><strong>10</strong> - Nota Máxima</span>
+          </div>
+          <div class="ficha-assinaturas mt-4">
             <div class="ficha-assinatura">
               <div class="ficha-assinatura-linha"></div>
               <span>Avaliador(a)</span>
