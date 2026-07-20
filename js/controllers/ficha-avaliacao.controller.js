@@ -17,14 +17,12 @@ const renderizarCriterios = (criterios) => {
   }
   return `<table class="table table-bordered table-sm ficha-tabela-criterios mb-0">
     <thead><tr>
-      <th style="width:60%">Critério</th>
-      <th style="width:12%">Peso</th>
-      <th style="width:14%">Nota</th>
+      <th style="width:85%">Critério</th>
+      <th style="width:15%">Nota</th>
     </tr></thead>
     <tbody>${criterios.map((c) => `
       <tr>
-        <td><strong>${escapeHtml(c.descricao)}</strong>${c.observacoes ? '<br><span class="text-muted">' + escapeHtml(c.observacoes) + '</span>' : ''}</td>
-        <td class="text-center">${Number(c.peso)}</td>
+        <td><strong>${escapeHtml(c.descricao)}</strong> <span class="text-muted">(peso: ${Number(c.peso)})</span>${c.observacoes ? '<br><span class="text-muted">' + escapeHtml(c.observacoes) + '</span>' : ''}</td>
         <td></td>
       </tr>`).join('')}
     </tbody>
@@ -41,17 +39,16 @@ const renderizarFicha = (projeto, criterios) => {
   qs('#fichaCriterios').innerHTML = renderizarCriterios(criterios);
 
   const alunos = (projeto.alunos || []).map((pa) => pa.aluno).filter(Boolean);
-  if (alunos.length > 0) {
-    qs('#fichaAlunosLinhas').innerHTML = alunos.map((a, i) =>
-      `<div class="ficha-linha-aluno"><span class="ficha-linha-aluno-num">${i + 1}º</span><span class="ficha-linha-aluno-nome">${escapeHtml(a.nome)}${a.turma ? ' — ' + escapeHtml(a.turma) : ''}</span></div>`
-    ).join('');
-  } else {
-    const linhas = [];
-    for (let i = 1; i <= FILTRO_NUM_ALUNOS; i++) {
-      linhas.push(`<div class="ficha-linha-aluno"><span class="ficha-linha-aluno-num">${i}º</span><div class="ficha-linha-aluno-linha"></div></div>`);
+  const linhasAlunos = [];
+  for (let i = 0; i < Math.max(alunos.length, FILTRO_NUM_ALUNOS); i++) {
+    const a = alunos[i];
+    if (a) {
+      linhasAlunos.push(`<div class="ficha-linha-aluno"><span class="ficha-linha-aluno-num">${i + 1}º</span><span class="ficha-linha-aluno-nome">${escapeHtml(a.nome)}${a.turma ? ' — ' + escapeHtml(a.turma) : ''}</span></div>`);
+    } else {
+      linhasAlunos.push(`<div class="ficha-linha-aluno"><span class="ficha-linha-aluno-num">${i + 1}º</span><div class="ficha-linha-aluno-linha"></div></div>`);
     }
-    qs('#fichaAlunosLinhas').innerHTML = linhas.join('');
   }
+  qs('#fichaAlunosLinhas').innerHTML = linhasAlunos.join('');
 
   qs('#fichaContainer').classList.remove('d-none');
 };
