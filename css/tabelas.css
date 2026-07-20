@@ -7,6 +7,21 @@
   min-width: 150px;
 }
 
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable:hover {
+  background: #e8f4ef;
+}
+
+.sort-icon {
+  font-size: .65rem;
+  margin-left: .25rem;
+  color: #6c757d;
+}
+
 .search-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

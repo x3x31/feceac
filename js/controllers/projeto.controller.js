@@ -482,6 +482,43 @@ let ehAdmin = false;
 
 let tiposProjeto = [];
 
+let projetosCarregados = [];
+let sortCol = 'id';
+let sortDir = 'asc';
+
+const SORT_ACCESSORS = {
+  id: (p) => p.id || 0,
+  titulo: (p) => (p.titulo || '').toLowerCase(),
+  tipo: (p) => (p.tipo?.nome || '').toLowerCase(),
+  area: (p) => (p.area?.nome || '').toLowerCase(),
+  orientador: (p) => (p.orientador?.nome || '').toLowerCase(),
+  coorientador: (p) => (p.coorientador?.nome || '').toLowerCase(),
+  alunos: (p) => p.alunos?.length || 0,
+};
+
+const ordenarProjetos = (projetos, coluna, direcao) => {
+  const accessor = SORT_ACCESSORS[coluna];
+  if (!accessor) return projetos;
+  return [...projetos].sort((a, b) => {
+    const va = accessor(a);
+    const vb = accessor(b);
+    if (va < vb) return direcao === 'asc' ? -1 : 1;
+    if (va > vb) return direcao === 'asc' ? 1 : -1;
+    return 0;
+  });
+};
+
+const atualizarIndicadorOrdenacao = () => {
+  qsa('.sortable').forEach((th) => {
+    const icon = th.querySelector('.sort-icon');
+    if (th.dataset.col === sortCol) {
+      icon.textContent = sortDir === 'asc' ? '\u25B2' : '\u25BC';
+    } else {
+      icon.textContent = '';
+    }
+  });
+};
+
 const carregarProjetos = async () => {
   const filtros = {
     nome: qs('#filtroNome')?.value.trim(),
@@ -489,8 +526,9 @@ const carregarProjetos = async () => {
     area_id: qs('#filtroArea')?.value,
     orientador_id: qs('#filtroOrientador')?.value,
   };
-  const projetos = await listarProjetos(filtros);
-  renderizarProjetos(projetos, ehAdmin);
+  projetosCarregados = await listarProjetos(filtros);
+  const ordenados = ordenarProjetos(projetosCarregados, sortCol, sortDir);
+  renderizarProjetos(ordenados, ehAdmin);
 };
 
 const carregarSelectTiposFiltro = async (valor = '') => {
@@ -568,6 +606,21 @@ const iniciarListagemProjetos = async () => {
 
   qs('#filtroArea').addEventListener('change', carregarProjetos);
 
+  qs('thead').addEventListener('click', (event) => {
+    const th = event.target.closest('.sortable');
+    if (!th) return;
+    const col = th.dataset.col;
+    if (col === sortCol) {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortCol = col;
+      sortDir = 'asc';
+    }
+    atualizarIndicadorOrdenacao();
+    const ordenados = ordenarProjetos(projetosCarregados, sortCol, sortDir);
+    renderizarProjetos(ordenados, ehAdmin);
+  });
+
   qs('#projetosTabela').addEventListener('click', async (event) => {
     if (event.target.matches('.btn-expandir')) {
       const id = event.target.dataset.id;
@@ -582,7 +635,8 @@ const iniciarListagemProjetos = async () => {
       try {
         await excluirProjeto(event.target.dataset.id);
         toast('Projeto excluído.');
-        await carregarProjetos();
+  await carregarProjetos();
+  atualizarIndicadorOrdenacao();
       } catch (error) {
         toast(error.message || 'Erro ao excluir projeto.', 'danger');
       }
