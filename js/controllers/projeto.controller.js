@@ -594,6 +594,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     if (qs('#projetoForm')) await iniciarFormularioProjeto();
     if (qs('#projetosTabela')) {
+      const usuarioAtual = await buscarUsuarioAtual();
+      if (usuarioAtual && usuarioAtual.tipo === 'Professor') {
+        const btnCadastrar = qs('a[href="cadastrar-projeto.html"]');
+        if (btnCadastrar) btnCadastrar.classList.add('d-none');
+      }
       setLoading('#estadoProjetos', true);
       await iniciarListagemProjetos();
       setLoading('#estadoProjetos', false);
