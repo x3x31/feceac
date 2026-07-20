@@ -3,12 +3,35 @@ import { toast } from '../ui.js';
 import { obterProjeto, listarProjetos } from '../services/projeto.service.js';
 import { listarCriterios } from '../services/avaliacao.service.js';
 import { listarProfessores } from '../services/professor.service.js';
+import { supabase } from '../supabase.js';
 
 let todosProjetos = [];
 let todosProfessores = [];
 let projetosFiltrados = [];
 
 const FILTRO_NUM_ALUNOS = 10;
+
+const renderizarCriterios = (criterios) => {
+  if (criterios.length === 0) {
+    return '<div class="text-muted">Nenhum critério cadastrado para este tipo de projeto.</div>';
+  }
+  return `<table class="table table-bordered table-sm ficha-tabela-criterios mb-0">
+    <thead><tr>
+      <th style="width:5%">Nº</th>
+      <th style="width:55%">Critério</th>
+      <th style="width:10%">Peso</th>
+      <th style="width:30%">Observação do Critério</th>
+    </tr></thead>
+    <tbody>${criterios.map((c, i) => `
+      <tr>
+        <td class="text-center">${i + 1}</td>
+        <td>${escapeHtml(c.descricao)}</td>
+        <td class="text-center">${Number(c.peso)}</td>
+        <td class="text-muted">${escapeHtml(c.observacoes || '-')}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+};
 
 const renderizarFicha = (projeto, criterios) => {
   qs('#fichaTitulo').textContent = projeto.titulo || '-';
@@ -17,14 +40,7 @@ const renderizarFicha = (projeto, criterios) => {
   qs('#fichaOrientador').textContent = projeto.orientador?.nome || '-';
   qs('#fichaCoorientador').textContent = projeto.coorientador?.nome || '-';
 
-  qs('#fichaCriterios').innerHTML = criterios.length > 0
-    ? criterios.map((c, i) => `
-      <div class="criterio-item">
-        <span class="criterio-num">${i + 1}.</span>
-        <span class="criterio-texto">${escapeHtml(c.descricao)}</span>
-        <span class="criterio-peso">(peso: ${Number(c.peso)})</span>
-      </div>`).join('')
-    : '<div class="text-muted">Nenhum critério cadastrado para este tipo de projeto.</div>';
+  qs('#fichaCriterios').innerHTML = renderizarCriterios(criterios);
 
   const linhas = [];
   for (let i = 1; i <= FILTRO_NUM_ALUNOS; i++) {
@@ -33,7 +49,6 @@ const renderizarFicha = (projeto, criterios) => {
   qs('#fichaAlunosLinhas').innerHTML = linhas.join('');
 
   qs('#fichaContainer').classList.remove('d-none');
-  qs('#btnImprimir').classList.remove('d-none');
 };
 
 const aplicarFiltrosProjeto = () => {
@@ -99,34 +114,41 @@ const carregarCriteriosTipo = async () => {
   }
   try {
     const criterios = await listarCriterios(Number(tipoId));
-    qs('#fichaCriterios').innerHTML = criterios.length > 0
-      ? criterios.map((c, i) => `
-        <div class="criterio-item">
-          <span class="criterio-num">${i + 1}.</span>
-          <span class="criterio-texto">${escapeHtml(c.descricao)}</span>
-          <span class="criterio-peso">(peso: ${Number(c.peso)})</span>
-        </div>`).join('')
-      : '<div class="text-muted">Nenhum critério cadastrado para este tipo.</div>';
+    qs('#fichaCriterios').innerHTML = renderizarCriterios(criterios);
   } catch (error) {
     toast(error.message || 'Erro ao carregar critérios.', 'danger');
   }
 };
 
+const carregarTiposProjeto = async () => {
+  const { data, error } = await supabase
+    .from('tipos_projeto')
+    .select('*')
+    .order('nome');
+  if (error) throw error;
+  return data;
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    const [projetos, professores] = await Promise.all([listarProjetos(), listarProfessores()]);
+    const [projetos, professores, tipos] = await Promise.all([
+      listarProjetos(),
+      listarProfessores(),
+      carregarTiposProjeto(),
+    ]);
     todosProjetos = projetos;
     todosProfessores = professores;
     projetosFiltrados = projetos;
+
+    const tiposSelect = qs('#filtroTipo');
+    tiposSelect.innerHTML = '<option value="">Selecione</option>' +
+      tipos.map((t) => `<option value="${t.id}">${escapeHtml(t.nome)}</option>`).join('');
   } catch (error) {
     toast(error.message || 'Erro ao carregar dados.', 'danger');
     return;
   }
 
   const tiposSelect = qs('#filtroTipo');
-  const tipos = [...new Map(todosProjetos.filter((p) => p.tipo).map((p) => [p.tipo.id, p.tipo])).values()];
-  tiposSelect.innerHTML = '<option value="">Selecione</option>' +
-    tipos.map((t) => `<option value="${t.id}">${escapeHtml(t.nome)}</option>`).join('');
 
   tiposSelect.addEventListener('change', () => {
     qs('#filtroOrientador').value = '';
@@ -134,7 +156,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     qs('#projetoId').value = '';
     qs('#filtroProjetoBusca').value = '';
     qs('#fichaContainer').classList.add('d-none');
-    qs('#btnImprimir').classList.add('d-none');
     aplicarFiltrosProjeto();
     carregarCriteriosTipo();
   });
@@ -149,7 +170,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     qs('#projetoId').value = '';
     qs('#filtroProjetoBusca').value = '';
     qs('#fichaContainer').classList.add('d-none');
-    qs('#btnImprimir').classList.add('d-none');
     aplicarFiltrosProjeto();
   });
 
@@ -168,7 +188,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     qs('#projetoId').value = '';
     qs('#filtroProjetoBusca').value = '';
     qs('#fichaContainer').classList.add('d-none');
-    qs('#btnImprimir').classList.add('d-none');
     aplicarFiltrosProjeto();
   });
 

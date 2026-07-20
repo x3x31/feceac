@@ -126,6 +126,17 @@
   min-width: 1.2rem;
 }
 
+.ficha-tabela-criterios th {
+  background: #f8f9fa;
+  font-size: .8rem;
+  font-weight: 600;
+}
+
+.ficha-tabela-criterios td {
+  font-size: .8rem;
+  vertical-align: middle;
+}
+
 .ficha-linha-aluno-linha {
   flex: 1;
   border-bottom: 1px solid #999;
