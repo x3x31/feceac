@@ -14,6 +14,14 @@
     <aside class="sidebar p-3"><nav class="nav flex-column"><a class="nav-link" href="painel.html">Painel</a><a class="nav-link" href="projetos.html">Projetos</a><a class="nav-link" href="usuarios.html">Usuários</a><a class="nav-link" href="avaliacoes.html">Avaliações</a><a class="nav-link active" href="areas.html">Áreas</a><a class="nav-link" href="criterios.html">Critérios</a></nav></aside>
     <section class="content-area flex-grow-1">
       <div class="d-flex justify-content-between align-items-center mb-3"><h1 class="page-title mb-0">Áreas</h1><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#areaModal">Nova Área</button></div>
+      <div class="search-grid mb-3" style="grid-template-columns: repeat(2, 1fr);">
+        <div>
+          <label class="form-label form-label-sm mb-1 search-label" for="filtroTipo">Tipo de Projeto</label>
+          <select id="filtroTipo" class="form-select form-select-sm filtro-area">
+            <option value="">Todos</option>
+          </select>
+        </div>
+      </div>
       <div class="table-responsive bg-white border rounded"><table class="table table-hover mb-0"><thead><tr><th>ID</th><th>Nome</th><th>Tipo do Projeto</th><th>Ações</th></tr></thead><tbody id="areasTabela"></tbody></table></div>
     </section>
   </main>

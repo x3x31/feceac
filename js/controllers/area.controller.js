@@ -23,9 +23,16 @@ const popularSelectTipos = (valor = '') => {
     ).join('');
 };
 
-const carregar = async () => {
-  const areas = await listarAreas();
-  qs('#areasTabela').innerHTML = areas.map((area) => `
+let areas = [];
+
+const aplicarFiltro = () => {
+  const tipoId = qs('#filtroTipo').value;
+  const filtradas = tipoId ? areas.filter(a => String(a.tipo_projeto_id) === tipoId) : areas;
+  renderizar(filtradas);
+};
+
+const renderizar = (lista) => {
+  qs('#areasTabela').innerHTML = lista.map((area) => `
     <tr>
       <td>${area.id}</td>
       <td>${escapeHtml(area.nome)}</td>
@@ -39,9 +46,26 @@ const carregar = async () => {
     </tr>`).join('');
 };
 
+const popularFiltroTipos = () => {
+  const select = qs('#filtroTipo');
+  if (!select) return;
+  select.innerHTML = '<option value="">Todos</option>' +
+    tiposProjeto.map((t) =>
+      `<option value="${t.id}">${escapeHtml(t.nome)}</option>`
+    ).join('');
+};
+
+const carregar = async () => {
+  areas = await listarAreas();
+  aplicarFiltro();
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
   await carregarTipos();
+  popularFiltroTipos();
   await carregar();
+
+  qs('#filtroTipo').addEventListener('change', aplicarFiltro);
 
   qs('#areaForm').addEventListener('submit', async (event) => {
     event.preventDefault();
