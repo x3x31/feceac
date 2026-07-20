@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ficha de Avaliação | FECEAC</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tabelas.css">
+  <link rel="stylesheet" href="css/ficha-avaliacao.css">
+</head>
+<body>
+  <nav class="navbar bg-white border-bottom"><div class="container-fluid"><a class="navbar-brand text-success" href="painel.html"><img src="assets/logos/feceac.jpeg" alt="Logo FECEAC" class="img-fluid" style="max-width: 120px;"></a><button id="btnLogout" class="btn btn-outline-danger btn-sm">Sair</button></div></nav>
+  <main class="app-shell d-flex">
+    <aside class="sidebar p-3"><nav class="nav flex-column"></nav></aside>
+    <section class="content-area flex-grow-1">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h1 class="page-title mb-0">Ficha de Avaliação</h1>
+        <div class="d-flex gap-2">
+          <button id="btnImprimir" class="btn btn-success">Imprimir</button>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="filtroProjeto">Selecionar Projeto</label>
+        <div class="position-relative">
+          <input type="hidden" id="projetoId">
+          <input id="filtroProjeto" type="text" class="form-control" placeholder="Pesquisar projeto..." autocomplete="off">
+          <div id="filtroProjetoDropdown" class="list-group position-absolute w-100 d-none" style="z-index: 1050; max-height: 300px; overflow-y: auto;"></div>
+        </div>
+      </div>
+      <div id="fichaContainer" class="ficha-print d-none">
+        <div class="ficha-page">
+          <div class="ficha-header">
+            <img src="assets/logos/feceac.jpeg" alt="Logo FECEAC" class="ficha-logo">
+            <div class="ficha-header-text">
+              <h2>Ficha de Avaliação</h2>
+              <p>Feira de Ciências e Arte e Cultura</p>
+            </div>
+          </div>
+          <div class="ficha-divider"></div>
+          <div class="ficha-info">
+            <div class="ficha-info-row">
+              <span class="ficha-label">Título:</span>
+              <span class="ficha-valor" id="fichaTitulo"></span>
+            </div>
+            <div class="ficha-info-grid">
+              <div class="ficha-info-row">
+                <span class="ficha-label">Tipo:</span>
+                <span class="ficha-valor" id="fichaTipo"></span>
+              </div>
+              <div class="ficha-info-row">
+                <span class="ficha-label">Área:</span>
+                <span class="ficha-valor" id="fichaArea"></span>
+              </div>
+            </div>
+            <div class="ficha-info-grid">
+              <div class="ficha-info-row">
+                <span class="ficha-label">Orientador:</span>
+                <span class="ficha-valor" id="fichaOrientador"></span>
+              </div>
+              <div class="ficha-info-row">
+                <span class="ficha-label">Coorientador:</span>
+                <span class="ficha-valor" id="fichaCoorientador"></span>
+              </div>
+            </div>
+          </div>
+          <div class="ficha-section-title">Alunos</div>
+          <div id="fichaAlunos" class="ficha-alunos"></div>
+          <div class="ficha-section-title">Critérios de Avaliação</div>
+          <table class="table table-bordered ficha-tabela mb-0">
+            <thead>
+              <tr>
+                <th style="width:5%">Nº</th>
+                <th style="width:35%">Critério</th>
+                <th style="width:8%">Peso</th>
+                <th style="width:32%">Observações</th>
+                <th style="width:10%">Nota (0-10)</th>
+              </tr>
+            </thead>
+            <tbody id="fichaCriterios"></tbody>
+          </table>
+          <div class="ficha-obs mt-4">
+            <div class="ficha-section-title">Observações Gerais</div>
+            <div class="ficha-obs-linha">&nbsp;</div>
+            <div class="ficha-obs-linha">&nbsp;</div>
+            <div class="ficha-obs-linha">&nbsp;</div>
+          </div>
+          <div class="ficha-assinaturas mt-5">
+            <div class="ficha-assinatura">
+              <div class="ficha-assinatura-linha"></div>
+              <span>Avaliador(a)</span>
+            </div>
+            <div class="ficha-assinatura">
+              <div class="ficha-assinatura-linha"></div>
+              <span>Data</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/controllers/ficha-avaliacao.controller.js"></script>
+</body>
+</html>

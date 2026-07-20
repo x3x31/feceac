@@ -1,0 +1,199 @@
+.ficha-page {
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.ficha-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: .5rem;
+}
+
+.ficha-logo {
+  max-width: 80px;
+  border-radius: 8px;
+}
+
+.ficha-header-text h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #198754;
+  font-weight: 700;
+}
+
+.ficha-header-text p {
+  margin: 0;
+  font-size: .85rem;
+  color: #6c757d;
+}
+
+.ficha-divider {
+  border-top: 3px solid #198754;
+  margin-bottom: 1.2rem;
+}
+
+.ficha-info {
+  margin-bottom: 1rem;
+}
+
+.ficha-info-row {
+  display: flex;
+  gap: .5rem;
+  align-items: baseline;
+  margin-bottom: .4rem;
+}
+
+.ficha-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .4rem 2rem;
+}
+
+.ficha-label {
+  font-weight: 600;
+  font-size: .85rem;
+  white-space: nowrap;
+  color: #333;
+}
+
+.ficha-valor {
+  font-size: .85rem;
+  color: #555;
+  border-bottom: 1px dotted #ccc;
+  flex: 1;
+  min-height: 1.2em;
+}
+
+.ficha-section-title {
+  font-size: .9rem;
+  font-weight: 700;
+  color: #198754;
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: .3rem;
+  margin-bottom: .6rem;
+  margin-top: 1rem;
+}
+
+.ficha-alunos {
+  font-size: .85rem;
+  margin-bottom: .5rem;
+}
+
+.ficha-alunos-item {
+  padding: .2rem 0;
+  border-bottom: 1px dotted #eee;
+}
+
+.ficha-tabela th {
+  background: #f8f9fa;
+  font-size: .8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.ficha-tabela td {
+  font-size: .8rem;
+  vertical-align: top;
+}
+
+.ficha-tabela .criterio-desc {
+  font-size: .8rem;
+}
+
+.ficha-tabela .criterio-obs {
+  min-height: 2em;
+  border: 1px dashed #ccc;
+  padding: .3rem;
+  border-radius: 4px;
+  background: #fafafa;
+}
+
+.ficha-tabela .criterio-nota {
+  text-align: center;
+  min-height: 2em;
+  border: 1px dashed #ccc;
+  padding: .3rem;
+  border-radius: 4px;
+  background: #fafafa;
+}
+
+.ficha-obs-linha {
+  border-bottom: 1px solid #ccc;
+  min-height: 1.8rem;
+  margin-bottom: .2rem;
+}
+
+.ficha-assinaturas {
+  display: flex;
+  justify-content: space-around;
+  gap: 2rem;
+}
+
+.ficha-assinatura {
+  text-align: center;
+  flex: 1;
+  max-width: 250px;
+}
+
+.ficha-assinatura-linha {
+  border-top: 1px solid #333;
+  margin-bottom: .3rem;
+  margin-top: 3rem;
+}
+
+.ficha-assinatura span {
+  font-size: .8rem;
+  color: #555;
+}
+
+#fichaContainer.ficha-print {
+  display: block;
+}
+
+@media print {
+  body {
+    background: #fff !important;
+  }
+
+  .navbar, .sidebar, #btnImprimir, .content-area > .d-flex:first-child,
+  .content-area > .mb-3:first-of-type {
+    display: none !important;
+  }
+
+  .app-shell {
+    display: block !important;
+  }
+
+  .content-area {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #fichaContainer {
+    display: block !important;
+  }
+
+  .ficha-page {
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+  }
+
+  .ficha-tabela .criterio-obs,
+  .ficha-tabela .criterio-nota {
+    background: #fff !important;
+    border: 1px solid #ccc !important;
+  }
+
+  .ficha-assinatura-linha {
+    margin-top: 3rem;
+  }
+}

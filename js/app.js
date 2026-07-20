@@ -13,6 +13,7 @@ const menusPorPerfil = {
     ['criterios.html', 'Critérios'],
     ['avaliacoes.html', 'Avaliações'],
     ['ranking.html', 'Ranking'],
+    ['ficha-avaliacao.html', 'Ficha de Avaliação'],
   ],
   Professor: [
     ['painel.html', 'Painel'],
@@ -32,6 +33,7 @@ const acessoPorPagina = {
   'boas-vindas.html': ['Avaliador'],
   'professor-boas-vindas.html': ['Professor'],
   'ranking.html': ['Administrador'],
+  'ficha-avaliacao.html': ['Administrador'],
   'usuarios.html': ['Administrador'],
   'professores.html': ['Administrador'],
   'alunos.html': ['Administrador'],
