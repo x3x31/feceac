@@ -15,6 +15,39 @@
     <section class="content-area flex-grow-1">
       <div class="d-flex justify-content-between align-items-center mb-3"><h1 class="page-title mb-0">Usuários</h1></div>
       <div class="alert alert-info">Cadastros feitos pela tela de login entram como inativos. O Administrador revisa o perfil e ativa o acesso nesta tela.</div>
+      <div class="search-grid mb-3">
+        <div>
+          <label class="form-label form-label-sm mb-1 search-label" for="filtroNome">Nome</label>
+          <input id="filtroNome" class="form-control form-control-sm filtro-usuario" placeholder="Pesquisar por nome">
+        </div>
+        <div>
+          <label class="form-label form-label-sm mb-1 search-label" for="filtroTipo">Tipo</label>
+          <select id="filtroTipo" class="form-select form-select-sm filtro-usuario">
+            <option value="">Todos</option>
+            <option>Administrador</option>
+            <option>Professor</option>
+            <option>Avaliador</option>
+            <option>Aluno</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label form-label-sm mb-1 search-label" for="filtroAtivo">Ativo</label>
+          <select id="filtroAtivo" class="form-select form-select-sm filtro-usuario">
+            <option value="">Todos</option>
+            <option value="true">Sim</option>
+            <option value="false">Não</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label form-label-sm mb-1 search-label" for="filtroOrdem">Ordenar por</label>
+          <select id="filtroOrdem" class="form-select form-select-sm filtro-usuario">
+            <option value="nome">Nome (A-Z)</option>
+            <option value="nome_desc">Nome (Z-A)</option>
+            <option value="tipo">Tipo</option>
+            <option value="email">Email</option>
+          </select>
+        </div>
+      </div>
       <div class="table-responsive bg-white border rounded"><table class="table table-hover mb-0"><thead><tr><th>Nome</th><th>Email</th><th>Tipo</th><th>Ativo</th><th>Ações</th></tr></thead><tbody id="usuariosTabela"></tbody></table></div>
     </section>
   </main>
