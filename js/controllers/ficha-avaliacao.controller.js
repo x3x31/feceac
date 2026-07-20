@@ -9,7 +9,7 @@ let todosProjetos = [];
 let todosProfessores = [];
 let projetosFiltrados = [];
 
-const FILTRO_NUM_ALUNOS = 8;
+const FILTRO_NUM_ALUNOS = 4;
 
 const renderizarCriterios = (criterios) => {
   if (criterios.length === 0) {
