@@ -20,6 +20,11 @@
   border-radius: 8px;
 }
 
+.ficha-header-text {
+  text-align: center;
+  flex: 1;
+}
+
 .ficha-header-text h2 {
   margin: 0;
   font-size: 1.3rem;
