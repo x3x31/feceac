@@ -24,7 +24,7 @@ const renderizarProjetos = (projetos) => {
   dropdown.innerHTML = projetos.length
     ? projetos.map((projeto) => `
       <button type="button" class="list-group-item list-group-item-action" data-id="${projeto.id}" data-titulo="${escapeHtml(projeto.titulo)}" data-codigo="${escapeHtml(projeto.codigo || '')}">
-        ${escapeHtml(projeto.codigo ? projeto.codigo + ' - ' + projeto.titulo : projeto.titulo)}
+        ${escapeHtml(projeto.titulo)}${projeto.codigo ? ' (' + escapeHtml(projeto.codigo) + ')' : ''}
       </button>
     `).join('')
     : '<div class="list-group-item text-muted">Nenhum projeto encontrado</div>';
@@ -475,7 +475,7 @@ document.addEventListener(
       const btn = event.target.closest('[data-id]');
       if (!btn) return;
       hiddenInput.value = btn.dataset.id;
-      buscaInput.value = btn.dataset.codigo ? btn.dataset.codigo + ' - ' + btn.dataset.titulo : btn.dataset.titulo;
+      buscaInput.value = btn.dataset.titulo + (btn.dataset.codigo ? ' (' + btn.dataset.codigo + ')' : '');
       dropdown.classList.add('d-none');
       const projeto = projetosDisponiveis.find((p) => p.id === Number(btn.dataset.id));
       mostrarInformacoesProjeto(projeto);
