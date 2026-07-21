@@ -128,10 +128,10 @@ const gerarRelatorioPDF = () => {
   let projetos = rankingProjetos.map((p) => ({ ...p, nota: notaProjeto(p) }));
 
   if (filtroTipo) {
-    projetos = projetos.filter((p) => String(p.tipo_projeto_id) === filtroTipo);
+    projetos = projetos.filter((p) => String(p.tipo?.id) === filtroTipo);
   }
   if (filtroArea) {
-    projetos = projetos.filter((p) => String(p.area_id) === filtroArea);
+    projetos = projetos.filter((p) => String(p.area?.id) === filtroArea);
   }
 
   if (!projetos.length) {
