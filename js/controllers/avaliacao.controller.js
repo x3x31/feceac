@@ -163,6 +163,7 @@ const limparInformacoesProjeto = () => {
   card.classList.add('d-none');
 
 
+  qs('#infoNomeProjeto').textContent = '-';
   qs('#infoCodigo').textContent = '-';
   qs('#infoTipo').textContent = '-';
   qs('#infoArea').textContent = '-';
@@ -193,6 +194,9 @@ const mostrarInformacoesProjeto = async (projeto) => {
     .classList
     .remove('d-none');
 
+
+  qs('#infoNomeProjeto').textContent =
+    projeto.titulo || '-';
 
   qs('#infoCodigo').textContent =
     projeto.codigo || '-';
