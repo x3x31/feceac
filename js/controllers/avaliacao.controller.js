@@ -23,8 +23,8 @@ const renderizarProjetos = (projetos) => {
   const dropdown = qs('#projetoDropdown');
   dropdown.innerHTML = projetos.length
     ? projetos.map((projeto) => `
-      <button type="button" class="list-group-item list-group-item-action" data-id="${projeto.id}" data-titulo="${escapeHtml(projeto.titulo)}">
-        ${escapeHtml(projeto.titulo)}
+      <button type="button" class="list-group-item list-group-item-action" data-id="${projeto.id}" data-titulo="${escapeHtml(projeto.titulo)}" data-codigo="${escapeHtml(projeto.codigo || '')}">
+        ${escapeHtml(projeto.codigo ? projeto.codigo + ' - ' + projeto.titulo : projeto.titulo)}
       </button>
     `).join('')
     : '<div class="list-group-item text-muted">Nenhum projeto encontrado</div>';
@@ -163,6 +163,7 @@ const limparInformacoesProjeto = () => {
   card.classList.add('d-none');
 
 
+  qs('#infoCodigo').textContent = '-';
   qs('#infoTipo').textContent = '-';
   qs('#infoArea').textContent = '-';
   qs('#infoOrientador').textContent = '-';
@@ -192,6 +193,9 @@ const mostrarInformacoesProjeto = async (projeto) => {
     .classList
     .remove('d-none');
 
+
+  qs('#infoCodigo').textContent =
+    projeto.codigo || '-';
 
   qs('#infoTipo').textContent =
     projeto.tipo?.nome || '-';
@@ -449,7 +453,8 @@ document.addEventListener(
       let visiveis = 0;
       itens.forEach((item) => {
         const titulo = item.dataset.titulo.toLowerCase();
-        const mostra = !termo || titulo.includes(termo);
+        const codigo = (item.dataset.codigo || '').toLowerCase();
+        const mostra = !termo || titulo.includes(termo) || codigo.includes(termo);
         item.classList.toggle('d-none', !mostra);
         if (mostra) visiveis++;
       });
@@ -470,7 +475,7 @@ document.addEventListener(
       const btn = event.target.closest('[data-id]');
       if (!btn) return;
       hiddenInput.value = btn.dataset.id;
-      buscaInput.value = btn.dataset.titulo;
+      buscaInput.value = btn.dataset.codigo ? btn.dataset.codigo + ' - ' + btn.dataset.titulo : btn.dataset.titulo;
       dropdown.classList.add('d-none');
       const projeto = projetosDisponiveis.find((p) => p.id === Number(btn.dataset.id));
       mostrarInformacoesProjeto(projeto);

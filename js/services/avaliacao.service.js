@@ -75,6 +75,7 @@ export const listarAvaliacoesDoUsuario = async (avaliadorId) => {
       projeto:projetos(
         id,
         titulo,
+        codigo,
         tipo:tipos_projeto(
           id,
           nome
@@ -214,6 +215,7 @@ export const listarRanking = async () => {
       id,
       ano,
       titulo,
+      codigo,
 
       orientador:professores!projetos_orientador_id_fkey(
         id,

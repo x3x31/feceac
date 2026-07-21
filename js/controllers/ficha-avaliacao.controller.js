@@ -31,6 +31,7 @@ const renderizarCriterios = (criterios) => {
 
 const renderizarFicha = (projeto, criterios) => {
   qs('#fichaTitulo').textContent = projeto.titulo || '-';
+  qs('#fichaCodigo').textContent = projeto.codigo || '-';
   qs('#fichaTipo').textContent = projeto.tipo?.nome || '-';
   qs('#fichaArea').textContent = projeto.area?.nome || '-';
   qs('#fichaOrientador').textContent = projeto.orientador?.nome || '-';
@@ -70,7 +71,7 @@ const popularDropdownProjetos = (termo = '') => {
   const dropdown = qs('#filtroProjetoDropdown');
   const lower = termo.toLowerCase();
   const filtrados = lower
-    ? projetosFiltrados.filter((p) => p.titulo.toLowerCase().includes(lower))
+    ? projetosFiltrados.filter((p) => p.titulo.toLowerCase().includes(lower) || (p.codigo || '').toLowerCase().includes(lower))
     : projetosFiltrados;
 
   if (filtrados.length === 0) {
@@ -79,7 +80,7 @@ const popularDropdownProjetos = (termo = '') => {
   }
 
   dropdown.innerHTML = filtrados.slice(0, 50).map((p) =>
-    `<button type="button" class="list-group-item list-group-item-action" data-id="${p.id}">${escapeHtml(p.titulo)} — ${escapeHtml(p.tipo?.nome || '')}</button>`
+    `<button type="button" class="list-group-item list-group-item-action" data-id="${p.id}">${escapeHtml(p.codigo ? p.codigo + ' - ' + p.titulo : p.titulo)} — ${escapeHtml(p.tipo?.nome || '')}</button>`
   ).join('');
   dropdown.classList.remove('d-none');
 };

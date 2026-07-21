@@ -85,6 +85,7 @@ const renderizar = (projetos) => {
       <td><button class="btn btn-sm btn-outline-secondary btn-expandir" data-id="${projeto.id}" type="button">+</button></td>
       <td>${index + 1}</td>
       <td>${escapeHtml(projeto.titulo)}</td>
+      <td>${escapeHtml(projeto.codigo || '-')}</td>
       <td>${escapeHtml(projeto.orientador?.nome || '-')}</td>
       <td>${escapeHtml(projeto.coorientador?.nome || '-')}</td>
       <td>${escapeHtml(projeto.tipo?.nome || '-')}</td>
@@ -428,6 +429,8 @@ const gerarRelatorioPDF = () => {
     doc.text(`Orientador: ${projeto.orientador?.nome || '-'}${projeto.coorientador?.nome ? ' | Coorientador: ' + projeto.coorientador.nome : ''}`, margin + 10, y);
     y += 4;
     doc.text(`Tipo: ${projeto.tipo?.nome || '-'} | Area: ${projeto.area?.nome || '-'}`, margin + 10, y);
+    y += 4;
+    doc.text(`Codigo: ${projeto.codigo || '-'}`, margin + 10, y);
     y += 5;
 
     if (temAlunos) {
@@ -563,7 +566,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const tabela = $('#rankingDataTable').DataTable({
     language: { url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/pt-BR.json' },
-    order: [[7, 'desc']],
+    order: [[8, 'desc']],
     columnDefs: [{ targets: 0, orderable: false }],
   });
 

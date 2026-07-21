@@ -281,6 +281,7 @@ const iniciarFormularioProjeto = async () => {
     qs('#formTitulo').textContent = 'Editar Projeto';
     qs('#id').value = projeto.id;
     qs('#ano').value = projeto.ano;
+    qs('#codigo').value = projeto.codigo || '';
     qs('#titulo').value = projeto.titulo;
     qs('#tipo_projeto_id').value = projeto.tipo_projeto_id || '';
     await carregarSelectAreas(qs('#area_id'), projeto.area_id, projeto.tipo_projeto_id || null);
@@ -311,6 +312,7 @@ const iniciarFormularioProjeto = async () => {
     const payload = {
       id: qs('#id').value || undefined,
       ano: Number(qs('#ano').value),
+      codigo: qs('#codigo').value.trim(),
       titulo: qs('#titulo').value.trim(),
       tipo_projeto_id: Number(qs('#tipo_projeto_id').value) || null,
       area_id: Number(qs('#area_id').value),
@@ -338,7 +340,7 @@ const iniciarFormularioProjeto = async () => {
 const renderizarProjetos = (projetos, ehAdmin = false) => {
   const corpo = qs('#projetosTabela');
   if (!projetos.length) {
-    corpo.innerHTML = `<tr><td colspan="9">${mensagemVazia()}</td></tr>`;
+    corpo.innerHTML = `<tr><td colspan="10">${mensagemVazia()}</td></tr>`;
     return;
   }
 
@@ -347,6 +349,7 @@ const renderizarProjetos = (projetos, ehAdmin = false) => {
       <td><button class="btn btn-sm btn-outline-secondary btn-expandir" data-id="${projeto.id}" type="button">+</button></td>
       <td>${projeto.id}</td>
       <td>${escapeHtml(projeto.titulo)}</td>
+      <td>${escapeHtml(projeto.codigo || '-')}</td>
       <td>${escapeHtml(projeto.tipo?.nome || '-')}</td>
       <td>${escapeHtml(projeto.area?.nome || '-')}</td>
       <td>${escapeHtml(projeto.orientador?.nome || '-')}</td>
@@ -359,7 +362,7 @@ const renderizarProjetos = (projetos, ehAdmin = false) => {
     </tr>
    <tr class="d-none alunos-detalhe" data-projeto-id="${projeto.id}">
   <td></td>
-  <td colspan="8">
+  <td colspan="9">
 
     <div class="row">
 
@@ -489,6 +492,7 @@ let sortDir = 'asc';
 const SORT_ACCESSORS = {
   id: (p) => p.id || 0,
   titulo: (p) => (p.titulo || '').toLowerCase(),
+  codigo: (p) => (p.codigo || '').toLowerCase(),
   tipo: (p) => (p.tipo?.nome || '').toLowerCase(),
   area: (p) => (p.area?.nome || '').toLowerCase(),
   orientador: (p) => (p.orientador?.nome || '').toLowerCase(),
