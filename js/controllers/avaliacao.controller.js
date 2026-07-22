@@ -17,6 +17,59 @@ import { toast } from '../ui.js';
 
 
 let projetosDisponiveis = [];
+let usuarioAtual = null;
+
+const TIPO_PROJETO_PERMITIDO = {
+  Professor: 2,
+  Avaliador: 1,
+};
+
+const TIPO_PROJETO_NOME = {
+  1: 'Feira de Ciências',
+  2: 'Mostra Cultural',
+};
+
+const podeAvaliar = (projeto) => {
+  if (!usuarioAtual) return false;
+  if (usuarioAtual.tipo === 'Administrador') return true;
+  const tipoPermitido = TIPO_PROJETO_PERMITIDO[usuarioAtual.tipo];
+  if (!tipoPermitido) return true;
+  return projeto.tipo_projeto_id === tipoPermitido;
+};
+
+const mostrarAlertaTipoIncorreto = (tipoNecessario) => {
+  const titulo = tipoNecessario === 2
+    ? 'Apenas projetos de Mostra Cultural'
+    : 'Apenas projetos de Feira de Ciências';
+
+  const msg = usuarioAtual.tipo === 'Professor'
+    ? 'Professores só podem avaliar projetos de Mostra Cultural.'
+    : 'Avaliadores só podem avaliar projetos de Feira de Ciências.';
+
+  let modal = qs('#modalAlertaTipo');
+  if (!modal) {
+    document.body.insertAdjacentHTML('beforeend', `
+      <div class="modal fade" id="modalAlertaTipo" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header bg-warning">
+              <h5 class="modal-title" id="modalAlertaTipoTitulo"></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalAlertaTipoMsg"></div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" data-bs-dismiss="modal">Entendido</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+    modal = qs('#modalAlertaTipo');
+  }
+  qs('#modalAlertaTipoTitulo').textContent = titulo;
+  qs('#modalAlertaTipoMsg').textContent = msg;
+  bootstrap.Modal.getOrCreateInstance(modal).show();
+};
 
 
 const renderizarProjetos = (projetos) => {
@@ -478,10 +531,14 @@ document.addEventListener(
     dropdown.addEventListener('click', (event) => {
       const btn = event.target.closest('[data-id]');
       if (!btn) return;
+      const projeto = projetosDisponiveis.find((p) => p.id === Number(btn.dataset.id));
+      if (projeto && !podeAvaliar(projeto)) {
+        mostrarAlertaTipoIncorreto(projeto.tipo_projeto_id);
+        return;
+      }
       hiddenInput.value = btn.dataset.id;
       buscaInput.value = btn.dataset.titulo + (btn.dataset.codigo ? ' (' + btn.dataset.codigo + ')' : '');
       dropdown.classList.add('d-none');
-      const projeto = projetosDisponiveis.find((p) => p.id === Number(btn.dataset.id));
       mostrarInformacoesProjeto(projeto);
     });
 
@@ -512,6 +569,12 @@ document.addEventListener(
 
             return;
 
+          }
+
+          const projetoSelecionado = projetosDisponiveis.find((p) => p.id === Number(qs('#projeto_id').value));
+          if (projetoSelecionado && !podeAvaliar(projetoSelecionado)) {
+            mostrarAlertaTipoIncorreto(projetoSelecionado.tipo_projeto_id);
+            return;
           }
 
 
