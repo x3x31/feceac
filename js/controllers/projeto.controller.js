@@ -289,7 +289,6 @@ const iniciarFormularioProjeto = async () => {
     }
   });
 
-  adicionarAluno();
   iniciarModalAlunos();
 
   if (id) {
@@ -318,7 +317,6 @@ const iniciarFormularioProjeto = async () => {
     if (!event.target.matches('.btn-remover-aluno')) return;
     if (!await confirmar('Deseja remover este aluno do projeto?')) return;
     event.target.closest('.aluno-item').remove();
-    if (!qsa('.aluno-item').length) adicionarAluno();
   });
 
   form.addEventListener('submit', async (event) => {
