@@ -323,6 +323,11 @@ const iniciarFormularioProjeto = async () => {
     event.preventDefault();
     if (!validarFormulario(form)) return;
 
+    if (!qsa('.aluno-item').length) {
+      toast('Adicione pelo menos um aluno ao projeto.', 'warning');
+      return;
+    }
+
     const payload = {
       id: qs('#id').value || undefined,
       ano: Number(qs('#ano').value),
