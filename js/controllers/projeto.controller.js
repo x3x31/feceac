@@ -172,7 +172,15 @@ const iniciarModalAlunos = () => {
 
     const { data, error } = await supabase
       .from('alunos')
-      .select('*')
+      .select(`
+        *,
+        projeto_alunos(
+          projeto:projetos(
+            id,
+            codigo
+          )
+        )
+      `)
       .eq('turma', turma)
       .order('nome');
 
@@ -192,19 +200,27 @@ const iniciarModalAlunos = () => {
     }
 
     msg.classList.add('d-none');
-    tabela.innerHTML = data.map((aluno) => `
+    tabela.innerHTML = data.map((aluno) => {
+      const vinculados = (aluno.projeto_alunos || []).map((pa) => pa.projeto?.codigo).filter(Boolean);
+      const jaVinculado = vinculados.length > 0;
+      const codigoProjeto = vinculados.join(', ') || '-';
+      const disabledAttr = jaVinculado ? 'disabled' : '';
+      const titleAttr = jaVinculado ? `title="Já vinculado ao projeto: ${escapeHtml(codigoProjeto)}"` : '';
+      return `
       <tr class="aluno-linha" data-id="${aluno.id}" data-nome="${escapeHtml(aluno.nome)}" data-turma="${escapeHtml(aluno.turma)}" data-turno="${escapeHtml(aluno.turno || '')}">
-        <td><input type="checkbox" class="form-check-input aluno-check" data-id="${aluno.id}" data-nome="${escapeHtml(aluno.nome)}" data-turma="${escapeHtml(aluno.turma)}" data-matricula="${escapeHtml(aluno.matricula || '')}" data-turno="${escapeHtml(aluno.turno || '')}"></td>
+        <td><input type="checkbox" class="form-check-input aluno-check" data-id="${aluno.id}" data-nome="${escapeHtml(aluno.nome)}" data-turma="${escapeHtml(aluno.turma)}" data-matricula="${escapeHtml(aluno.matricula || '')}" data-turno="${escapeHtml(aluno.turno || '')}" ${disabledAttr} ${titleAttr}></td>
         <td>${escapeHtml(aluno.nome)}</td>
         <td>${escapeHtml(aluno.matricula || '-')}</td>
-      </tr>
-    `).join('');
+        <td>${jaVinculado ? `<span class="text-danger fw-semibold">${escapeHtml(codigoProjeto)}</span>` : '<span class="text-muted">-</span>'}</td>
+      </tr>`;
+    }).join('');
   });
 
   qs('#alunosModalTabela').addEventListener('click', (event) => {
     const linha = event.target.closest('.aluno-linha');
     if (!linha) return;
     const cb = linha.querySelector('.aluno-check');
+    if (cb.disabled) return;
     if (event.target.classList.contains('aluno-check')) {
       linha.style.backgroundColor = cb.checked ? '#b4cdf0' : '';
       return;
@@ -214,7 +230,7 @@ const iniciarModalAlunos = () => {
   });
 
   qs('#marcarTodosAlunos').addEventListener('change', (event) => {
-    qsa('.aluno-check').forEach((cb) => {
+    qsa('.aluno-check:not(:disabled)').forEach((cb) => {
       cb.checked = event.target.checked;
       cb.closest('.aluno-linha').style.backgroundColor = cb.checked ? '#b4cdf0' : '';
     });
