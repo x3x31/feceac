@@ -504,6 +504,8 @@ const renderizarProjetos = (projetos, ehAdmin = false) => {
   </td>
 </tr>
     `).join('');
+
+  qs('#projetosContador').textContent = `Total: ${projetos.length} projeto(s)`;
 };
 
 let ehAdmin = false;
