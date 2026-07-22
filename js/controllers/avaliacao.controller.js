@@ -292,13 +292,20 @@ const renderizarAvaliacoes = (avaliacoes) => {
 
 const carregarBase = async (usuario) => {
 
+  const filtros = {};
+
+  if (usuario.tipo === 'Professor') {
+    filtros.tipo_projeto_id = 2;
+  } else if (usuario.tipo === 'Avaliador') {
+    filtros.tipo_projeto_id = 1;
+  }
 
   const [
     projetos,
     avaliacoes
   ] = await Promise.all([
 
-    listarProjetos(),
+    listarProjetos(filtros),
 
     listarAvaliacoesDoUsuario(
       usuario.id
