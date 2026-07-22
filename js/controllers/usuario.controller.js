@@ -46,6 +46,7 @@ const renderizar = (lista) => {
         <button class="btn btn-sm btn-outline-danger btn-excluir" data-id="${usuario.id}">Excluir</button>
       </td>
     </tr>`).join('');
+  qs('#usuariosContador').textContent = `Total: ${lista.length} usuário(s)`;
 };
 
 const carregar = async () => {
