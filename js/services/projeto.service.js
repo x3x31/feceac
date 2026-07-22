@@ -23,7 +23,9 @@ const selectProjeto = `
     aluno:alunos(
       id,
       nome,
-      turma
+      matricula,
+      turma,
+      turno
     )
   ),
   avaliacoes(
