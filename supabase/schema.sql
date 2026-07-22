@@ -120,6 +120,20 @@ AS $$
   SELECT coalesce(public.get_tipo_usuario() = 'Administrador', false);
 $$;
 
+-- Trigger: ao excluir de usuarios, exclui tambem de auth.users
+CREATE OR REPLACE FUNCTION public.handle_usuario_delete()
+RETURNS TRIGGER AS $$
+BEGIN
+  DELETE FROM auth.users WHERE id = OLD.id;
+  RETURN OLD;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE TRIGGER on_usuario_deleted
+  AFTER DELETE ON public.usuarios
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_usuario_delete();
+
 -- 4. Row Level Security
 
 ALTER TABLE public.usuarios ENABLE ROW LEVEL SECURITY;
