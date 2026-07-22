@@ -271,6 +271,12 @@ const iniciarFormularioProjeto = async () => {
   const form = qs('#projetoForm');
   const id = getParam('id');
   qs('#ano').value = anoAtual();
+
+  if (!id) {
+    const num = String(Math.floor(Math.random() * 999999)).padStart(6, '0');
+    qs('#codigo').value = `MOSTRA${num}`;
+  }
+
   await carregarSelectTipos(qs('#tipo_projeto_id'));
   await Promise.all([
     carregarSelectAreas(qs('#area_id'), '', qs('#tipo_projeto_id').value || null),
