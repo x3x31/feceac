@@ -177,6 +177,11 @@ FOR SELECT TO authenticated USING (true);
 CREATE POLICY "alunos_admin_professor_all" ON public.alunos
 FOR ALL TO authenticated USING (public.get_tipo_usuario() IN ('Administrador', 'Professor'))
 WITH CHECK (public.get_tipo_usuario() IN ('Administrador', 'Professor'));
+CREATE POLICY "alunos_aluno_insert" ON public.alunos
+FOR INSERT TO authenticated WITH CHECK (public.get_tipo_usuario() = 'Aluno');
+CREATE POLICY "alunos_aluno_update" ON public.alunos
+FOR UPDATE TO authenticated USING (public.get_tipo_usuario() = 'Aluno')
+WITH CHECK (public.get_tipo_usuario() = 'Aluno');
 
 -- projetos
 CREATE POLICY "projetos_select_todos" ON public.projetos
@@ -188,6 +193,11 @@ FOR INSERT TO authenticated WITH CHECK (public.get_tipo_usuario() IN ('Professor
 CREATE POLICY "projetos_professor_update" ON public.projetos
 FOR UPDATE TO authenticated USING (public.get_tipo_usuario() IN ('Professor', 'Administrador'))
 WITH CHECK (public.get_tipo_usuario() IN ('Professor', 'Administrador'));
+CREATE POLICY "projetos_aluno_insert" ON public.projetos
+FOR INSERT TO authenticated WITH CHECK (public.get_tipo_usuario() = 'Aluno');
+CREATE POLICY "projetos_aluno_update" ON public.projetos
+FOR UPDATE TO authenticated USING (public.get_tipo_usuario() = 'Aluno')
+WITH CHECK (public.get_tipo_usuario() = 'Aluno');
 
 -- projeto_alunos
 CREATE POLICY "projeto_alunos_select_todos" ON public.projeto_alunos
@@ -195,6 +205,9 @@ FOR SELECT TO authenticated USING (true);
 CREATE POLICY "projeto_alunos_admin_professor_all" ON public.projeto_alunos
 FOR ALL TO authenticated USING (public.get_tipo_usuario() IN ('Administrador', 'Professor'))
 WITH CHECK (public.get_tipo_usuario() IN ('Administrador', 'Professor'));
+CREATE POLICY "projeto_alunos_aluno_all" ON public.projeto_alunos
+FOR ALL TO authenticated USING (public.get_tipo_usuario() = 'Aluno')
+WITH CHECK (public.get_tipo_usuario() = 'Aluno');
 
 -- criterios
 CREATE POLICY "criterios_select_todos" ON public.criterios
