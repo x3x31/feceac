@@ -17,8 +17,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "splash": {
-    "src": "assets/logos/fundologin.png"
-  }
+  ]
 }
