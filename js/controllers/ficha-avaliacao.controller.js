@@ -148,11 +148,6 @@ const truncar = (texto, maxW, doc) => {
 };
 
 const gerarPDF = () => {
-  if (!projetoAtual) {
-    toast('Selecione um projeto para imprimir.', 'warning');
-    return;
-  }
-
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
@@ -239,10 +234,10 @@ const gerarPDF = () => {
     return y + 7;
   };
 
-  y = campoLinha('Título', projetoAtual.titulo, y);
-  y = campoDuplo('Código', projetoAtual.codigo, 'Tipo', projetoAtual.tipo?.nome, y);
-  y = campoDuplo('Área', projetoAtual.area?.nome, 'Orientador', projetoAtual.orientador?.nome, y);
-  y = campoLinha('Coorientador', projetoAtual.coorientador?.nome, y);
+  y = campoLinha('Título', projetoAtual?.titulo, y);
+  y = campoDuplo('Código', projetoAtual?.codigo, 'Tipo', projetoAtual?.tipo?.nome, y);
+  y = campoDuplo('Área', projetoAtual?.area?.nome, 'Orientador', projetoAtual?.orientador?.nome, y);
+  y = campoLinha('Coorientador', projetoAtual?.coorientador?.nome, y);
 
   y += 4;
 
@@ -332,7 +327,7 @@ const gerarPDF = () => {
   doc.setLineWidth(0.2);
   y += 6;
 
-  const alunos = (projetoAtual.alunos || []).map((pa) => pa.aluno).filter(Boolean);
+  const alunos = projetoAtual ? (projetoAtual.alunos || []).map((pa) => pa.aluno).filter(Boolean) : [];
   const numLinhasAlunos = Math.max(alunos.length, FILTRO_NUM_ALUNOS);
 
   for (let i = 0; i < numLinhasAlunos; i++) {
