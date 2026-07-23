@@ -272,7 +272,10 @@ const iniciarFormularioProjeto = async () => {
   const id = getParam('id');
   const usuario = await buscarUsuarioAtual();
 
-  if (['Professor', 'Aluno'].includes(usuario?.tipo)) {
+  if (usuario?.tipo === 'Aluno') {
+    qs('#btnAdicionarAluno').classList.add('d-none');
+    qs('#btnCancelar').classList.add('d-none');
+  } else if (usuario?.tipo === 'Professor') {
     qs('#btnAdicionarAluno').classList.add('d-none');
   }
 
