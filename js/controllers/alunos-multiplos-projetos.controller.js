@@ -138,80 +138,6 @@ const carregarDados = async () => {
   }
 };
 
-const gerarPDF = () => {
-  if (!alunosOrdenados.length) {
-    toast('Nenhum aluno para imprimir.', 'warning');
-    return;
-  }
-
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-
-  const pageW = doc.internal.pageSize.getWidth();
-  const pageH = doc.internal.pageSize.getHeight();
-  const margin = 14;
-
-  const corPrimaria = [25, 135, 84];
-  const corTexto = [33, 37, 41];
-  const corCinza = [108, 117, 125];
-
-  doc.setFillColor(...corPrimaria);
-  doc.rect(0, 0, pageW, 28, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(18);
-  doc.setFont('helvetica', 'bold');
-  doc.text('FECEAC - Alunos em Multiplos Projetos', margin, 18);
-  doc.setFontSize(9);
-  doc.setFont('helvetica', 'normal');
-  doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, pageW - margin, 18, { align: 'right' });
-
-  let y = 36;
-
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(...corPrimaria);
-  doc.text(`Total: ${alunosOrdenados.length} aluno(s) vinculado(s) a mais de um projeto`, margin, y);
-  y += 8;
-
-  doc.autoTable({
-    startY: y,
-    margin: { left: margin, right: margin },
-    head: [['Aluno', 'Matricula', 'Turma', 'Turno', 'Qtd. Projetos', 'Projetos']],
-    body: alunosOrdenados.map(aluno => [
-      aluno.nome,
-      aluno.matricula || '-',
-      aluno.turma || '-',
-      aluno.turno || '-',
-      String(aluno.projetos.length),
-      aluno.projetos.map(p => `${p.titulo} (${p.codigo || '-'}). Orientador: ${p.orientador}${p.coorientador ? ' | Coorientador: ' + p.coorientador : ''}`).join('\n'),
-    ]),
-    theme: 'grid',
-    styles: { fontSize: 7, cellPadding: 2, valign: 'top' },
-    headStyles: { fillColor: corPrimaria, fontSize: 7 },
-    columnStyles: {
-      0: { cellWidth: 45 },
-      1: { cellWidth: 30, halign: 'center' },
-      2: { cellWidth: 25, halign: 'center' },
-      3: { cellWidth: 25, halign: 'center' },
-      4: { cellWidth: 18, halign: 'center' },
-      5: { cellWidth: 'auto' },
-    },
-  });
-
-  const totalPaginas = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= totalPaginas; i++) {
-    doc.setPage(i);
-    doc.setFontSize(7);
-    doc.setTextColor(...corCinza);
-    doc.text(
-      `FECEAC ${new Date().getFullYear()} - Pagina ${i} de ${totalPaginas}`,
-      pageW / 2, pageH - 6, { align: 'center' }
-    );
-  }
-
-  doc.output('dataurlnewwindow');
-};
-
 document.addEventListener('DOMContentLoaded', async () => {
   const usuario = await buscarUsuarioAtual();
   if (!usuario || usuario.tipo !== 'Administrador') {
@@ -228,5 +154,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderizar(alunosOrdenados);
   });
 
-  qs('#btnImprimir').addEventListener('click', gerarPDF);
+  qs('#btnImprimir').addEventListener('click', () => {
+    window.print();
+  });
 });

@@ -7,6 +7,15 @@
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/tabelas.css">
+  <style>
+    @media print {
+      .navbar, .sidebar, #btnImprimir, .search-grid, .text-muted, #estadoAlunos, #btnLogout { display: none !important; }
+      .app-shell { display: block !important; }
+      .content-area { padding: 0 !important; }
+      .table-responsive { border: 1px solid #dee2e6 !important; }
+      .table { font-size: .75rem !important; }
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar bg-white border-bottom"><div class="container-fluid"><a class="navbar-brand text-success" href="painel.html"><img src="assets/logos/feceac.jpeg" alt="Logo FECEAC" class="img-fluid" style="max-width: 120px;"></a><button id="btnLogout" class="btn btn-outline-danger btn-sm">Sair</button></div></nav>
@@ -35,8 +44,6 @@
     </section>
   </main>
   <script src="js/vendor/bootstrap.bundle.min.js"></script>
-  <script src="js/vendor/jspdf.umd.min.js"></script>
-  <script src="js/vendor/jspdf.plugin.autotable.min.js"></script>
   <script type="module" src="js/app.js"></script>
   <script type="module" src="js/controllers/alunos-multiplos-projetos.controller.js"></script>
 </body>
