@@ -8,6 +8,8 @@ import { supabase } from '../supabase.js';
 let todosProjetos = [];
 let todosProfessores = [];
 let projetosFiltrados = [];
+let projetoAtual = null;
+let criteriosAtuais = [];
 
 const FILTRO_NUM_ALUNOS = 4;
 
@@ -30,6 +32,9 @@ const renderizarCriterios = (criterios) => {
 };
 
 const renderizarFicha = (projeto, criterios) => {
+  projetoAtual = projeto;
+  criteriosAtuais = criterios;
+
   qs('#fichaTitulo').textContent = projeto.titulo || '-';
   qs('#fichaCodigo').textContent = projeto.codigo || '-';
   qs('#fichaTipo').textContent = projeto.tipo?.nome || '-';
@@ -118,6 +123,7 @@ const carregarCriteriosTipo = async () => {
   try {
     const criterios = await listarCriterios(Number(tipoId));
     qs('#fichaCriterios').innerHTML = renderizarCriterios(criterios);
+    criteriosAtuais = criterios;
   } catch (error) {
     toast(error.message || 'Erro ao carregar critérios.', 'danger');
   }
@@ -130,6 +136,267 @@ const carregarTiposProjeto = async () => {
     .order('nome');
   if (error) throw error;
   return data;
+};
+
+const truncar = (texto, maxW, doc) => {
+  if (!texto) return '';
+  if (doc.getTextWidth(texto) <= maxW) return texto;
+  while (texto.length > 0 && doc.getTextWidth(texto + '...') > maxW) {
+    texto = texto.slice(0, -1);
+  }
+  return texto + '...';
+};
+
+const gerarPDF = () => {
+  if (!projetoAtual) {
+    toast('Selecione um projeto para imprimir.', 'warning');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+  const pageW = 210;
+  const pageH = 297;
+  const margin = 14;
+  const contentW = pageW - margin * 2;
+
+  const corPrimaria = [25, 135, 84];
+  const corTexto = [33, 37, 41];
+  const corCinza = [108, 117, 125];
+  const corFundo = [248, 249, 250];
+
+  const headerH = 22;
+
+  const desenharCabecalho = () => {
+    doc.setFillColor(...corPrimaria);
+    doc.rect(0, 0, pageW, headerH, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Ficha de Avaliação', margin, 14);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Feira de Ciências e Arte e Cultura', pageW - margin, 14, { align: 'right' });
+  };
+
+  const desenharRodape = (pagAtual, totalPaginas) => {
+    doc.setFontSize(7);
+    doc.setTextColor(...corCinza);
+    doc.text(
+      `FECEAC ${new Date().getFullYear()} — Página ${pagAtual} de ${totalPaginas}`,
+      pageW / 2, pageH - 6, { align: 'center' }
+    );
+  };
+
+  desenharCabecalho();
+
+  let y = headerH + 8;
+  const labelW = 30;
+
+  const campoLinha = (label, valor, y) => {
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...corTexto);
+    doc.text(label + ':', margin, y);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...corCinza);
+    const valorX = margin + labelW;
+    const valorMaxW = contentW - labelW;
+    doc.text(truncar(valor || '-', valorMaxW, doc), valorX, y);
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineDashPattern([1, 1], 0);
+    doc.line(valorX, y + 1, valorX + valorMaxW, y + 1);
+    doc.setLineDashPattern([], 0);
+    return y + 7;
+  };
+
+  const campoDuplo = (label1, valor1, label2, valor2, y) => {
+    const halfW = contentW / 2 - 5;
+
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...corTexto);
+    doc.text(label1 + ':', margin, y);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...corCinza);
+    const v1x = margin + labelW;
+    doc.text(truncar(valor1 || '-', halfW - labelW, doc), v1x, y);
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineDashPattern([1, 1], 0);
+    doc.line(v1x, y + 1, v1x + halfW - labelW, y + 1);
+
+    const col2x = margin + halfW + 10;
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...corTexto);
+    doc.text(label2 + ':', col2x, y);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...corCinza);
+    const v2x = col2x + labelW;
+    doc.text(truncar(valor2 || '-', halfW - labelW, doc), v2x, y);
+    doc.line(v2x, y + 1, v2x + halfW - labelW, y + 1);
+    doc.setLineDashPattern([], 0);
+    return y + 7;
+  };
+
+  y = campoLinha('Título', projetoAtual.titulo, y);
+  y = campoDuplo('Código', projetoAtual.codigo, 'Tipo', projetoAtual.tipo?.nome, y);
+  y = campoDuplo('Área', projetoAtual.area?.nome, 'Orientador', projetoAtual.orientador?.nome, y);
+  y = campoLinha('Coorientador', projetoAtual.coorientador?.nome, y);
+
+  y += 4;
+
+  const legendaY = y;
+  doc.setFontSize(7);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...corTexto);
+  doc.text('Escala:', margin, legendaY);
+
+  const legendaItens = [
+    { nota: '5', desc: 'Fraco' },
+    { nota: '6', desc: 'Regular' },
+    { nota: '7', desc: 'Bom' },
+    { nota: '8', desc: 'Ótimo' },
+    { nota: '9', desc: 'Excelente' },
+    { nota: '10', desc: 'Supera expectativas' },
+  ];
+
+  let lx = margin + 14;
+  doc.setFont('helvetica', 'normal');
+  legendaItens.forEach((item) => {
+    doc.setFillColor(...corPrimaria);
+    doc.roundedRect(lx - 1, legendaY - 3.5, 7, 4, 1, 1, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(6);
+    doc.setFont('helvetica', 'bold');
+    doc.text(item.nota, lx + 2.5, legendaY - 0.5, { align: 'center' });
+    doc.setTextColor(...corCinza);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.text(item.desc, lx + 9, legendaY - 0.5);
+    lx += 9 + doc.getTextWidth(item.desc) + 5;
+  });
+
+  y = legendaY + 8;
+
+  if (criteriosAtuais.length > 0) {
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...corPrimaria);
+    doc.text('Critérios de Avaliação', margin, y);
+    doc.setDrawColor(...corPrimaria);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y + 1.5, margin + 40, y + 1.5);
+    doc.setLineWidth(0.2);
+    y += 6;
+
+    const critBody = criteriosAtuais.map((c) => [
+      `${c.descricao}${c.observacoes ? '\n(' + c.observacoes + ')' : ''}`,
+      `${Number(c.peso)}`,
+    ]);
+
+    doc.autoTable({
+      startY: y,
+      margin: { left: margin, right: margin },
+      head: [['Critério', 'Peso']],
+      body: critBody,
+      theme: 'grid',
+      styles: { fontSize: 8, cellPadding: 2, valign: 'top', textColor: corTexto },
+      headStyles: { fillColor: corPrimaria, fontSize: 8 },
+      columnStyles: {
+        0: { cellWidth: contentW - 20 },
+        1: { cellWidth: 20, halign: 'center' },
+      },
+    });
+
+    y = doc.lastAutoTable.finalY + 8;
+  }
+
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...corPrimaria);
+  doc.text('Nota Final', margin, y);
+  doc.setDrawColor(...corTexto);
+  doc.setLineWidth(0.5);
+  doc.line(margin + 25, y + 1, margin + 60, y + 1);
+  doc.setLineWidth(0.2);
+  y += 10;
+
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...corPrimaria);
+  doc.text('Alunos', margin, y);
+  doc.setDrawColor(...corPrimaria);
+  doc.setLineWidth(0.5);
+  doc.line(margin, y + 1.5, margin + 15, y + 1.5);
+  doc.setLineWidth(0.2);
+  y += 6;
+
+  const alunos = (projetoAtual.alunos || []).map((pa) => pa.aluno).filter(Boolean);
+  const numLinhasAlunos = Math.max(alunos.length, FILTRO_NUM_ALUNOS);
+
+  for (let i = 0; i < numLinhasAlunos; i++) {
+    const a = alunos[i];
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...corTexto);
+    doc.text(`${i + 1}º`, margin, y);
+
+    doc.setDrawColor(150, 150, 150);
+    doc.setLineWidth(0.2);
+
+    if (a) {
+      doc.setFont('helvetica', 'normal');
+      const nomeCompleto = a.turma ? `${a.nome} — ${a.turma}` : a.nome;
+      doc.text(truncar(nomeCompleto, contentW - 20, doc), margin + 10, y);
+      const textW = doc.getTextWidth(truncar(nomeCompleto, contentW - 20, doc));
+      doc.setLineDashPattern([1, 1], 0);
+      doc.line(margin + 10 + textW + 2, y + 1, margin + contentW, y + 1);
+      doc.setLineDashPattern([], 0);
+    } else {
+      doc.setLineDashPattern([], 0);
+      doc.line(margin + 10, y + 1, margin + contentW, y + 1);
+    }
+
+    y += 7;
+  }
+
+  y += 3;
+
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...corPrimaria);
+  doc.text('Observações Gerais', margin, y);
+  doc.setDrawColor(...corPrimaria);
+  doc.setLineWidth(0.5);
+  doc.line(margin, y + 1.5, margin + 40, y + 1.5);
+  doc.setLineWidth(0.2);
+  y += 6;
+
+  for (let i = 0; i < 4; i++) {
+    doc.setDrawColor(150, 150, 150);
+    doc.setLineWidth(0.2);
+    doc.line(margin, y + 1, margin + contentW, y + 1);
+    y += 7;
+  }
+
+  y += 5;
+
+  const sigW = 60;
+  const sigX = margin + (contentW - sigW) / 2;
+  doc.setDrawColor(corTexto);
+  doc.setLineWidth(0.3);
+  doc.line(sigX, y + 12, sigX + sigW, y + 12);
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(...corCinza);
+  doc.text('Avaliador(a)', sigX + sigW / 2, y + 16, { align: 'center' });
+
+  desenharRodape(1, 1);
+
+  const blob = doc.output('blob');
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -229,9 +496,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  qs('#btnImprimir').addEventListener('click', () => {
-    window.print();
-  });
+  qs('#btnImprimir').addEventListener('click', gerarPDF);
 
   const params = new URLSearchParams(location.search);
   const projetoId = params.get('projeto_id');
