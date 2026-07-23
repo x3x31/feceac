@@ -150,26 +150,22 @@ const gerarPDF = () => {
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
   const margin = 14;
-  let y = margin;
 
   const corPrimaria = [25, 135, 84];
   const corTexto = [33, 37, 41];
   const corCinza = [108, 117, 125];
 
-  const desenharCabecalho = () => {
-    doc.setFillColor(...corPrimaria);
-    doc.rect(0, 0, pageW, 28, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(18);
-    doc.setFont('helvetica', 'bold');
-    doc.text('FECEAC - Alunos em Multiplos Projetos', margin, 18);
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, pageW - margin, 18, { align: 'right' });
-    y = 36;
-  };
+  doc.setFillColor(...corPrimaria);
+  doc.rect(0, 0, pageW, 28, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(18);
+  doc.setFont('helvetica', 'bold');
+  doc.text('FECEAC - Alunos em Multiplos Projetos', margin, 18);
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, pageW - margin, 18, { align: 'right' });
 
-  desenharCabecalho();
+  let y = 36;
 
   doc.setFontSize(10);
   doc.setFont('helvetica', 'bold');
@@ -179,7 +175,7 @@ const gerarPDF = () => {
 
   doc.autoTable({
     startY: y,
-    margin: { left: margin },
+    margin: { left: margin, right: margin },
     head: [['Aluno', 'Matricula', 'Turma', 'Turno', 'Qtd. Projetos', 'Projetos']],
     body: alunosOrdenados.map(aluno => [
       aluno.nome,
@@ -187,7 +183,7 @@ const gerarPDF = () => {
       aluno.turma || '-',
       aluno.turno || '-',
       String(aluno.projetos.length),
-      aluno.projetos.map(p => `${p.titulo} (${p.codigo || '-'}).\nOrientador: ${p.orientador}${p.coorientador ? ' | Coorientador: ' + p.coorientador : ''}`).join('\n'),
+      aluno.projetos.map(p => `${p.titulo} (${p.codigo || '-'}). Orientador: ${p.orientador}${p.coorientador ? ' | Coorientador: ' + p.coorientador : ''}`).join('\n'),
     ]),
     theme: 'grid',
     styles: { fontSize: 7, cellPadding: 2, valign: 'top' },
@@ -199,11 +195,6 @@ const gerarPDF = () => {
       3: { cellWidth: 25, halign: 'center' },
       4: { cellWidth: 18, halign: 'center' },
       5: { cellWidth: 'auto' },
-    },
-    didDrawPage: (data) => {
-      if (data.pageNumber > 1) {
-        desenharCabecalho();
-      }
     },
   });
 
@@ -218,9 +209,7 @@ const gerarPDF = () => {
     );
   }
 
-  const blob = doc.output('blob');
-  const url = URL.createObjectURL(blob);
-  window.open(url, '_blank');
+  doc.output('dataurlnewwindow');
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
