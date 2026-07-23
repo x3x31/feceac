@@ -1,5 +1,4 @@
 import { carregarPerfilAutenticado } from '../auth.js';
-import { contarProjetos } from '../services/projeto.service.js';
 import { listarUsuarios } from '../services/usuario.service.js';
 import { listarAvaliacoes, listarCriterios } from '../services/avaliacao.service.js';
 import { listarProfessores } from '../services/professor.service.js';
@@ -22,10 +21,11 @@ const contarAreas = async () => {
   return count ?? 0;
 };
 
-const contarTipos = async () => {
+const contarProjetosPorTipo = async (tipoId) => {
   const { count, error } = await supabase
-    .from('tipos_projeto')
-    .select('id', { count: 'exact', head: true });
+    .from('projetos')
+    .select('id', { count: 'exact', head: true })
+    .eq('tipo_projeto_id', tipoId);
   if (error) throw error;
   return count ?? 0;
 };
@@ -41,23 +41,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   qs('#nomeUsuario').textContent = usuario.nome;
   qs('#tipoUsuario').textContent = usuario.tipo;
 
-  const [projetos, usuarios, avaliacoes, professores, alunos, areas, criterios, tipos] = await Promise.allSettled([
-    contarProjetos(),
+  const [usuarios, avaliacoes, professores, alunos, areas, criterios, feira, mostra] = await Promise.allSettled([
     listarUsuarios(),
     listarAvaliacoes(),
     listarProfessores(),
     contarAlunos(),
     contarAreas(),
     listarCriterios(),
-    contarTipos(),
+    contarProjetosPorTipo(1),
+    contarProjetosPorTipo(2),
   ]);
 
-  qs('#totalProjetos').textContent = projetos.status === 'fulfilled' ? projetos.value : '-';
+  qs('#totalFeira').textContent = feira.status === 'fulfilled' ? feira.value : '-';
+  qs('#totalMostra').textContent = mostra.status === 'fulfilled' ? mostra.value : '-';
   qs('#totalUsuarios').textContent = usuarios.status === 'fulfilled' ? usuarios.value?.length : '-';
   qs('#totalAvaliacoes').textContent = avaliacoes.status === 'fulfilled' ? avaliacoes.value?.length : '-';
   qs('#totalProfessores').textContent = professores.status === 'fulfilled' ? professores.value?.length : '-';
   qs('#totalAlunos').textContent = alunos.status === 'fulfilled' ? alunos.value : '-';
   qs('#totalAreas').textContent = areas.status === 'fulfilled' ? areas.value : '-';
   qs('#totalCriterios').textContent = criterios.status === 'fulfilled' ? criterios.value?.length : '-';
-  qs('#totalTipos').textContent = tipos.status === 'fulfilled' ? tipos.value : '-';
 });

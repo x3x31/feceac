@@ -71,13 +71,14 @@
 }
 
 .painel-stat-projetos { background: #d1e7dd; color: #0f5132; }
+.painel-stat-feira { background: #d1e7dd; color: #0f5132; }
+.painel-stat-mostra { background: #fff3cd; color: #664d03; }
 .painel-stat-usuarios { background: #cff4fc; color: #055160; }
 .painel-stat-avaliacoes { background: #fff3cd; color: #664d03; }
 .painel-stat-professores { background: #e2d9f3; color: #432874; }
 .painel-stat-alunos { background: #d0bfff; color: #5a32a3; }
 .painel-stat-areas { background: #b6effb; color: #055160; }
 .painel-stat-criterios { background: #f8d7da; color: #842029; }
-.painel-stat-tipos { background: #c3e6cb; color: #155724; }
 
 .painel-stat-label {
   font-size: .78rem;
