@@ -91,6 +91,7 @@ const renderizar = (projetos) => {
       <td>${escapeHtml(projeto.tipo?.nome || '-')}</td>
       <td>${escapeHtml(projeto.area?.nome || '-')}</td>
       <td>${projeto.nota?.toFixed(2) || '-'}</td>
+      <td class="col-avaliacoes">${(projeto.avaliacoes || []).length}</td>
     </tr>
   `).join('');
 };
