@@ -1,6 +1,6 @@
 import { buscarUsuarioAtual } from '../services/usuario.service.js';
-import { escapeHtml, qs, mensagemVazia } from '../util.js';
-import { setLoading, toast } from '../ui.js';
+import { escapeHtml, qs } from '../util.js';
+import { setLoading, toast, mensagemVazia } from '../ui.js';
 import { supabase } from '../supabase.js';
 
 let alunosDados = [];
