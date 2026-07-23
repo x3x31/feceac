@@ -168,9 +168,10 @@ const gerarPDF = () => {
     doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, pageW - margin, 18, { align: 'right' });
   };
 
-  desenharCabecalho();
+  const headerH = 28;
+  const topOffset = headerH + 6;
 
-  let y = 36;
+  let y = topOffset;
 
   doc.setFontSize(10);
   doc.setFont('helvetica', 'bold');
@@ -180,7 +181,7 @@ const gerarPDF = () => {
 
   doc.autoTable({
     startY: y,
-    margin: { left: margin, right: margin },
+    margin: { top: topOffset, left: margin, right: margin },
     head: [['Aluno', 'Qtd.', 'Projetos']],
     body: alunosOrdenados.map(aluno => [
       `${aluno.nome}\n${alunoInfoQuebra(aluno)}`,
@@ -196,9 +197,7 @@ const gerarPDF = () => {
       2: { cellWidth: 'auto' },
     },
     didDrawPage: (data) => {
-      if (data.pageNumber > 1) {
-        desenharCabecalho();
-      }
+      desenharCabecalho();
     },
   });
 
