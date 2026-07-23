@@ -270,6 +270,12 @@ const iniciarModalAlunos = () => {
 const iniciarFormularioProjeto = async () => {
   const form = qs('#projetoForm');
   const id = getParam('id');
+  const usuario = await buscarUsuarioAtual();
+
+  if (['Professor', 'Aluno'].includes(usuario?.tipo)) {
+    qs('#btnAdicionarAluno').classList.add('d-none');
+  }
+
   qs('#ano').value = anoAtual();
 
   if (!id) {
