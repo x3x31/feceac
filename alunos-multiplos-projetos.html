@@ -9,12 +9,160 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/tabelas.css">
   <style>
+    .rel-page {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 1.5rem;
+      font-size: .8rem;
+    }
+
+    .rel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: .3rem;
+    }
+
+    .rel-logo {
+      max-width: 70px;
+      border-radius: 8px;
+    }
+
+    .rel-header-text {
+      text-align: center;
+      flex: 1;
+    }
+
+    .rel-header-text h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #198754;
+      font-weight: 700;
+    }
+
+    .rel-header-text p {
+      margin: 0;
+      font-size: .8rem;
+      color: #6c757d;
+    }
+
+    .rel-divider {
+      border-top: 3px solid #198754;
+      margin-bottom: .8rem;
+    }
+
+    .rel-tabela th {
+      background: #f8f9fa;
+      font-size: .78rem;
+      font-weight: 600;
+    }
+
+    .rel-tabela td {
+      font-size: .78rem;
+      vertical-align: top;
+    }
+
+    .rel-tabela .projeto-item {
+      margin-bottom: .3rem;
+      font-size: .75rem;
+    }
+
+    .rel-tabela .projeto-item strong {
+      color: #333;
+    }
+
+    .rel-tabela .projeto-item .text-muted {
+      font-size: .72rem;
+    }
+
+    .rel-footer {
+      margin-top: .5rem;
+      font-size: .72rem;
+      color: #6c757d;
+      text-align: right;
+    }
+
     @media print {
-      .navbar, .sidebar, #btnImprimir, .search-grid, .text-muted, #estadoAlunos, #btnLogout { display: none !important; }
-      .app-shell { display: block !important; }
-      .content-area { padding: 0 !important; }
-      .table-responsive { border: 1px solid #dee2e6 !important; }
-      .table { font-size: .75rem !important; }
+      @page {
+        margin: 10mm;
+        size: landscape;
+      }
+
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .navbar, .sidebar, #btnImprimir, .search-grid, #estadoAlunos, #btnLogout {
+        display: none !important;
+      }
+
+      .app-shell {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .content-area {
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .rel-page {
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+      }
+
+      .rel-header {
+        margin-bottom: .2rem !important;
+      }
+
+      .rel-logo {
+        max-width: 55px !important;
+      }
+
+      .rel-header-text h2 {
+        font-size: 1rem !important;
+      }
+
+      .rel-header-text p {
+        font-size: .7rem !important;
+      }
+
+      .rel-divider {
+        margin-bottom: .3rem !important;
+      }
+
+      .rel-tabela th {
+        font-size: .68rem !important;
+        padding: .2rem .3rem !important;
+      }
+
+      .rel-tabela td {
+        font-size: .68rem !important;
+        padding: .2rem .3rem !important;
+        line-height: 1.2 !important;
+      }
+
+      .rel-tabela .projeto-item {
+        font-size: .65rem !important;
+        margin-bottom: .15rem !important;
+      }
+
+      .rel-footer {
+        font-size: .65rem !important;
+        margin-top: .3rem !important;
+      }
     }
   </style>
 </head>
@@ -40,8 +188,23 @@
           </select>
         </div>
       </div>
+      <div id="relContainer" class="d-none">
+        <div class="rel-page">
+          <div class="rel-header">
+            <img src="assets/logos/feceac.jpeg" alt="Logo FECEAC" class="rel-logo">
+            <div class="rel-header-text">
+              <h2>Alunos em Múltiplos Projetos</h2>
+              <p>Feira de Ciências e Arte e Cultura</p>
+            </div>
+            <img src="assets/logos/logo-feceac.jpeg" alt="Logo FECEAC" class="rel-logo">
+          </div>
+          <div class="rel-divider"></div>
+          <div id="relTotal" style="font-size:.78rem; color:#198754; font-weight:600; margin-bottom:.5rem;"></div>
+          <div id="relTabela"></div>
+          <div class="rel-footer" id="relFooter"></div>
+        </div>
+      </div>
       <div id="estadoAlunos"></div>
-      <div id="alunosContainer"></div>
     </section>
   </main>
   <script src="js/vendor/bootstrap.bundle.min.js"></script>

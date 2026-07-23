@@ -19,22 +19,27 @@ const ordenar = (lista, criterio) => {
 };
 
 const renderizar = (lista) => {
-  const container = qs('#alunosContainer');
+  const container = qs('#relContainer');
+
   if (!lista.length) {
-    container.innerHTML = `<div class="alert alert-light border text-center mb-0">Nenhum aluno vinculado a mais de um projeto.</div>`;
+    container.classList.add('d-none');
+    qs('#relTabela').innerHTML = '';
     return;
   }
 
-  container.innerHTML = `
-    <div class="table-responsive bg-white border rounded">
-      <table class="table table-hover align-middle mb-0">
+  container.classList.remove('d-none');
+  qs('#relTotal').textContent = `Total: ${lista.length} aluno(s) vinculado(s) a mais de um projeto`;
+
+  qs('#relTabela').innerHTML = `
+    <div class="table-responsive">
+      <table class="table table-bordered table-sm rel-tabela mb-0">
         <thead>
           <tr>
             <th>Aluno</th>
             <th>Matrícula</th>
             <th>Turma</th>
             <th>Turno</th>
-            <th>Qtd. Projetos</th>
+            <th style="width:60px; text-align:center;">Qtd.</th>
             <th>Projetos</th>
           </tr>
         </thead>
@@ -45,17 +50,13 @@ const renderizar = (lista) => {
               <td>${escapeHtml(aluno.matricula || '-')}</td>
               <td>${escapeHtml(aluno.turma || '-')}</td>
               <td>${escapeHtml(aluno.turno || '-')}</td>
-              <td>${aluno.projetos.length}</td>
+              <td style="text-align:center;">${aluno.projetos.length}</td>
               <td>
                 ${aluno.projetos.map(p => `
-                  <div class="mb-1">
+                  <div class="projeto-item">
                     <strong>${escapeHtml(p.titulo)}</strong>
                     <span class="text-muted">(${escapeHtml(p.codigo || '-')})</span>
-                    <br>
-                    <small class="text-muted">
-                      Orientador: ${escapeHtml(p.orientador || '-')}
-                      ${p.coorientador ? ' | Coorientador: ' + escapeHtml(p.coorientador) : ''}
-                    </small>
+                    <span class="text-muted"> — Orientador: ${escapeHtml(p.orientador || '-')}${p.coorientador ? ' | Coorientador: ' + escapeHtml(p.coorientador) : ''}</span>
                   </div>
                 `).join('')}
               </td>
@@ -65,6 +66,8 @@ const renderizar = (lista) => {
       </table>
     </div>
   `;
+
+  qs('#relFooter').textContent = `FECEAC ${new Date().getFullYear()} — Gerado em ${new Date().toLocaleString('pt-BR')}`;
 };
 
 const carregarDados = async () => {
