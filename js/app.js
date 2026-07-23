@@ -14,6 +14,7 @@ const menusPorPerfil = {
     ['avaliacoes.html', 'Avaliações'],
     ['ranking.html', 'Ranking'],
     ['ficha-avaliacao.html', 'Ficha de Avaliação'],
+    ['alunos-multiplos-projetos.html', 'Alunos em Múltiplos Projetos'],
   ],
   Professor: [
     ['painel.html', 'Painel'],
@@ -41,6 +42,7 @@ const acessoPorPagina = {
   'criterios.html': ['Administrador'],
   'cadastrar-projeto.html': ['Administrador', 'Professor', 'Aluno'],
   'editar-projeto.html': ['Administrador', 'Professor'],
+  'alunos-multiplos-projetos.html': ['Administrador'],
 };
 
 const paginaInicial = (perfil) => {
