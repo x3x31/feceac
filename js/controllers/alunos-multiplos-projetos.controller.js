@@ -32,9 +32,12 @@ const alunoInfoQuebra = (aluno) => {
 };
 
 const projetosResumo = (projetos) => {
-  return projetos.map(p =>
-    `${p.titulo} (${p.codigo || '-'}). Orientador: ${p.orientador}${p.coorientador ? ' | Coorientador: ' + p.coorientador : ''}`
-  ).join('\n');
+  return projetos.map(p => {
+    const linhas = [`${p.titulo} (${p.codigo || '-'})`];
+    linhas.push(`Orientador: ${p.orientador}`);
+    if (p.coorientador) linhas.push(`Coorientador: ${p.coorientador}`);
+    return linhas.join('\n');
+  }).join('\n\n');
 };
 
 const renderizar = (lista) => {
@@ -195,6 +198,11 @@ const gerarPDF = () => {
       0: { cellWidth: 55 },
       1: { cellWidth: 15, halign: 'center' },
       2: { cellWidth: 'auto' },
+    },
+    didParseCell: (data) => {
+      if (data.section === 'body' && (data.column.index === 0 || data.column.index === 2)) {
+        data.cell.styles.fontStyle = 'bold';
+      }
     },
     didDrawPage: (data) => {
       desenharCabecalho();
