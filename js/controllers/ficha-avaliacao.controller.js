@@ -379,7 +379,7 @@ const gerarPDF = () => {
 
   const sigW = 60;
   const sigX = margin + (contentW - sigW) / 2;
-  doc.setDrawColor(corTexto);
+  doc.setDrawColor(...corTexto);
   doc.setLineWidth(0.3);
   doc.line(sigX, y + 12, sigX + sigW, y + 12);
   doc.setFontSize(8);
