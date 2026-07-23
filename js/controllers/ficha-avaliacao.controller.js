@@ -10,6 +10,8 @@ let todosProfessores = [];
 let projetosFiltrados = [];
 let projetoAtual = null;
 let criteriosAtuais = [];
+let logoEsq = null;
+let logoDir = null;
 
 const FILTRO_NUM_ALUNOS = 4;
 
@@ -147,7 +149,21 @@ const truncar = (texto, maxW, doc) => {
   return texto + '...';
 };
 
-const gerarPDF = () => {
+const carregarImagem = (url) => new Promise((resolve) => {
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    const c = document.createElement('canvas');
+    c.width = img.naturalWidth;
+    c.height = img.naturalHeight;
+    c.getContext('2d').drawImage(img, 0, 0);
+    resolve(c.toDataURL('image/jpeg', 0.85));
+  };
+  img.onerror = () => resolve(null);
+  img.src = url;
+});
+
+const gerarPDF = async () => {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
@@ -157,81 +173,88 @@ const gerarPDF = () => {
   const contentW = pageW - margin * 2;
 
   const corPrimaria = [25, 135, 84];
-  const corTexto = [33, 37, 41];
+  const corTexto = [51, 51, 51];
   const corCinza = [108, 117, 125];
-  const corFundo = [248, 249, 250];
+  const corLinha = [204, 204, 204];
+  const corLinhaSecao = [222, 226, 230];
 
-  const headerH = 22;
+  if (!logoEsq) logoEsq = await carregarImagem('assets/logos/feceac.jpeg');
+  if (!logoDir) logoDir = await carregarImagem('assets/logos/logo-feceac.jpeg');
 
-  const desenharCabecalho = () => {
-    doc.setFillColor(...corPrimaria);
-    doc.rect(0, 0, pageW, headerH, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Ficha de Avaliação', margin, 14);
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Feira de Ciências e Arte e Cultura', pageW - margin, 14, { align: 'right' });
-  };
+  let y = 6;
 
-  const desenharRodape = (pagAtual, totalPaginas) => {
-    doc.setFontSize(7);
-    doc.setTextColor(...corCinza);
-    doc.text(
-      `FECEAC ${new Date().getFullYear()} — Página ${pagAtual} de ${totalPaginas}`,
-      pageW / 2, pageH - 6, { align: 'center' }
-    );
-  };
+  if (logoEsq) doc.addImage(logoEsq, 'JPEG', margin, y, 20, 16);
+  if (logoDir) doc.addImage(logoDir, 'JPEG', pageW - margin - 20, y, 20, 16);
 
-  desenharCabecalho();
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...corPrimaria);
+  doc.text('Ficha de Avaliação', pageW / 2, y + 8, { align: 'center' });
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(...corCinza);
+  doc.text('Feira de Ciências e Arte e Cultura', pageW / 2, y + 13, { align: 'center' });
 
-  let y = headerH + 8;
-  const labelW = 30;
+  y += 20;
 
-  const campoLinha = (label, valor, y) => {
+  doc.setDrawColor(...corPrimaria);
+  doc.setLineWidth(0.8);
+  doc.line(margin, y, pageW - margin, y);
+  doc.setLineWidth(0.2);
+  y += 6;
+
+  const campoLinha = (label, valor, yPos) => {
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...corTexto);
-    doc.text(label + ':', margin, y);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(...corCinza);
+    doc.text(label + ':', margin, yPos);
+    const labelW = doc.getTextWidth(label + ': ');
     const valorX = margin + labelW;
     const valorMaxW = contentW - labelW;
-    doc.text(truncar(valor || '-', valorMaxW, doc), valorX, y);
-    doc.setDrawColor(200, 200, 200);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(85, 85, 85);
+    doc.text(truncar(valor || '', valorMaxW, doc) || '', valorX, yPos);
+    const textEnd = valorX + (doc.getTextWidth(truncar(valor || '', valorMaxW, doc)) || 0);
+    doc.setDrawColor(...corLinha);
     doc.setLineDashPattern([1, 1], 0);
-    doc.line(valorX, y + 1, valorX + valorMaxW, y + 1);
+    doc.line(textEnd + 1, yPos + 1, margin + contentW, yPos + 1);
     doc.setLineDashPattern([], 0);
-    return y + 7;
+    return yPos + 6;
   };
 
-  const campoDuplo = (label1, valor1, label2, valor2, y) => {
-    const halfW = contentW / 2 - 5;
+  const campoDuplo = (l1, v1, l2, v2, yPos) => {
+    const halfW = contentW / 2 - 4;
+    const col2x = margin + halfW + 8;
 
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...corTexto);
-    doc.text(label1 + ':', margin, y);
+    doc.text(l1 + ':', margin, yPos);
+    const lw1 = doc.getTextWidth(l1 + ': ');
+    const v1x = margin + lw1;
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(...corCinza);
-    const v1x = margin + labelW;
-    doc.text(truncar(valor1 || '-', halfW - labelW, doc), v1x, y);
-    doc.setDrawColor(200, 200, 200);
+    doc.setTextColor(85, 85, 85);
+    const v1txt = truncar(v1 || '', halfW - lw1, doc) || '';
+    doc.text(v1txt, v1x, yPos);
+    const end1 = v1x + (doc.getTextWidth(v1txt) || 0);
+    doc.setDrawColor(...corLinha);
     doc.setLineDashPattern([1, 1], 0);
-    doc.line(v1x, y + 1, v1x + halfW - labelW, y + 1);
+    doc.line(end1 + 1, yPos + 1, margin + halfW, yPos + 1);
 
-    const col2x = margin + halfW + 10;
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...corTexto);
-    doc.text(label2 + ':', col2x, y);
+    doc.text(l2 + ':', col2x, yPos);
+    const lw2 = doc.getTextWidth(l2 + ': ');
+    const v2x = col2x + lw2;
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(...corCinza);
-    const v2x = col2x + labelW;
-    doc.text(truncar(valor2 || '-', halfW - labelW, doc), v2x, y);
-    doc.line(v2x, y + 1, v2x + halfW - labelW, y + 1);
+    doc.setTextColor(85, 85, 85);
+    const v2txt = truncar(v2 || '', halfW - lw2, doc) || '';
+    doc.text(v2txt, v2x, yPos);
+    const end2 = v2x + (doc.getTextWidth(v2txt) || 0);
+    doc.setDrawColor(...corLinha);
+    doc.line(end2 + 1, yPos + 1, col2x + halfW, yPos + 1);
     doc.setLineDashPattern([], 0);
-    return y + 7;
+    return yPos + 6;
   };
 
   y = campoLinha('Título', projetoAtual?.titulo, y);
@@ -239,13 +262,19 @@ const gerarPDF = () => {
   y = campoDuplo('Área', projetoAtual?.area?.nome, 'Orientador', projetoAtual?.orientador?.nome, y);
   y = campoLinha('Coorientador', projetoAtual?.coorientador?.nome, y);
 
-  y += 4;
+  y += 2;
 
-  const legendaY = y;
-  doc.setFontSize(7);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(...corTexto);
-  doc.text('Escala:', margin, legendaY);
+  const desenharSecao = (texto, yPos) => {
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...corPrimaria);
+    doc.text(texto, margin, yPos);
+    doc.setDrawColor(...corLinhaSecao);
+    doc.setLineWidth(0.5);
+    doc.line(margin, yPos + 1.5, pageW - margin, yPos + 1.5);
+    doc.setLineWidth(0.2);
+    return yPos + 6;
+  };
 
   const legendaItens = [
     { nota: '5', desc: 'Fraco' },
@@ -256,35 +285,38 @@ const gerarPDF = () => {
     { nota: '10', desc: 'Supera expectativas' },
   ];
 
-  let lx = margin + 14;
-  doc.setFont('helvetica', 'normal');
-  legendaItens.forEach((item) => {
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...corPrimaria);
+  doc.text('Critérios de Avaliação', margin, y);
+
+  let badgeX = pageW - margin;
+  for (let i = legendaItens.length - 1; i >= 0; i--) {
+    const item = legendaItens[i];
+    const descW = doc.getTextWidth(item.desc);
+    badgeX -= descW;
+    doc.setFontSize(6.5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...corCinza);
+    doc.text(item.desc, badgeX, y);
+    badgeX -= 2;
+    const badgeW = item.nota === '10' ? 8 : 5;
     doc.setFillColor(...corPrimaria);
-    doc.roundedRect(lx - 1, legendaY - 3.5, 7, 4, 1, 1, 'F');
+    doc.roundedRect(badgeX - badgeW, y - 3.5, badgeW, 4, 1, 1, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(6);
     doc.setFont('helvetica', 'bold');
-    doc.text(item.nota, lx + 2.5, legendaY - 0.5, { align: 'center' });
-    doc.setTextColor(...corCinza);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(6.5);
-    doc.text(item.desc, lx + 9, legendaY - 0.5);
-    lx += 9 + doc.getTextWidth(item.desc) + 5;
-  });
+    doc.text(item.nota, badgeX - badgeW / 2, y - 0.5, { align: 'center' });
+    badgeX -= 5;
+  }
 
-  y = legendaY + 8;
+  doc.setDrawColor(...corLinhaSecao);
+  doc.setLineWidth(0.5);
+  doc.line(margin, y + 1.5, pageW - margin, y + 1.5);
+  doc.setLineWidth(0.2);
+  y += 6;
 
   if (criteriosAtuais.length > 0) {
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...corPrimaria);
-    doc.text('Critérios de Avaliação', margin, y);
-    doc.setDrawColor(...corPrimaria);
-    doc.setLineWidth(0.5);
-    doc.line(margin, y + 1.5, margin + 40, y + 1.5);
-    doc.setLineWidth(0.2);
-    y += 6;
-
     const critBody = criteriosAtuais.map((c) => [
       `${c.descricao}${c.observacoes ? '\n(' + c.observacoes + ')' : ''}`,
       `${Number(c.peso)}`,
@@ -296,98 +328,80 @@ const gerarPDF = () => {
       head: [['Critério', 'Peso']],
       body: critBody,
       theme: 'grid',
-      styles: { fontSize: 8, cellPadding: 2, valign: 'top', textColor: corTexto },
-      headStyles: { fillColor: corPrimaria, fontSize: 8 },
+      styles: { fontSize: 8, cellPadding: 2, valign: 'middle', textColor: corTexto },
+      headStyles: { fillColor: corPrimaria, fontSize: 8, textColor: [255, 255, 255] },
       columnStyles: {
-        0: { cellWidth: contentW - 20 },
-        1: { cellWidth: 20, halign: 'center' },
+        0: { cellWidth: contentW - 18 },
+        1: { cellWidth: 18, halign: 'center' },
       },
     });
 
-    y = doc.lastAutoTable.finalY + 8;
+    y = doc.lastAutoTable.finalY + 4;
   }
 
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(...corPrimaria);
-  doc.text('Nota Final', margin, y);
+  y = desenharSecao('Nota Final', y);
   doc.setDrawColor(...corTexto);
-  doc.setLineWidth(0.5);
-  doc.line(margin + 25, y + 1, margin + 60, y + 1);
+  doc.setLineWidth(0.4);
+  doc.line(pageW - margin - 30, y + 2, pageW - margin, y + 2);
   doc.setLineWidth(0.2);
   y += 10;
 
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(...corPrimaria);
-  doc.text('Alunos', margin, y);
-  doc.setDrawColor(...corPrimaria);
-  doc.setLineWidth(0.5);
-  doc.line(margin, y + 1.5, margin + 15, y + 1.5);
-  doc.setLineWidth(0.2);
-  y += 6;
+  y = desenharSecao('Alunos', y);
 
   const alunos = projetoAtual ? (projetoAtual.alunos || []).map((pa) => pa.aluno).filter(Boolean) : [];
-  const numLinhasAlunos = Math.max(alunos.length, FILTRO_NUM_ALUNOS);
+  const numLinhas = Math.max(alunos.length, FILTRO_NUM_ALUNOS);
 
-  for (let i = 0; i < numLinhasAlunos; i++) {
+  for (let i = 0; i < numLinhas; i++) {
     const a = alunos[i];
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...corTexto);
     doc.text(`${i + 1}º`, margin, y);
 
-    doc.setDrawColor(150, 150, 150);
+    doc.setDrawColor(...corLinha);
     doc.setLineWidth(0.2);
 
     if (a) {
       doc.setFont('helvetica', 'normal');
+      doc.setTextColor(85, 85, 85);
       const nomeCompleto = a.turma ? `${a.nome} — ${a.turma}` : a.nome;
-      doc.text(truncar(nomeCompleto, contentW - 20, doc), margin + 10, y);
-      const textW = doc.getTextWidth(truncar(nomeCompleto, contentW - 20, doc));
-      doc.setLineDashPattern([1, 1], 0);
-      doc.line(margin + 10 + textW + 2, y + 1, margin + contentW, y + 1);
-      doc.setLineDashPattern([], 0);
+      const txt = truncar(nomeCompleto, contentW - 12, doc);
+      doc.text(txt, margin + 8, y);
+      const textW = doc.getTextWidth(txt);
+      doc.line(margin + 8 + textW + 1, y + 1, margin + contentW, y + 1);
     } else {
-      doc.setLineDashPattern([], 0);
-      doc.line(margin + 10, y + 1, margin + contentW, y + 1);
+      doc.line(margin + 8, y + 1, margin + contentW, y + 1);
     }
-
-    y += 7;
+    y += 6;
   }
 
-  y += 3;
+  y += 2;
 
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(...corPrimaria);
-  doc.text('Observações Gerais', margin, y);
-  doc.setDrawColor(...corPrimaria);
-  doc.setLineWidth(0.5);
-  doc.line(margin, y + 1.5, margin + 40, y + 1.5);
-  doc.setLineWidth(0.2);
-  y += 6;
-
-  for (let i = 0; i < 4; i++) {
-    doc.setDrawColor(150, 150, 150);
+  y = desenharSecao('Observações Gerais', y);
+  for (let i = 0; i < 3; i++) {
+    doc.setDrawColor(...corLinha);
     doc.setLineWidth(0.2);
     doc.line(margin, y + 1, margin + contentW, y + 1);
-    y += 7;
+    y += 6;
   }
 
-  y += 5;
-
-  const sigW = 60;
+  y += 10;
+  const sigW = 65;
   const sigX = margin + (contentW - sigW) / 2;
   doc.setDrawColor(...corTexto);
   doc.setLineWidth(0.3);
-  doc.line(sigX, y + 12, sigX + sigW, y + 12);
+  doc.line(sigX, y, sigX + sigW, y);
   doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(...corCinza);
-  doc.text('Avaliador(a)', sigX + sigW / 2, y + 16, { align: 'center' });
+  doc.text('Avaliador(a)', sigX + sigW / 2, y + 4, { align: 'center' });
 
-  desenharRodape(1, 1);
+  doc.setFontSize(7);
+  doc.setTextColor(...corCinza);
+  doc.text(
+    `FECEAC ${new Date().getFullYear()}`,
+    pageW / 2, pageH - 8, { align: 'center' }
+  );
 
   const blob = doc.output('blob');
   const url = URL.createObjectURL(blob);
