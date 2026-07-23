@@ -4,6 +4,7 @@ import { setLoading, toast } from '../ui.js';
 import { supabase } from '../supabase.js';
 
 let alunosDados = [];
+let alunosOrdenados = [];
 
 const ordenar = (lista, criterio) => {
   const copia = [...lista];
@@ -128,12 +129,98 @@ const carregarDados = async () => {
     alunosDados = Object.values(mapaAlunos).filter(a => a.projetos.length > 1);
 
     const ordem = qs('#filtroOrdenacao').value;
-    renderizar(ordenar(alunosDados, ordem));
+    alunosOrdenados = ordenar(alunosDados, ordem);
+    renderizar(alunosOrdenados);
   } catch (error) {
     toast(error.message || 'Erro ao carregar dados.', 'danger');
   } finally {
     setLoading('#estadoAlunos', false);
   }
+};
+
+const gerarPDF = () => {
+  if (!alunosOrdenados.length) {
+    toast('Nenhum aluno para imprimir.', 'warning');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  const margin = 14;
+  let y = margin;
+
+  const corPrimaria = [25, 135, 84];
+  const corTexto = [33, 37, 41];
+  const corCinza = [108, 117, 125];
+
+  const desenharCabecalho = () => {
+    doc.setFillColor(...corPrimaria);
+    doc.rect(0, 0, pageW, 28, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('FECEAC - Alunos em Multiplos Projetos', margin, 18);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, pageW - margin, 18, { align: 'right' });
+    y = 36;
+  };
+
+  desenharCabecalho();
+
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...corPrimaria);
+  doc.text(`Total: ${alunosOrdenados.length} aluno(s) vinculado(s) a mais de um projeto`, margin, y);
+  y += 8;
+
+  doc.autoTable({
+    startY: y,
+    margin: { left: margin },
+    head: [['Aluno', 'Matricula', 'Turma', 'Turno', 'Qtd. Projetos', 'Projetos']],
+    body: alunosOrdenados.map(aluno => [
+      aluno.nome,
+      aluno.matricula || '-',
+      aluno.turma || '-',
+      aluno.turno || '-',
+      String(aluno.projetos.length),
+      aluno.projetos.map(p => `${p.titulo} (${p.codigo || '-'}).\nOrientador: ${p.orientador}${p.coorientador ? ' | Coorientador: ' + p.coorientador : ''}`).join('\n'),
+    ]),
+    theme: 'grid',
+    styles: { fontSize: 7, cellPadding: 2, valign: 'top' },
+    headStyles: { fillColor: corPrimaria, fontSize: 7 },
+    columnStyles: {
+      0: { cellWidth: 45 },
+      1: { cellWidth: 30, halign: 'center' },
+      2: { cellWidth: 25, halign: 'center' },
+      3: { cellWidth: 25, halign: 'center' },
+      4: { cellWidth: 18, halign: 'center' },
+      5: { cellWidth: 'auto' },
+    },
+    didDrawPage: (data) => {
+      if (data.pageNumber > 1) {
+        desenharCabecalho();
+      }
+    },
+  });
+
+  const totalPaginas = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= totalPaginas; i++) {
+    doc.setPage(i);
+    doc.setFontSize(7);
+    doc.setTextColor(...corCinza);
+    doc.text(
+      `FECEAC ${new Date().getFullYear()} - Pagina ${i} de ${totalPaginas}`,
+      pageW / 2, pageH - 6, { align: 'center' }
+    );
+  }
+
+  const blob = doc.output('blob');
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -148,6 +235,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   qs('#filtroOrdenacao').addEventListener('change', () => {
     const ordem = qs('#filtroOrdenacao').value;
-    renderizar(ordenar(alunosDados, ordem));
+    alunosOrdenados = ordenar(alunosDados, ordem);
+    renderizar(alunosOrdenados);
   });
+
+  qs('#btnImprimir').addEventListener('click', gerarPDF);
 });

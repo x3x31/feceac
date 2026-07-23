@@ -13,8 +13,13 @@
   <main class="app-shell d-flex">
     <aside class="sidebar p-3"><nav class="nav flex-column"></nav></aside>
     <section class="content-area flex-grow-1">
-      <h1 class="page-title mb-3">Alunos em Múltiplos Projetos</h1>
-      <p class="text-muted mb-3">Alunos vinculados a mais de um projeto, com informações detalhadas.</p>
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <div>
+          <h1 class="page-title mb-0">Alunos em Múltiplos Projetos</h1>
+          <p class="text-muted mb-0">Alunos vinculados a mais de um projeto, com informações detalhadas.</p>
+        </div>
+        <button id="btnImprimir" class="btn btn-outline-primary btn-sm" type="button">Imprimir PDF</button>
+      </div>
       <div class="search-grid mb-3">
         <div>
           <label class="form-label form-label-sm mb-1 search-label" for="filtroOrdenacao">Ordenar por</label>
