@@ -177,8 +177,8 @@ const gerarPDF = () => {
   const areasOrdenadas = Object.keys(agrupar).sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
   areasOrdenadas.forEach((area, idxArea) => {
-    if (idxArea > 0) {
-      doc.addPage();
+    if (idxArea === 0) {
+      desenharCabecalho();
     } else {
       doc.addPage();
       desenharCabecalho();
