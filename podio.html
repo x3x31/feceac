@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" type="image/png" href="assets/logos/favicon.png">
+  <link rel="apple-touch-icon" href="assets/logos/icon-180x180.png">
+  <link rel="apple-touch-startup-image" href="assets/logos/fundologin.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pódium | FECEAC</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tabelas.css">
+</head>
+<body>
+  <nav class="navbar bg-white border-bottom"><div class="container-fluid"><a class="navbar-brand text-success" href="painel.html"><img src="assets/logos/feceac.jpeg" alt="Logo FECEAC" class="img-fluid" style="max-width: 120px;"></a><button id="btnLogout" class="btn btn-outline-danger btn-sm">Sair</button></div></nav>
+  <main class="app-shell d-flex">
+    <aside class="sidebar p-3"><nav class="nav flex-column"></nav></aside>
+    <section class="content-area flex-grow-1">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h1 class="page-title mb-0">Pódium — 1º, 2º e 3º Lugar</h1>
+        <button id="btnImprimir" class="btn btn-success">Gerar Relatório PDF</button>
+      </div>
+      <p class="text-muted mb-3">Projetos premiados (1º, 2º e 3º lugar) agrupados por área de conhecimento.</p>
+      <div class="search-grid mb-3">
+        <div>
+          <label class="form-label form-label-sm mb-1 search-label" for="filtroTipo">Tipo do Projeto</label>
+          <select id="filtroTipo" class="form-select form-select-sm">
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label form-label-sm mb-1 search-label" for="filtroOrdenacao">Ordenação</label>
+          <select id="filtroOrdenacao" class="form-select form-select-sm">
+            <option value="area_nota">Área → Nota (decrescente)</option>
+            <option value="nota">Nota (decrescente)</option>
+          </select>
+        </div>
+      </div>
+      <div id="estadoPodio"></div>
+      <div class="table-responsive bg-white border rounded">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Posição</th>
+              <th>Projeto</th>
+              <th>Código</th>
+              <th>Orientador</th>
+              <th>Coorientador</th>
+              <th>Tipo</th>
+              <th>Área</th>
+              <th style="text-align:center;">Nota</th>
+            </tr>
+          </thead>
+          <tbody id="podioTabela"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="js/vendor/bootstrap.bundle.min.js"></script>
+  <script src="js/vendor/jspdf.umd.min.js"></script>
+  <script src="js/vendor/jspdf.plugin.autotable.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/controllers/podio.controller.js"></script>
+</body>
+</html>
