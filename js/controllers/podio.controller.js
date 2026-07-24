@@ -1,7 +1,7 @@
 import { buscarUsuarioAtual } from '../services/usuario.service.js';
 import { listarRanking } from '../services/avaliacao.service.js';
-import { escapeHtml, qs, mensagemVazia } from '../util.js';
-import { setLoading, toast } from '../ui.js';
+import { escapeHtml, qs } from '../util.js';
+import { setLoading, toast, mensagemVazia } from '../ui.js';
 import { supabase } from '../supabase.js';
 
 let todosProjetos = [];
@@ -66,25 +66,44 @@ const filtrarPodio = () => {
 
 const renderizarTabela = (lista) => {
   const corpo = qs('#podioTabela');
+  const apenasNomes = qs('#filtroExibicao').value === 'nomes';
+  const thead = qs('#podioTabela').closest('table').querySelector('thead tr');
+
+  if (apenasNomes) {
+    thead.innerHTML = '<th>Posição</th><th>Projeto</th><th style="text-align:center;">Nota</th>';
+  } else {
+    thead.innerHTML = '<th>Posição</th><th>Projeto</th><th>Código</th><th>Orientador</th><th>Coorientador</th><th>Tipo</th><th>Área</th><th style="text-align:center;">Nota</th>';
+  }
+
   if (!lista.length) {
-    corpo.innerHTML = `<tr><td colspan="8">${mensagemVazia('Nenhum projeto com nota para exibir no pódium.')}</td></tr>`;
+    corpo.innerHTML = `<tr><td colspan="${apenasNomes ? 3 : 8}">${mensagemVazia('Nenhum projeto com nota para exibir no pódium.')}</td></tr>`;
     return;
   }
 
   const medalha = (pos) => pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : pos + 'º';
 
-  corpo.innerHTML = lista.map((p) => `
-    <tr>
-      <td style="text-align:center; font-size:1.2rem;">${medalha(p.posicao)}</td>
-      <td><strong>${escapeHtml(p.titulo)}</strong></td>
-      <td>${escapeHtml(p.codigo || '-')}</td>
-      <td>${escapeHtml(p.orientador?.nome || '-')}</td>
-      <td>${escapeHtml(p.coorientador?.nome || '-')}</td>
-      <td>${escapeHtml(p.tipo?.nome || '-')}</td>
-      <td>${escapeHtml(p.area?.nome || '-')}</td>
-      <td style="text-align:center;"><strong>${p.nota?.toFixed(2) || '-'}</strong></td>
-    </tr>
-  `).join('');
+  if (apenasNomes) {
+    corpo.innerHTML = lista.map((p) => `
+      <tr>
+        <td style="text-align:center; font-size:1.2rem;">${medalha(p.posicao)}</td>
+        <td><strong>${escapeHtml(p.titulo)}</strong></td>
+        <td style="text-align:center;"><strong>${p.nota?.toFixed(2) || '-'}</strong></td>
+      </tr>
+    `).join('');
+  } else {
+    corpo.innerHTML = lista.map((p) => `
+      <tr>
+        <td style="text-align:center; font-size:1.2rem;">${medalha(p.posicao)}</td>
+        <td><strong>${escapeHtml(p.titulo)}</strong></td>
+        <td>${escapeHtml(p.codigo || '-')}</td>
+        <td>${escapeHtml(p.orientador?.nome || '-')}</td>
+        <td>${escapeHtml(p.coorientador?.nome || '-')}</td>
+        <td>${escapeHtml(p.tipo?.nome || '-')}</td>
+        <td>${escapeHtml(p.area?.nome || '-')}</td>
+        <td style="text-align:center;"><strong>${p.nota?.toFixed(2) || '-'}</strong></td>
+      </tr>
+    `).join('');
+  }
 };
 
 const gerarPDF = () => {
@@ -93,6 +112,7 @@ const gerarPDF = () => {
     return;
   }
 
+  const apenasNomes = qs('#filtroExibicao').value === 'nomes';
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
@@ -171,61 +191,97 @@ const gerarPDF = () => {
 
     projetosArea.forEach((p) => {
       const posCor = corPosicao[p.posicao] || corTexto;
-      const espacoNecessario = 42;
-      if (y + espacoNecessario > pageH - margin) {
-        doc.addPage();
-        desenharCabecalho();
-        y = topOffset;
+
+      if (apenasNomes) {
+        const espacoNecessario = 16;
+        if (y + espacoNecessario > pageH - margin) {
+          doc.addPage();
+          desenharCabecalho();
+          y = topOffset;
+        }
+
+        doc.setFillColor(245, 245, 245);
+        doc.roundedRect(margin, y - 2, pageW - margin * 2, espacoNecessario - 4, 2, 2, 'F');
+
+        const posLabel = p.posicao + 'o Lugar';
+        doc.setFillColor(...posCor);
+        doc.roundedRect(margin + 2, y + 1, 20, 8, 2, 2, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'bold');
+        doc.text(posLabel, margin + 12, y + 6.5, { align: 'center' });
+
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...corTexto);
+        doc.text(p.titulo, margin + 26, y + 6.5);
+
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...corPrimaria);
+        doc.text(`Nota: ${p.nota?.toFixed(2) || '-'}`, pageW - margin - 2, y + 6.5, { align: 'right' });
+
+        doc.setDrawColor(200, 200, 200);
+        doc.setLineWidth(0.2);
+        doc.line(margin, y + espacoNecessario - 4, pageW - margin, y + espacoNecessario - 4);
+        y += espacoNecessario + 1;
+      } else {
+        const espacoNecessario = 42;
+        if (y + espacoNecessario > pageH - margin) {
+          doc.addPage();
+          desenharCabecalho();
+          y = topOffset;
+        }
+
+        doc.setFillColor(245, 245, 245);
+        doc.roundedRect(margin, y - 2, pageW - margin * 2, espacoNecessario - 4, 2, 2, 'F');
+
+        const posLabel = p.posicao + 'o Lugar';
+        doc.setFillColor(...posCor);
+        doc.roundedRect(margin + 2, y + 1, 20, 8, 2, 2, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'bold');
+        doc.text(posLabel, margin + 12, y + 6.5, { align: 'center' });
+
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...corTexto);
+        const tituloInicio = margin + 26;
+        const espacoTitulo = pageW - margin - tituloInicio - 2;
+        const linhasTitulo = doc.splitTextToSize(p.titulo, espacoTitulo);
+        doc.text(linhasTitulo, tituloInicio, y + 7);
+        const linhasExtras = Math.max(0, linhasTitulo.length - 1);
+
+        let ly = y + 12 + linhasExtras * 5;
+
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...corPrimaria);
+        doc.text(`Nota: ${p.nota?.toFixed(2) || '-'}`, tituloInicio, ly);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...corTexto);
+        doc.text(`Codigo: ${p.codigo || '-'}`, tituloInicio + 40, ly);
+        ly += 5;
+
+        doc.setFontSize(8);
+        doc.setTextColor(85, 85, 85);
+        doc.text(`Orientador: ${p.orientador?.nome || '-'}${p.coorientador?.nome ? '  |  Coorientador: ' + p.coorientador.nome : ''}`, tituloInicio, ly);
+        ly += 5;
+
+        const alunoStr = (p.alunos || []).map((a) => a.aluno?.nome).filter(Boolean).join(', ');
+        if (alunoStr) {
+          const linhasAlunos = doc.splitTextToSize('Alunos: ' + alunoStr, pageW - margin - tituloInicio - 2);
+          doc.text(linhasAlunos, tituloInicio, ly);
+          ly += linhasAlunos.length * 4;
+        }
+
+        doc.setDrawColor(200, 200, 200);
+        doc.setLineWidth(0.2);
+        doc.line(margin, ly + 2, pageW - margin, ly + 2);
+        y = ly + 7;
       }
-
-      doc.setFillColor(245, 245, 245);
-      doc.roundedRect(margin, y - 2, pageW - margin * 2, espacoNecessario - 4, 2, 2, 'F');
-
-      const posLabel = p.posicao + 'o Lugar';
-      doc.setFillColor(...posCor);
-      doc.roundedRect(margin + 2, y + 1, 20, 8, 2, 2, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'bold');
-      doc.text(posLabel, margin + 12, y + 6.5, { align: 'center' });
-
-      doc.setFontSize(11);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(...corTexto);
-      const tituloInicio = margin + 26;
-      const espacoTitulo = pageW - margin - tituloInicio - 2;
-      const linhasTitulo = doc.splitTextToSize(p.titulo, espacoTitulo);
-      doc.text(linhasTitulo, tituloInicio, y + 7);
-      const linhasExtras = Math.max(0, linhasTitulo.length - 1);
-
-      let ly = y + 12 + linhasExtras * 5;
-
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(...corPrimaria);
-      doc.text(`Nota: ${p.nota?.toFixed(2) || '-'}`, tituloInicio, ly);
-
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(...corTexto);
-      doc.text(`Codigo: ${p.codigo || '-'}`, tituloInicio + 40, ly);
-      ly += 5;
-
-      doc.setFontSize(8);
-      doc.setTextColor(85, 85, 85);
-      doc.text(`Orientador: ${p.orientador?.nome || '-'}${p.coorientador?.nome ? '  |  Coorientador: ' + p.coorientador.nome : ''}`, tituloInicio, ly);
-      ly += 5;
-
-      const alunoStr = (p.alunos || []).map((a) => a.aluno?.nome).filter(Boolean).join(', ');
-      if (alunoStr) {
-        const linhasAlunos = doc.splitTextToSize('Alunos: ' + alunoStr, pageW - margin - tituloInicio - 2);
-        doc.text(linhasAlunos, tituloInicio, ly);
-        ly += linhasAlunos.length * 4;
-      }
-
-      doc.setDrawColor(200, 200, 200);
-      doc.setLineWidth(0.2);
-      doc.line(margin, ly + 2, pageW - margin, ly + 2);
-      y = ly + 7;
     });
   });
 
@@ -271,5 +327,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   qs('#filtroTipo').addEventListener('change', filtrarPodio);
   qs('#filtroOrdenacao').addEventListener('change', filtrarPodio);
+  qs('#filtroExibicao').addEventListener('change', filtrarPodio);
   qs('#btnImprimir').addEventListener('click', gerarPDF);
 });
